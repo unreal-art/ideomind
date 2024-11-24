@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Button from './ui/button/button.svelte';
-	import { Bell, GalleryVerticalEnd, House, Menu, BrainCircuit } from 'lucide-svelte';
+	import { Bell, GalleryVertical, House, Menu, BrainCircuit } from 'lucide-svelte';
 	import profileImage from '$lib/assets/ima1.jpg';
 </script>
 
@@ -9,17 +9,21 @@
 		<div class="flex h-16 w-full items-center justify-center">
 			<BrainCircuit size={30} />
 		</div>
-		<Button
-			class="flex h-16 w-full flex-col justify-center gap-2 bg-gray-200 text-gray-600 hover:bg-gray-300 hover:text-black"
-			><House size={20} />
-			<span class="text-xs">Home</span>
-		</Button>
-		<Button
-			class="flex h-16  w-full flex-col justify-center gap-2 bg-gray-200 text-gray-600 hover:bg-gray-300 hover:text-black"
-			><GalleryVerticalEnd size={20} />
+		<a href="/explore">
+			<Button
+				class="flex h-16 w-full flex-col justify-center gap-2 bg-gray-200 text-gray-600 hover:bg-gray-300 hover:text-black"
+				><House size={20} />
+				<span class="text-xs">Home</span>
+			</Button>
+		</a>
+		<a href="/creations">
+			<Button
+				class="flex h-16  w-full flex-col justify-center gap-2 bg-gray-200 text-gray-600 hover:bg-gray-300 hover:text-black"
+				><GalleryVertical size={20} />
 
-			<span class=" text-xs">Creations</span>
-		</Button>
+				<span class=" text-xs">Creations</span>
+			</Button>
+		</a>
 	</div>
 	<div class="flex h-[50%] w-full flex-col justify-end gap-4">
 		<Button variant="ghost" class="h-16 w-full"><Bell size={22} /></Button>
