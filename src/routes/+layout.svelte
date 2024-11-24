@@ -12,7 +12,7 @@
 {:else}
 	<main class="flex h-screen w-screen">
 		<SideBar />
-		<div class="h-full w-[95%]">
+		<div class="h-full w-full flex-grow">
 			<Header />
 			<section class="bg- h-[92%] w-full overflow-auto bg-stone-50">
 				{@render children()}

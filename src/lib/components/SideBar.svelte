@@ -4,7 +4,7 @@
 	import profileImage from '$lib/assets/ima1.jpg';
 </script>
 
-<aside class="  h-full w-[5%] border-r px-2 py-2">
+<aside class="hidden h-full w-[5%] min-w-[100px] border-r px-2 py-2 lg:block">
 	<div class="flex h-[50%] w-full flex-col gap-4">
 		<div class="flex h-16 w-full items-center justify-center">
 			<BrainCircuit size={30} />
@@ -18,7 +18,7 @@
 			class="flex h-16  w-full flex-col justify-center gap-2 bg-gray-200 text-gray-600 hover:bg-gray-300 hover:text-black"
 			><GalleryVerticalEnd size={20} />
 
-			<span class="text-xs">Creations</span>
+			<span class=" text-xs">Creations</span>
 		</Button>
 	</div>
 	<div class="flex h-[50%] w-full flex-col justify-end gap-4">
