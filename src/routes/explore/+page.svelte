@@ -7,6 +7,8 @@
 	import { Ellipsis, Heart } from 'lucide-svelte';
 
 	let imgs = [image1, image2];
+
+	import onboard from '@/web3-onboard';
 </script>
 
 <section class="h-full w-full overflow-auto px-2">

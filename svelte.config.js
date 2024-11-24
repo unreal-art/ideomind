@@ -1,6 +1,8 @@
 import adapter from '@sveltejs/adapter-auto';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
+
+
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	// Consult https://svelte.dev/docs/kit/integrations
@@ -22,5 +24,48 @@ const config = {
 		}
 	}
 };
+const config = {
+  preprocess: preprocess(),
+  kit: {
+    adapter: adapter(),
+    vite: {
+      plugins: [
+        development &&
+          nodePolyfills({
+            include: ['node_modules/**/*.js', new RegExp('node_modules/.vite/.*js')],
+            http: true,
+            crypto: true
+          })
+      ],
+      resolve: {
+        alias: {
+          crypto: 'crypto-browserify',
+          stream: 'stream-browserify',
+          assert: 'assert',
+          zlib: 'browserify-zlib'
+        }
+      },
+      build: {
+        rollupOptions: {
+          external: ['@web3-onboard/*'],
+          plugins: [nodePolyfills({ crypto: true, http: true })]
+        },
+        commonjsOptions: {
+          transformMixedEsModules: true
+        }
+      },
+      optimizeDeps: {
+        exclude: ['@ethersproject/hash', 'wrtc', 'http'],
+        include: [
+          '@web3-onboard/core',
+          '@web3-onboard/gas',
+          '@web3-onboard/sequence',
+          'js-sha3',
+          '@ethersproject/bignumber'
+        ]
+      }
+    }
+  }
+}
 
 export default config;
