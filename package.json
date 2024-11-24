@@ -12,7 +12,7 @@
 		"lint": "prettier --check . && eslint .",
 		"test:e2e": "playwright test",
 		"test": "npm run test:e2e",
-		"shadx": "bunx shadcn-svelte@latest add"
+		"shadx": "bun x shadcn-svelte@next add"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.45.3",
@@ -20,7 +20,7 @@
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^4.0.0",
 		"autoprefixer": "^10.4.20",
-		"bits-ui": "^0.21.16",
+		"bits-ui": "^1.0.0-next.64",
 		"clsx": "^2.1.1",
 		"eslint": "^9.7.0",
 		"eslint-config-prettier": "^9.1.0",

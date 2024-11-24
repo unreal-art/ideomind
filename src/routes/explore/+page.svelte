@@ -10,11 +10,11 @@
 </script>
 
 <section class="h-full w-full overflow-auto px-2">
-	<div class="flex h-[20%] flex-col items-center justify-center gap-3">
+	<div class="hidden h-[20%] flex-col items-center justify-center gap-3 lg:flex">
 		<h2 class="text-sm font-semibold md:text-2xl lg:text-4xl">Unleash your creative juice</h2>
 		<form class="flex h-12 w-full max-w-6xl items-center">
 			<Input
-				type="email"
+				type="text"
 				placeholder="Describe what you want to see"
 				class="h-full w-[60%] rounded-none rounded-l-2xl md:w-[80%]"
 			/>
@@ -23,14 +23,16 @@
 			>
 		</form>
 	</div>
-	<div class="h-[79%]">
+	<div class="h-full lg:h-[79%]">
 		<Tabs.Root value="explore" class="h-full w-full">
-			<Tabs.List class="h-[5%] bg-transparent">
-				<Tabs.Trigger value="explore">Explore</Tabs.Trigger>
-				<Tabs.Trigger value="following">Following</Tabs.Trigger>
-				<Tabs.Trigger value="top">Top</Tabs.Trigger>
-			</Tabs.List>
-			<Tabs.Content value="explore" class="h-[95%] w-full  ">
+			<div class="fixed top-0 h-[8%] w-full bg-stone-50 lg:relative">
+				<Tabs.List class="h-full bg-transparent">
+					<Tabs.Trigger value="explore">Explore</Tabs.Trigger>
+					<Tabs.Trigger value="following">Following</Tabs.Trigger>
+					<Tabs.Trigger value="top">Top</Tabs.Trigger>
+				</Tabs.List>
+			</div>
+			<Tabs.Content value="explore" class="h-[92%] w-full  ">
 				<div class="  columns-1 justify-center gap-8 sm:columns-2 lg:columns-4">
 					{#each Array(6) as _, index}
 						<div class="mb-6 break-inside-avoid">
