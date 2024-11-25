@@ -11,8 +11,6 @@
 	const myChain = defineChain(8194);
 	let account = $state();
 
-	$inspect(account);
-
 	async function connect() {
 		account = await wallet.connect({
 			client,
