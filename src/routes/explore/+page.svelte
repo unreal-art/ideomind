@@ -33,7 +33,7 @@
 				</Tabs.List>
 			</div>
 			<Tabs.Content value="explore" class="h-[92%] w-full  ">
-				<div class="  columns-1 justify-center gap-8 sm:columns-2 lg:columns-4">
+				<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
 					{#each Array(6) as _, index}
 						<div class="mb-6 break-inside-avoid">
 							<img src={imgs[(index + 2) % 2]} alt="user profile" class="mb-6 w-full rounded-sm" />
@@ -56,7 +56,7 @@
 				</div>
 			</Tabs.Content>
 			<Tabs.Content value="following">
-				<div class="  columns-1 justify-center gap-8 sm:columns-2 lg:columns-4">
+				<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
 					{#each Array(6) as _, index}
 						<div class="mb-6 break-inside-avoid">
 							<img src={imgs[(index + 2) % 2]} alt="user profile" class="mb-6 w-full rounded-sm" />
@@ -79,7 +79,7 @@
 				</div>
 			</Tabs.Content>
 			<Tabs.Content value="top">
-				<div class="  columns-1 justify-center gap-8 sm:columns-2 lg:columns-4">
+				<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
 					{#each Array(6) as _, index}
 						<div class="mb-6 break-inside-avoid">
 							<img src={imgs[(index + 2) % 2]} alt="user profile" class="mb-6 w-full rounded-sm" />

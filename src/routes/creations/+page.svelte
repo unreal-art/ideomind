@@ -135,7 +135,7 @@
 				</div>
 			</div>
 			<Tabs.Content value="all" class="h-[95%] w-full  ">
-				<div class="  columns-1 justify-center gap-8 sm:columns-2 lg:columns-4">
+				<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
 					{#each Array(6) as _, index}
 						<div class="relative mb-6 break-inside-avoid">
 							<div class="absolute bottom-1 right-0 flex items-center text-white">
@@ -152,7 +152,7 @@
 				</div>
 			</Tabs.Content>
 			<Tabs.Content value="pinned">
-				<div class="  columns-1 justify-center gap-8 sm:columns-2 lg:columns-4">
+				<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
 					{#each Array(6) as _, index}
 						<div class="relative mb-6 break-inside-avoid">
 							<div class="absolute bottom-1 right-0 flex items-center text-white">
@@ -169,7 +169,7 @@
 				</div>
 			</Tabs.Content>
 			<Tabs.Content value="public">
-				<div class="  columns-1 justify-center gap-8 sm:columns-2 lg:columns-4">
+				<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
 					{#each Array(6) as _, index}
 						<div class="relative mb-6 break-inside-avoid">
 							<div class="absolute bottom-1 right-0 flex items-center text-white">
@@ -186,7 +186,7 @@
 				</div>
 			</Tabs.Content>
 			<Tabs.Content value="private">
-				<div class="  columns-1 justify-center gap-8 sm:columns-2 lg:columns-4">
+				<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
 					{#each Array(6) as _, index}
 						<div class="relative mb-6 break-inside-avoid">
 							<div class="absolute bottom-1 right-0 flex items-center text-white">
