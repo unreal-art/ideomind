@@ -8,7 +8,7 @@
 <section class="hidden h-[8%] w-full items-center justify-between gap-10 bg-stone-50 px-3 lg:flex">
 	<div class="flex h-full w-[80%] items-center justify-center">
 		<form
-			class={`${$page.url.pathname.startsWith('/details') ? 'flex' : 'hidden'} h-12 w-full max-w-6xl items-center`}
+			class={`${$page.url.pathname.startsWith('/details') || $page.url.pathname.startsWith('/profile') ? 'flex' : 'hidden'} h-12 w-full max-w-6xl items-center`}
 		>
 			<Input
 				type="text"
