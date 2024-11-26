@@ -1,10 +1,13 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button/index.js';
+	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import image1 from '$lib/assets/ima1.jpg';
 	import image2 from '$lib/assets/ima2.jpeg';
 	import { Ellipsis, Heart, Search, X, CalendarRange, MapPinHouse } from 'lucide-svelte';
+	import * as Dialog from '$lib/components/ui/dialog/index.js';
+	import { Label } from '$lib/components/ui/label/index.js';
+	import Textarea from '@/components/ui/textarea/textarea.svelte';
 
 	let imgs = [image1, image2];
 
@@ -113,24 +116,67 @@
 				</div>
 			</div>
 		</div>
-		<Button
-			variant="outline"
-			class="lg:relatie  absolute right-2 top-10 mt-3 h-10 rounded-md bg-stone-50 text-sm font-extralight"
-			>Edit profile</Button
-		>
+
+		<div class="flex h-full items-start">
+			<Dialog.Root>
+				<Dialog.Trigger
+					class={buttonVariants({ variant: 'outline' }) +
+						` absolute right-2 mt-3 h-10 rounded-md bg-stone-50 text-sm font-extralight lg:relative lg:top-10`}
+					>Edit profile</Dialog.Trigger
+				>
+				<Dialog.Content class="sm:max-w-[500px]">
+					<Dialog.Header>
+						<Dialog.Title>Edit profile</Dialog.Title>
+						<Dialog.Description>
+							Make changes to your profile here. Click save when you're done.
+						</Dialog.Description>
+					</Dialog.Header>
+					<form class="grid gap-4 py-4">
+						<div class="items-center gap-4">
+							<Label for="username" class="text-right">Username</Label>
+							<Input id="username" value="@peduarte" class="col-span-3"></Input>
+						</div>
+						<div class=" items-center gap-4">
+							<Label for="name" class="text-right"
+								>Name <span class="font-extralight">(Optional)</span></Label
+							>
+							<Input id="name" value="Pedro Duarte" class="col-span-3"></Input>
+							<p class="w-full text-right text-xs font-extralight">(0/30)</p>
+						</div>
+						<div class=" items-center gap-4">
+							<Label for="name" class="text-right"
+								>Location <span class="font-extralight">(Optional)</span></Label
+							>
+							<Input id="name" value="Pedro Duarte" class="col-span-3"></Input>
+							<p class="w-full text-right text-xs font-extralight">(0/30)</p>
+						</div>
+						<div class=" items-center gap-4">
+							<Label for="name" class="text-right"
+								>Bio <span class="font-extralight">(Optional)</span></Label
+							>
+							<Textarea />
+							<p class="w-full text-right text-xs font-extralight">(0/150)</p>
+						</div>
+						<Dialog.Footer>
+							<Button type="submit">Save changes</Button>
+						</Dialog.Footer>
+					</form>
+				</Dialog.Content>
+			</Dialog.Root>
+		</div>
 	</div>
 	<div class=" relative min-h-[60vh]">
-		<Tabs.Root value="public" class="relative h-full w-full">
+		<Tabs.Root value="pinned" class="relative h-full w-full">
 			<div
 				bind:this={targetElement}
 				class={`${isFixed ? 'fixed left-0 lg:top-16 ' : ' lg:relative'} top-0 z-20 flex h-12 w-full justify-center bg-stone-50 `}
 			>
 				<div
-					class={` ${showInput ? 'block' : 'hidden'} absolute left-0 top-0 z-20 h-full w-full max-w-[1000px] rounded-2xl border bg-stone-50`}
+					class={`${showInput ? 'block' : 'hidden'} absolute left-0 top-0 z-20 h-full w-full max-w-[1000px] rounded-2xl border bg-stone-50`}
 				>
 					<div class="absolute right-0 top-0 flex h-full w-10 items-center justify-center">
 						<Button variant="ghost" class="h-full hover:bg-transparent">
-							<X size={20} />
+							<X size={20}></X>
 						</Button>
 					</div>
 					<div class="h-full w-full" bind:this={inputRef}>
@@ -138,7 +184,7 @@
 							type="text"
 							placeholder="Search prompt"
 							class=" h-full w-full rounded-l-2xl  border-none bg-stone-50 pr-10 "
-						/>
+						></Input>
 					</div>
 				</div>
 				<div class=" relative flex h-full w-full items-center justify-center space-x-1">
@@ -149,7 +195,7 @@
 					/>
 					<div class="flex h-full items-center" bind:this={buttonRef}>
 						<Button onclick={toggleInput} variant="ghost" class="hidden h-full lg:block">
-							<Search size={20} />
+							<Search size={20}></Search>
 						</Button>
 					</div>
 					<Tabs.List class="h-[5%] bg-transparent">
@@ -163,14 +209,13 @@
 
 			<Tabs.Content value="pinned">
 				<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
-					{#each Array(6) as _, index}
-						<div class="relative mb-6 break-inside-avoid">
+					{#each Array(6) as _, index}<div class="relative mb-6 break-inside-avoid">
 							<div class="absolute bottom-1 right-0 flex items-center text-white">
-								<Button variant="ghost" class><Ellipsis size={20} /></Button>
+								<Button variant="ghost"><Ellipsis size={20}></Ellipsis></Button>
 
 								<Button variant="ghost" class="flex space-x-2 hover:bg-black/50 hover:text-white">
 									<span>2</span>
-									<Heart size={20} /></Button
+									<Heart size={20}></Heart></Button
 								>
 							</div>
 							<img src={imgs[(index + 2) % 2]} alt="user profile" class="mb-6 w-full rounded-sm" />
@@ -178,58 +223,10 @@
 					{/each}
 				</div>
 			</Tabs.Content>
-			<Tabs.Content value="public">
-				<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
-					{#each Array(6) as _, index}
-						<div class="relative mb-6 break-inside-avoid">
-							<div class="absolute bottom-1 right-0 flex items-center text-white">
-								<Button variant="ghost" class><Ellipsis size={20} /></Button>
+			<Tabs.Content value="public"></Tabs.Content>
+			<Tabs.Content value="private"></Tabs.Content>
 
-								<Button variant="ghost" class="flex space-x-2 hover:bg-black/50 hover:text-white">
-									<span>2</span>
-									<Heart size={20} /></Button
-								>
-							</div>
-							<img src={imgs[(index + 2) % 2]} alt="user profile" class="mb-6 w-full rounded-sm" />
-						</div>
-					{/each}
-				</div>
-			</Tabs.Content>
-			<Tabs.Content value="private">
-				<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
-					{#each Array(6) as _, index}
-						<div class="relative mb-6 break-inside-avoid">
-							<div class="absolute bottom-1 right-0 flex items-center text-white">
-								<Button variant="ghost" class><Ellipsis size={20} /></Button>
-
-								<Button variant="ghost" class="flex space-x-2 hover:bg-black/50 hover:text-white">
-									<span>2</span>
-									<Heart size={20} /></Button
-								>
-							</div>
-							<img src={imgs[(index + 2) % 2]} alt="user profile" class="mb-6 w-full rounded-sm" />
-						</div>
-					{/each}
-				</div>
-			</Tabs.Content>
-
-			<Tabs.Content value="liked" class="h-[95%] w-full  ">
-				<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
-					{#each Array(6) as _, index}
-						<div class="relative mb-6 break-inside-avoid">
-							<div class="absolute bottom-1 right-0 flex items-center text-white">
-								<Button variant="ghost" class><Ellipsis size={20} /></Button>
-
-								<Button variant="ghost" class="flex space-x-2 hover:bg-black/50 hover:text-white">
-									<span>2</span>
-									<Heart size={20} /></Button
-								>
-							</div>
-							<img src={imgs[(index + 2) % 2]} alt="user profile" class="mb-6 w-full rounded-sm" />
-						</div>
-					{/each}
-				</div>
-			</Tabs.Content>
+			<Tabs.Content value="liked" class="h-[95%] w-full  "></Tabs.Content>
 		</Tabs.Root>
 	</div>
 </section>
