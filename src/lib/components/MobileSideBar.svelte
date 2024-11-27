@@ -72,7 +72,7 @@
 				>
 				<DropdownMenu.Content class=" mb-5 w-[300px]">
 					<DropdownMenu.Group>
-						<DropdownMenu.GroupHeading class="h-14">
+						<DropdownMenu.GroupHeading class="mb-3 h-14">
 							<div class="mt-3 flex h-full w-full items-center justify-between">
 								<div class="flex h-full space-x-2">
 									<img src={profileImage} alt="user profile" class="h-full rounded-full" />
