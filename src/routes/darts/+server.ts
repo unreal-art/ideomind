@@ -7,11 +7,21 @@ import { extractLocationURL } from './darts';
 
 const execAsync = promisify(exec);
 
-export const POST: RequestHandler = async ({ request }) => {
-	const inputs = await request.json();
+interface JobSpec {
+	module?: string;
+	inputs?: string[];
+}
 
-	if (!inputs) {
+export const POST: RequestHandler = async ({ request }) => {
+	const jobDTO = await request.json();
+
+	if (!jobDTO) {
 		return json({ error: 'Missing inputs in request body' }, { status: 400 });
+	}
+
+	if (!jobDTO.module) {
+		jobDTO.module ??= 'cowsay:v0.1.3';
+		jobDTO.inputs ??= [`Message="ideomind says hi"`];
 	}
 
 	// Set environment variables
@@ -23,7 +33,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	const dartsCli = process.env.DARTS_CLI || 'darts';
 
-	const command = `DARTS_PRIVATE_KEY=${pKey} DEBUG=${debug} ${dartsCli} run cowsay:v0.1.3 -i Message="ideomind says hi"`;
+	const command = `DARTS_PRIVATE_KEY=${pKey} DEBUG=${debug} ${dartsCli} run ${jobDTO.module} ${jobDTO.inputs.join('-i ')} `;
 	// TODO: module
 
 	// Execute the command
