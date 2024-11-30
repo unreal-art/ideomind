@@ -1,17 +1,38 @@
-// src/routes/api/handler/+server.ts
 import { exec } from 'child_process';
 import path from 'path';
 import { promisify } from 'util';
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { extractLocationURL } from './darts';
 import { DEBUG } from '$env/static/private';
+import { dev } from '$app/environment';
 
 const execAsync = promisify(exec);
+
+async function installDarts() {
+	try {
+		// Check if 'darts' binary exists
+		await execAsync('command -v darts');
+		console.log('Darts binary already installed.');
+		return 'Darts binary is already installed.';
+	} catch {
+		// If not found and not in dev mode, install it
+		console.log('Installing darts binary...');
+		await execAsync('curl -sSL https://bit.ly/install-darts | bash -s -- darts');
+		console.log('Darts installation successful.');
+		return 'Darts binary installed successfully.';
+		return 'Skipping installation in development mode.';
+	}
+}
 
 interface JobSpec {
 	module?: string;
 	version?: string; //version
 	inputs?: Record<string, string>;
+}
+
+if (!dev) {
+	// await execAsync(`curl -sSL https://bit.ly/install-darts | bash -s -- darts`);
+	await installDarts();
 }
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -32,7 +53,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	// Construct CLI input flags
-	const inputFlags = Object.entries(jobDto.inputs)
+	const inputFlags = Object.entries(jobDto.inputs || {})
 		.map(([key, value]) => `-i ${key}="${value}"`)
 		.join(' ');
 

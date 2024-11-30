@@ -2,7 +2,7 @@
   "version": 2,
   "framework": "sveltekit",
   "buildCommand": "bun run build",
-  "installCommand": "bun install && bun installdarts",
+  "installCommand": "bun installdarts & bun i",
   "devCommand": "bun run dev",
   "public": true,
   "outputDirectory": "build",
@@ -11,5 +11,10 @@
       "src": "/(.*)",
       "dest": "/"
     }
-  ]
+  ],
+  "build": {
+    "env": {
+      "CACHE": "false"
+    }
+  }
 }
