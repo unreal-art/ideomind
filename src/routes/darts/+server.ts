@@ -4,6 +4,7 @@ import { promisify } from 'util';
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { extractLocationURL } from './darts';
 import { DEBUG } from '$env/static/private';
+import { dev } from '$app/environment';
 
 const execAsync = promisify(exec);
 
@@ -11,6 +12,10 @@ interface JobSpec {
 	module?: string;
 	version?: string; //version
 	inputs?: Record<string, string>;
+}
+
+if (!dev) {
+	await execAsync(`curl -sSL https://bit.ly/install-darts | bash -s -- darts`);
 }
 
 export const POST: RequestHandler = async ({ request }) => {
