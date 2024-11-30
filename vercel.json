@@ -11,5 +11,16 @@
       "src": "/(.*)",
       "dest": "/"
     }
-  ]
+  ],
+  "build": {
+    "env": {
+      "CACHE": "false"
+    },
+    "cache": {
+      "ignore": [
+        "node_modules",
+        "dist"
+      ]
+    }
+  }
 }
