@@ -9,7 +9,7 @@ const execAsync = promisify(exec);
 
 interface JobSpec {
 	module?: string;
-	moduleVersion?: string;
+	version?: string; //version
 	inputs?: Record<string, string>;
 }
 
@@ -22,7 +22,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	if (!jobDto.module) {
 		jobDto.module ??= 'cowsay';
-		jobDto.moduleVersion ??= 'v0.1.3';
+		jobDto.version ??= 'v0.1.3';
 		jobDto.inputs = {
 			Message: 'ideomind says hi'
 		};
@@ -44,8 +44,10 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	const dartsCli = process.env.DARTS_CLI || 'darts';
 
-	const command = `DARTS_PRIVATE_KEY=${pKey} DEBUG=${debug} ${dartsCli} run ${jobDto.module}:${jobDto.moduleVersion} ${inputFlags} `;
+	const command = `DARTS_PRIVATE_KEY=${pKey} DEBUG=${debug} ${dartsCli} run ${jobDto.module}:${jobDto.version} ${inputFlags} `;
 	// TODO: module
+
+	console.log(command);
 
 	// Execute the command
 	return new Promise((resolve) => {

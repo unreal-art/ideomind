@@ -3,12 +3,17 @@ POST http://localhost:5173/darts
 Content-Type: application/json
 
 {}
-
-### Darts SDXL
+###
 
 POST http://localhost:5173/darts
 Content-Type: application/json
 
 {
-  "module": "c"
+  "module": "isdxl",
+  "version": "v0.3.0",
+  "inputs": {
+    "Prompt": "mind dreaming of a futuristic aircraft",
+    "Seed": "40",
+    "Device": "xpu"
+  }
 }
