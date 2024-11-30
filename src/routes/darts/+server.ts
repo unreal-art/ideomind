@@ -36,8 +36,8 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		childProcess.stdout?.on('data', (out) => {
 			console.log(`stdout: ${out}`);
-			outputFolder = extractLocationURL(out.toString());
 			stdout = out.toString();
+			outputFolder = extractLocationURL(stdout);
 		});
 
 		childProcess.stderr?.on('data', (_stderr) => {
