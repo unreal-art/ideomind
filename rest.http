@@ -1,0 +1,46 @@
+# Darts
+POST http://localhost:5173/darts
+Content-Type: application/json
+
+{}
+###
+
+POST http://localhost:5173/darts
+Content-Type: application/json
+
+{
+  "module": "isdxl",
+  "version": "v0.3.0",
+  "inputs": {
+    "Prompt": "mind dreaming of a futuristic aircraft",
+    "Seed": "40",
+    "Device": "xpu"
+  }
+}
+
+HTTP/1.1 200  - OK
+access-control-allow-origin: *
+content-length: 690
+content-type: application/json
+date: Sat, 30 Nov 2024 05:35:17 GMT
+connection: close
+###
+
+POST http://localhost:5173/darts
+Content-Type: application/json
+
+{
+  "module": "github.com/darts2024/dart-isdxl",
+  "version": "v0.3.0",
+  "inputs": {
+    "Prompt": "Beautiful girl",
+    "Device": "xpu"
+  }
+}
+
+HTTP/1.1 200  - OK
+access-control-allow-origin: *
+content-length: 677
+content-type: application/json
+date: Sat, 30 Nov 2024 05:34:12 GMT
+connection: close
