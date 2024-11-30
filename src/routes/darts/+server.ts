@@ -31,7 +31,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	// Construct CLI input flags
-	const inputFlags = Object.entries(jobDto.inputs)
+	const inputFlags = Object.entries(jobDto.inputs || {})
 		.map(([key, value]) => `-i ${key}="${value}"`)
 		.join(' ');
 
@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const platform = process.platform;
 	const dartsBin = platform === 'linux' ? 'darts-linux' : 'darts-mac';
 
-	const dartsCli = process.env.DARTS_CLI || '/usr/local/bin/darts';
+	const dartsCli = process.env.DARTS_CLI || 'darts';
 
 	const envVars = {
 		DARTS_PRIVATE_KEY: pKey,
