@@ -9,20 +9,31 @@ const execAsync = promisify(exec);
 
 interface JobSpec {
 	module?: string;
-	inputs?: string[];
+	moduleVersion?: string;
+	inputs?: Record<string, string>;
 }
 
 export const POST: RequestHandler = async ({ request }) => {
-	const jobDTO = await request.json();
+	const jobDto: JobSpec = await request.json();
 
-	if (!jobDTO) {
+	if (!jobDto) {
 		return json({ error: 'Missing inputs in request body' }, { status: 400 });
 	}
 
-	if (!jobDTO.module) {
-		jobDTO.module ??= 'cowsay:v0.1.3';
-		jobDTO.inputs ??= [`Message="ideomind says hi"`];
+	if (!jobDto.module) {
+		jobDto.module ??= 'cowsay';
+		jobDto.moduleVersion ??= 'v0.1.3';
+		jobDto.inputs = {
+			Message: 'ideomind says hi'
+		};
 	}
+
+	// Construct CLI input flags
+	const inputFlags = Object.entries(jobDto.inputs)
+		.map(([key, value]) => `-i ${key}="${value}"`)
+		.join(' ');
+
+	console.log('inputFlags', inputFlags);
 
 	// Set environment variables
 	const pKey = process.env.PRIVATE_KEY;
@@ -33,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	const dartsCli = process.env.DARTS_CLI || 'darts';
 
-	const command = `DARTS_PRIVATE_KEY=${pKey} DEBUG=${debug} ${dartsCli} run ${jobDTO.module} ${jobDTO.inputs.join('-i ')} `;
+	const command = `DARTS_PRIVATE_KEY=${pKey} DEBUG=${debug} ${dartsCli} run ${jobDto.module}:${jobDto.moduleVersion} ${inputFlags} `;
 	// TODO: module
 
 	// Execute the command
@@ -62,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			} else {
 				resolve(
 					json(
-						{ error: `Command execution failed with code ${code}: ${stderr},`, stdout, stderr },
+						{ error: `Command execution failed with code ${code}`, stdout, stderr },
 						{ status: 500 }
 					)
 				);
