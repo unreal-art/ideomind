@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "framework": "sveltekit",
+  "buildCommand": "bun run build",
+  "installCommand": "bun install",
+  "devCommand": "bun run dev",
+  "public": true,
+  "outputDirectory": "build",
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/"
+    }
+  ]
+}
