@@ -12,14 +12,14 @@ server: Vercel
 
 HTTP/1.1 500  - Internal Server Error
 cache-control: public, max-age=0, must-revalidate
-content-length: 216
+content-length: 186
 content-type: application/json
-date: Sat, 30 Nov 2024 06:38:53 GMT
+date: Sat, 30 Nov 2024 06:54:47 GMT
 server: Vercel
 strict-transport-security: max-age=63072000; includeSubDomains; preload
 x-robots-tag: noindex
 x-vercel-cache: MISS
-x-vercel-id: bom1::iad1::brxtb-1732948733686-a4ef87fe739d
+x-vercel-id: bom1::iad1::f8jxr-1732949686346-eeac3b1e1d76
 connection: close
 ###
 
