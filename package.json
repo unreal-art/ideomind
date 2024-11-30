@@ -79,5 +79,8 @@
   "trustedDependencies": [
     "@parcel/watcher",
     "svelte-preprocess"
-  ]
+  ],
+  "engines": {
+    "node": "20.x"
+  }
 }
