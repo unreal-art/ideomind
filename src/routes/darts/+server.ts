@@ -23,7 +23,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	const dartsCli = process.env.DARTS_CLI || 'darts';
 
-	const command = `DARTS_PRIVATE_KEY=${pKey} DEBUG=${debug} ${dartsCli} run github.com/feedback-box/SoM:v0.2.2-coopdarts.4`;
+	const command = `DARTS_PRIVATE_KEY=${pKey} DEBUG=${debug} ${dartsCli} run cowsay:v0.1.3 -i Message="ideomind says hi"`;
 
 	// Execute the command
 	return new Promise((resolve) => {
