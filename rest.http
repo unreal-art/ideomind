@@ -1,24 +1,25 @@
 # Darts
-POST http://ideomind.vercel.app/darts
+POST http://ideomind-git-bug-darts-not-found-decenter-ai.vercel.app/darts
 Content-Type: application/json
 
 {}
 
 HTTP/1.0 308  - Permanent Redirect
 content-type: text/plain
-location: https://ideomind.vercel.app/darts
-refresh: 0;url=https://ideomind.vercel.app/darts
+location: https://ideomind-git-bug-darts-not-found-decenter-ai.vercel.app/darts
+refresh: 0;url=https://ideomind-git-bug-darts-not-found-decenter-ai.vercel.app/darts
 server: Vercel
 
 HTTP/1.1 500  - Internal Server Error
 cache-control: public, max-age=0, must-revalidate
 content-length: 186
 content-type: application/json
-date: Sat, 30 Nov 2024 06:12:41 GMT
+date: Sat, 30 Nov 2024 06:30:52 GMT
 server: Vercel
 strict-transport-security: max-age=63072000; includeSubDomains; preload
+x-robots-tag: noindex
 x-vercel-cache: MISS
-x-vercel-id: bom1::iad1::dng8w-1732947160273-a8a7b345d664
+x-vercel-id: bom1::iad1::5pw5p-1732948252707-ad3ec4eefc08
 connection: close
 ###
 

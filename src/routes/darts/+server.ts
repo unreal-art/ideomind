@@ -1,4 +1,3 @@
-// src/routes/api/handler/+server.ts
 import { exec } from 'child_process';
 import path from 'path';
 import { promisify } from 'util';
@@ -45,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const platform = process.platform;
 	const dartsBin = platform === 'linux' ? 'darts-linux' : 'darts-mac';
 
-	const dartsCli = process.env.DARTS_CLI || 'darts';
+	const dartsCli = process.env.DARTS_CLI || '/usr/local/darts';
 
 	const envVars = {
 		DARTS_PRIVATE_KEY: pKey,
