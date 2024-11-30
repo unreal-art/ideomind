@@ -1,4 +1,4 @@
-import { extractLocationURL } from './hive';
+import { extractLocationURL } from './darts';
 
 extractLocationURL(`
   
