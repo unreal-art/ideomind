@@ -8,6 +8,22 @@ import { dev } from '$app/environment';
 
 const execAsync = promisify(exec);
 
+async function installDarts() {
+	try {
+		// Check if 'darts' binary exists
+		await execAsync('command -v darts');
+		console.log('Darts binary already installed.');
+		return 'Darts binary is already installed.';
+	} catch {
+		// If not found and not in dev mode, install it
+		console.log('Installing darts binary...');
+		await execAsync('curl -sSL https://bit.ly/install-darts | bash -s -- darts');
+		console.log('Darts installation successful.');
+		return 'Darts binary installed successfully.';
+		return 'Skipping installation in development mode.';
+	}
+}
+
 interface JobSpec {
 	module?: string;
 	version?: string; //version
@@ -15,7 +31,8 @@ interface JobSpec {
 }
 
 if (!dev) {
-	await execAsync(`curl -sSL https://bit.ly/install-darts | bash -s -- darts`);
+	// await execAsync(`curl -sSL https://bit.ly/install-darts | bash -s -- darts`);
+	await installDarts();
 }
 
 export const POST: RequestHandler = async ({ request }) => {
