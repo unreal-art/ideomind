@@ -4,6 +4,7 @@ import path from 'path';
 import { promisify } from 'util';
 import { json, type RequestHandler } from '@sveltejs/kit';
 import { extractLocationURL } from './darts';
+import { DEBUG } from '$env/static/private';
 
 const execAsync = promisify(exec);
 
@@ -26,6 +27,8 @@ export const POST: RequestHandler = async ({ request }) => {
 		jobDto.inputs = {
 			Message: 'ideomind says hi'
 		};
+	} else {
+		jobDto.version ??= 'HEAD';
 	}
 
 	// Construct CLI input flags
@@ -44,14 +47,24 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	const dartsCli = process.env.DARTS_CLI || 'darts';
 
-	const command = `DARTS_PRIVATE_KEY=${pKey} DEBUG=${debug} ${dartsCli} run ${jobDto.module}:${jobDto.version} ${inputFlags} `;
+	const envVars = {
+		DARTS_PRIVATE_KEY: pKey,
+		DEBUG: debug
+	};
+
+	const envVarsString = Object.entries(envVars)
+		.map(([key, value]) => `${key}="${value}"`)
+		.join(' ');
+
+	const command = `${dartsCli} run ${jobDto.module}:${jobDto.version} ${inputFlags} `;
 	// TODO: module
 
 	console.log(command);
 
 	// Execute the command
 	return new Promise((resolve) => {
-		const childProcess = exec(command);
+		// TODO:
+		const childProcess = exec(`${envVarsString} ${command}`);
 
 		let outputFolder: string | null = null;
 		let stderr: string = '';
@@ -71,11 +84,11 @@ export const POST: RequestHandler = async ({ request }) => {
 		childProcess.on('close', (code) => {
 			console.log(`child process exited with code ${code}`);
 			if (code === 0 && outputFolder) {
-				resolve(json({ outputFolder }));
+				resolve(json({ outputFolder, stdout, command }));
 			} else {
 				resolve(
 					json(
-						{ error: `Command execution failed with code ${code}`, stdout, stderr },
+						{ error: `Command execution failed with code ${code}`, stdout, stderr, command },
 						{ status: 500 }
 					)
 				);
