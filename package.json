@@ -13,7 +13,7 @@
 		"test:e2e": "playwright test",
 		"test": "npm run test:e2e",
 		"shadx": "bun x shadcn-svelte@next add",
-		"installdarts": "curl -sSL https://bit.ly/install-darts | sudo bash -s -- darts"
+		"installdarts": "cat install.sh | bash -s -- darts"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.45.3",
