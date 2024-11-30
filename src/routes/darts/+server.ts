@@ -44,7 +44,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const platform = process.platform;
 	const dartsBin = platform === 'linux' ? 'darts-linux' : 'darts-mac';
 
-	const dartsCli = process.env.DARTS_CLI || '/usr/local/darts';
+	const dartsCli = process.env.DARTS_CLI || '/usr/local/bin/darts';
 
 	const envVars = {
 		DARTS_PRIVATE_KEY: pKey,
