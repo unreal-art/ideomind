@@ -8,15 +8,15 @@ import { extractLocationURL } from './darts';
 const execAsync = promisify(exec);
 
 export const POST: RequestHandler = async ({ request }) => {
-	const { inputURI } = await request.json();
+	const inputs = await request.json();
 
-	if (!inputURI) {
-		return json({ error: 'Missing inputURI in request body' }, { status: 400 });
+	if (!inputs) {
+		return json({ error: 'Missing inputs in request body' }, { status: 400 });
 	}
 
 	// Set environment variables
 	const pKey = process.env.PRIVATE_KEY;
-	const debug = true;
+	const debug = false;
 
 	const platform = process.platform;
 	const dartsBin = platform === 'linux' ? 'darts-linux' : 'darts-mac';
@@ -24,6 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const dartsCli = process.env.DARTS_CLI || 'darts';
 
 	const command = `DARTS_PRIVATE_KEY=${pKey} DEBUG=${debug} ${dartsCli} run cowsay:v0.1.3 -i Message="ideomind says hi"`;
+	// TODO: module
 
 	// Execute the command
 	return new Promise((resolve) => {
