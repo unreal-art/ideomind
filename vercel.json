@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "framework": "sveltekit",
+  "installCommand": "npm install -g bun && bun i",
+  "buildCommand": "bun run build",
+  "devCommand": "bun run dev",
+  "public": true
+}
