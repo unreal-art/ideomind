@@ -5,7 +5,7 @@
   "installCommand": "bun installdarts & bun i",
   "devCommand": "bun run dev",
   "public": true,
-  "outputDirectory": "build",
+  "outputDirectory": ".",
   "routes": [
     {
       "src": "/(.*)",
