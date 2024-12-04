@@ -5,16 +5,5 @@
 	"installCommand": "bun install",
 	"devCommand": "bun run dev",
 	"public": true,
-	"outputDirectory": ".vercel/output",
-	"routes": [
-		{
-			"src": "/(.*)",
-			"dest": "/"
-		}
-	],
-	"build": {
-		"env": {
-			"CACHE": "false"
-		}
-	}
+	"outputDirectory": ".vercel/output"
 }
