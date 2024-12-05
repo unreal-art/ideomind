@@ -20,7 +20,7 @@
 {:else}
 	<main class="relative flex h-screen w-screen">
 		<SideBar />
-		<div class="h-full w-full flex-grow">
+		<div class="relative h-full w-full flex-grow">
 			<Header />
 			<section class="relative h-full w-full overflow-auto bg-stone-50 lg:h-[92%]">
 				<Button
@@ -31,8 +31,7 @@
 				</Button>
 				{@render children()}
 			</section>
+			<MobileSideBar />
 		</div>
-
-		<MobileSideBar />
 	</main>
 {/if}
