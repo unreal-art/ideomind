@@ -21,7 +21,7 @@
 	import { BsBell } from 'svelte-icons-pack/bs';
 </script>
 
-<section class="absolute bottom-0 h-20 w-full bg-stone-50 lg:hidden">
+<section class="fixed bottom-0 h-20 w-full bg-stone-50 lg:hidden">
 	<div
 		class="before:absolute before:left-0 before:top-0 before:h-2 before:w-full before:bg-transparent before:shadow-md"
 	></div>
