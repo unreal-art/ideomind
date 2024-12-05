@@ -60,7 +60,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	console.log('inputFlags', inputFlags);
 
 	// Set environment variables
-	const pKey = process.env.PRIVATE_KEY;
+	const pKey = import.meta.env.VITE_PRIVATE_KEY;
 	const debug = false;
 
 	const platform = process.platform;

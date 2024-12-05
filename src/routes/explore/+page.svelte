@@ -5,8 +5,23 @@
 	import image1 from '$lib/assets/ima1.jpg';
 	import image2 from '$lib/assets/ima2.jpeg';
 	import { Ellipsis, Heart } from 'lucide-svelte';
+	import { generateImage } from '@/api';
 
 	let imgs = [image1, image2];
+
+	let text = $state('');
+
+	const onclick = () => {
+		const dto = {
+			module: 'isdxl',
+			version: import.meta.env.VITE_VERSION,
+			inputs: {
+				Message: text
+			}
+		};
+
+		generateImage(dto);
+	};
 </script>
 
 <section class="h-full w-full overflow-auto px-2">
@@ -15,11 +30,14 @@
 		<form class="flex h-12 w-full max-w-6xl items-center">
 			<Input
 				type="text"
+				bind:value={text}
 				placeholder="Describe what you want to see"
 				class="h-full w-[60%] rounded-none rounded-l-2xl md:w-[80%]"
 			/>
-			<Button type="submit" class="h-full w-[40%] rounded-none rounded-r-2xl text-white md:w-[20%]"
-				>Generate</Button
+			<Button
+				type="button"
+				{onclick}
+				class="h-full w-[40%] rounded-none rounded-r-2xl text-white md:w-[20%]">Generate</Button
 			>
 		</form>
 	</div>
