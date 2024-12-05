@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Button from './ui/button/button.svelte';
-	import { Bell, GalleryVertical, House, Menu, BrainCircuit } from 'lucide-svelte';
+	import { GalleryVertical, House, Menu, BrainCircuit } from 'lucide-svelte';
 	import profileImage from '$lib/assets/ima1.jpg';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import CreditCard from 'lucide-svelte/icons/credit-card';
