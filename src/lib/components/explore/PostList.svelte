@@ -21,33 +21,39 @@
 
 <div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
 	{#each data as item}
-		<div class="mb-6 break-inside-avoid">
-			<img src={item.images[0]} alt="user profile" class="mb-6 w-full rounded-sm" />
-			<div class="mt-3 flex h-10 w-full items-center justify-between">
-				<div class="flex h-full space-x-2">
-					<img src={getPostUserImage(item.author)} alt="user profile" class="h-full rounded-full" />
-					<div class="flex flex-col">
-						<p class="text-sm">{getPostUserName(item.author)}</p>
-						<p class="text-light text-sm text-gray-400">
-							{formatDistanceToNow(item.createdAt)} ago
-						</p>
+		<a href={`/details/${item.id}`}>
+			<div class="mb-6 break-inside-avoid">
+				<img src={item.images[0]} alt="user profile" class="mb-6 w-full rounded-sm" />
+				<div class="mt-3 flex h-10 w-full items-center justify-between">
+					<div class="flex h-full space-x-2">
+						<img
+							src={getPostUserImage(item.author)}
+							alt="user profile"
+							class="h-full rounded-full"
+						/>
+						<div class="flex flex-col">
+							<p class="text-sm">{getPostUserName(item.author)}</p>
+							<p class="text-light text-sm text-gray-400">
+								{formatDistanceToNow(item.createdAt)} ago
+							</p>
+						</div>
+					</div>
+					<div class="flex items-center">
+						<Button variant="ghost"><Ellipsis size={20} /></Button>
+						<Button
+							variant="ghost"
+							onclick={() => like(item)}
+							class="flex space-x-2 hover:bg-black/50 hover:text-white"
+						>
+							<span>{item.likes}</span>
+							<Heart
+								size={20}
+								class={`${isInLikedPosts(item.id) ? 'fill-pink-500 text-pink-500' : ''}`}
+							></Heart></Button
+						>
 					</div>
 				</div>
-				<div class="flex items-center">
-					<Button variant="ghost"><Ellipsis size={20} /></Button>
-					<Button
-						variant="ghost"
-						onclick={() => like(item)}
-						class="flex space-x-2 hover:bg-black/50 hover:text-white"
-					>
-						<span>{item.likes}</span>
-						<Heart
-							size={20}
-							class={`${isInLikedPosts(item.id) ? 'fill-pink-500 text-pink-500' : ''}`}
-						></Heart></Button
-					>
-				</div>
 			</div>
-		</div>
+		</a>
 	{/each}
 </div>

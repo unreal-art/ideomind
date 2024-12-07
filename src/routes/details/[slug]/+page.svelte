@@ -3,20 +3,58 @@
 	import image1 from '$lib/assets/ima1.jpg';
 	import image2 from '$lib/assets/ima2.jpeg';
 	import { Ellipsis, Heart, Files, Plus } from 'lucide-svelte';
+	import Separator from '@/components/ui/separator/separator.svelte';
+	import { page } from '$app/stores';
+	import {
+		getPost,
+		getPostUserImage,
+		getPostUserName,
+		likePost,
+		userLikedPosts,
+		userOtherPosts
+	} from '@/api';
+	import type { Post } from '@/types';
+	import { store } from '$lib/store';
+
+	let likedPosts = $derived(userLikedPosts($store.user?.id));
+	import { formatDistanceToNow } from 'date-fns';
+
+	let params = $page.params;
+	let post: Post = $derived(getPost(params.slug, $store.posts));
+	let otherPosts: Post[] = $derived(userOtherPosts(post.author, post.id, $store.posts));
 
 	let imgs = [image1, image2];
-	import Separator from '@/components/ui/separator/separator.svelte';
+
 	let fullPrompt = $state(false);
 	let fullMagicPrompt = $state(false);
-	let text = $state(
-		"Imagine a Pixar Disney studio 3D style caricature of a black man wearing a red and white horizontally striped tank top, white straight-cut elegant light fabric pants, and a short-brim Panama-style white hat slightly tilted forward. The man holds the brim of the hat with his right hand, emphasizing a traditional samba or dance gesture, while his body leans slightly forward, with his left leg advanced and the right leg back, capturing a dance movement with relaxed shoulders. Vibrant green and yellow lighting reflects off the white pants, evoking a lively concert or party atmosphere. The outfit and posture embody the classic samba singer's elegance and fluidity in motion."
-	);
+	let text = $derived(post.prompt);
+
+	const like = (item: Post) => {
+		if (!$store.user?.id) return;
+		likePost(item.id, $store.user?.id);
+	};
+
+	const isInLikedPosts = (id: string): boolean => {
+		return likedPosts.filter((item) => item.id == id).length > 0;
+	};
+
+	const getDate = (date: Date | undefined): string => {
+		if (!date) return '';
+		const month = date.toLocaleString('default', { month: 'short' }); // Get full month name (e.g., 'December')
+		const year = date.getFullYear();
+		let hour = date.getHours();
+		const mins = date.getMinutes().toString().padStart(2, '0'); // Ensure minutes are 2 digits
+		const amOrPm = hour >= 12 ? 'pm' : 'am'; // Determine AM or PM
+		hour = hour % 12 || 12; // Convert to 12-hour format, adjust for 0 to 12
+
+		return `${month} ${year} at ${hour}:${mins} ${amOrPm}`;
+	};
 </script>
 
 <section class="relative h-full w-full overflow-y-auto px-2">
 	<section class="min-h-[92vh] w-full lg:flex">
 		<div class="flex h-full items-center justify-center lg:w-[75%]">
-			<img src={image2} alt="view" class=" max-h-[92vh]" />
+			<img src={post.images[0]} alt="view" class=" max-h-[92vh]" />
 		</div>
 		<div
 			class="flex h-full flex-col gap-5 overflow-y-scroll rounded-md border bg-white px-2 py-4 shadow lg:w-[25%]"
@@ -24,34 +62,34 @@
 			<!-- user details -->
 			<div class="mt-3 flex h-10 w-full justify-between">
 				<div class="relative flex h-full space-x-2">
-					<img src={image1} alt="user profile" class="h-full rounded-full" />
+					<img src={getPostUserImage(post.author)} alt="user profile" class="h-full rounded-full" />
 					<div class=" flex flex-col">
-						<p class="text-sm">Codypharm</p>
-						<p class="text-light text-sm text-gray-400">11min ago</p>
+						<p class="text-sm">{getPostUserName(post.author)}</p>
+						<p class="text-light text-sm text-gray-400">
+							{formatDistanceToNow(post.createdAt)} ago
+						</p>
 					</div>
 				</div>
 				<Button class="h-fit w-fit rounded-full bg-red-500 p-1   px-2 text-xs">follow</Button>
 				<div class="flex items-center">
 					<Button variant="ghost"><Ellipsis size={20} /></Button>
-					<p class="text-light text-sm">2</p>
-					<Button variant="ghost"><Heart size={20} /></Button>
+					<p class="text-light text-sm">{post.likes}</p>
+					<Button variant="ghost" onclick={() => like(post)}
+						><Heart
+							size={20}
+							class={`${isInLikedPosts(post.id) ? 'fill-pink-500 text-pink-500' : ''}`}
+						/></Button
+					>
 				</div>
 			</div>
 
 			<!-- image list -->
 			<div class="flex h-28 gap-3 overflow-x-auto">
-				<div class="h-full w-[25%] opacity-40">
-					<img src={image2} alt="view" class=" h-full w-full rounded-md" />
-				</div>
-				<div class="h-full w-[25%]">
-					<img src={image2} alt="view" class=" h-full w-full rounded-md" />
-				</div>
-				<div class="h-full w-[25%] opacity-40">
-					<img src={image2} alt="view" class=" h-full w-full rounded-md" />
-				</div>
-				<div class="h-full w-[25%] opacity-40">
-					<img src={image2} alt="view" class=" h-full w-full rounded-md" />
-				</div>
+				{#each post.images as img}
+					<div class="h-full w-[25%] opacity-40">
+						<img src={img} alt="view" class=" h-full w-full rounded-md" />
+					</div>
+				{/each}
 			</div>
 
 			<Separator />
@@ -91,6 +129,8 @@
 								Less
 							</Button>
 						{/if}
+					{:else}
+						{text}
 					{/if}
 				</p>
 			</div>
@@ -131,6 +171,8 @@
 								Less
 							</Button>
 						{/if}
+					{:else}
+						{text}
 					{/if}
 				</p>
 			</div>
@@ -162,7 +204,7 @@
 				</div>
 				<div class=" col-span-1 space-y-3">
 					<p class="font-semibold">Date created</p>
-					<p class="font-extralight text-gray-500">Nov 24, 2024, 3:01 PM</p>
+					<p class="font-extralight text-gray-500">{getDate(post.createdAt)}</p>
 				</div>
 			</div>
 		</div>
@@ -172,20 +214,25 @@
 	<div class="my-10 flex h-12 w-full items-center justify-center space-x-3">
 		<p>More from</p>
 
-		<img src={image1} alt="user profile" class="h-full rounded-full" />
-		<p>Codypharm</p>
+		<img src={getPostUserImage(post.author)} alt="user profile" class="h-full rounded-full" />
+		<p>{getPostUserName(post.author)}</p>
 	</div>
 
 	<!-- image list -->
 
 	<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
-		{#each Array(6) as _, index}
+		{#each otherPosts as post}
 			<div class="mb-6 break-inside-avoid">
-				<img src={imgs[(index + 2) % 2]} alt="user profile" class="mb-6 w-full rounded-sm" />
+				<img src={post.images[0]} alt="user profile" class="mb-6 w-full rounded-sm" />
 				<div class="mt-3 flex h-10 w-full items-center justify-end">
 					<Button variant="ghost"><Ellipsis size={20} /></Button>
-					<p class="text-light text-sm">2</p>
-					<Button variant="ghost"><Heart size={20} /></Button>
+					<p class="text-light text-sm">{post.likes}</p>
+					<Button variant="ghost" onclick={() => like(post)}
+						><Heart
+							size={20}
+							class={`${isInLikedPosts(post.id) ? 'fill-pink-500 text-pink-500' : ''}`}
+						/></Button
+					>
 				</div>
 			</div>
 		{/each}
