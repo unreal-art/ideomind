@@ -3,7 +3,7 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import { generateImage } from '@/api';
-	import PostList from '@/components/explore/postList.svelte';
+	import PostList from '@/components/explore/PostList.svelte';
 	import { store } from '$lib/store';
 
 	let text = $state('');
