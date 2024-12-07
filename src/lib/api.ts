@@ -42,6 +42,21 @@ export const userLikedPosts = (id: string | undefined): Post[] => {
 		.map((item) => item.post);
 };
 
+export const getPostUserName = (authorId: string): string => {
+	// if(!authorId) return ""
+	return store.getState().users.filter((item) => item.id == authorId)[0].username || '';
+};
+export const getPostUserImage = (authorId: string): string => {
+	// if(!authorId) return ""
+	return store.getState().users.filter((item) => item.id == authorId)[0].image || '';
+};
+
+export const filterPostByCat = (posts: Post[], category: string): Post[] => {
+	console.log(posts);
+	if (category == 'everything') return posts;
+	return posts.filter((post) => post.category == category.toUpperCase());
+};
+
 // Function to like a post
 export const likePost = (postId: string, userId: string) => {
 	store.likePost(postId, userId);

@@ -2,21 +2,21 @@
 	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import image1 from '$lib/assets/ima1.jpg';
-	import image2 from '$lib/assets/ima2.jpeg';
-	import { Ellipsis, Heart, Search, X, ListFilter } from 'lucide-svelte';
+	import { Search, X, ListFilter } from 'lucide-svelte';
 	import * as Select from '$lib/components/ui/select/index.js';
-	let imgs = [image1, image2];
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+	import CreationList from '@/components/creations/CreationList.svelte';
+	import { store } from '$lib/store';
+	import { userPosts } from '@/api';
 
 	const choices = [
 		{ value: 'everything', label: 'Everything' },
-		{ value: 'generations', label: 'Generations' },
-		{ value: 'edits', label: 'Edits' },
-		{ value: 'uploads', label: 'Uploads' },
-		{ value: 'upscales', label: 'Upscales' }
+		{ value: 'generation', label: 'Generations' },
+		{ value: 'edit', label: 'Edits' },
+		{ value: 'upload', label: 'Uploads' },
+		{ value: 'upscale', label: 'Upscales' }
 	];
-	let selectedChoice = $state('');
+	let selectedChoice = $state('everything');
 
 	const triggerContent = $derived(
 		choices.find((f) => f.value === selectedChoice)?.label ?? 'Filter'
@@ -25,6 +25,11 @@
 	let showInput: boolean = $state(false);
 	let inputRef: HTMLDivElement | null = $state(null);
 	let buttonRef: HTMLDivElement | null = $state(null);
+
+	let posts = $derived(userPosts($store.user?.id));
+	let pinnedPosts = $derived(posts.filter((item) => item.isPinned));
+	let privatePosts = $derived(posts.filter((item) => item.isPrivate));
+	let publicPosts = $derived(posts.filter((item) => !item.isPrivate));
 
 	// Toggle input visibility
 	const toggleInput = (): void => {
@@ -135,72 +140,16 @@
 				</div>
 			</div>
 			<Tabs.Content value="all" class="h-[95%] w-full  ">
-				<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
-					{#each Array(6) as _, index}
-						<div class="relative mb-6 break-inside-avoid">
-							<div class="absolute bottom-1 right-0 flex items-center text-white">
-								<Button variant="ghost" class><Ellipsis size={20} /></Button>
-
-								<Button variant="ghost" class="flex space-x-2 hover:bg-black/50 hover:text-white">
-									<span>2</span>
-									<Heart size={20} /></Button
-								>
-							</div>
-							<img src={imgs[(index + 2) % 2]} alt="user profile" class="mb-6 w-full rounded-sm" />
-						</div>
-					{/each}
-				</div>
+				<CreationList data={posts} choice={selectedChoice} />
 			</Tabs.Content>
 			<Tabs.Content value="pinned">
-				<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
-					{#each Array(6) as _, index}
-						<div class="relative mb-6 break-inside-avoid">
-							<div class="absolute bottom-1 right-0 flex items-center text-white">
-								<Button variant="ghost" class><Ellipsis size={20} /></Button>
-
-								<Button variant="ghost" class="flex space-x-2 hover:bg-black/50 hover:text-white">
-									<span>2</span>
-									<Heart size={20} /></Button
-								>
-							</div>
-							<img src={imgs[(index + 2) % 2]} alt="user profile" class="mb-6 w-full rounded-sm" />
-						</div>
-					{/each}
-				</div>
+				<CreationList data={pinnedPosts} choice={selectedChoice} />
 			</Tabs.Content>
 			<Tabs.Content value="public">
-				<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
-					{#each Array(6) as _, index}
-						<div class="relative mb-6 break-inside-avoid">
-							<div class="absolute bottom-1 right-0 flex items-center text-white">
-								<Button variant="ghost" class><Ellipsis size={20} /></Button>
-
-								<Button variant="ghost" class="flex space-x-2 hover:bg-black/50 hover:text-white">
-									<span>2</span>
-									<Heart size={20} /></Button
-								>
-							</div>
-							<img src={imgs[(index + 2) % 2]} alt="user profile" class="mb-6 w-full rounded-sm" />
-						</div>
-					{/each}
-				</div>
+				<CreationList data={publicPosts} choice={selectedChoice} />
 			</Tabs.Content>
 			<Tabs.Content value="private">
-				<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
-					{#each Array(6) as _, index}
-						<div class="relative mb-6 break-inside-avoid">
-							<div class="absolute bottom-1 right-0 flex items-center text-white">
-								<Button variant="ghost" class><Ellipsis size={20} /></Button>
-
-								<Button variant="ghost" class="flex space-x-2 hover:bg-black/50 hover:text-white">
-									<span>2</span>
-									<Heart size={20} /></Button
-								>
-							</div>
-							<img src={imgs[(index + 2) % 2]} alt="user profile" class="mb-6 w-full rounded-sm" />
-						</div>
-					{/each}
-				</div>
+				<CreationList data={privatePosts} choice={selectedChoice} />
 			</Tabs.Content>
 		</Tabs.Root>
 	</div>

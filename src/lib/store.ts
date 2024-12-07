@@ -3,13 +3,19 @@ import * as db from '$lib/data';
 import type { Post, User, Like } from '$lib/types';
 
 // Define the initial state
-const initialState: { user: User | null; posts: Post[]; likes: Like[]; isAuthenticated: boolean } =
-	{
-		user: null, // Stores the authenticated user
-		posts: [], // Array of posts
-		likes: [], // Array of likes
-		isAuthenticated: false // Authentication status
-	};
+const initialState: {
+	user: User | null;
+	posts: Post[];
+	likes: Like[];
+	isAuthenticated: boolean;
+	users: User[];
+} = {
+	user: null, // Stores the authenticated user
+	posts: [], // Array of posts
+	likes: [], // Array of likes
+	users: [],
+	isAuthenticated: false // Authentication status
+};
 
 const createStore = () => {
 	const { subscribe, set, update } = writable(initialState);
@@ -24,6 +30,7 @@ const createStore = () => {
 				user: users[0], // Assuming Alice is the authenticated user
 				posts,
 				likes,
+				users,
 				isAuthenticated: true
 			});
 		},
