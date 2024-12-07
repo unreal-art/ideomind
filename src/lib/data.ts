@@ -6,6 +6,7 @@ const users: User[] = [
 		name: 'Alice Johnson',
 		username: 'alicej',
 		image: '/assets/ima1.jpg',
+
 		bio: 'With a background in both pharmacy and technology, Codypharm is a skilled developer specializing in full-stack blockchain solutions. Having honed their expertise through roles in decentralized AI platforms and Web3 projects, they bridge the gap between cutting-edge technologies and practical, user-centric applications. Codypharm is passionate about creating intuitive, secure, and scalable systems, with a strong focus on smart contract development, decentralized finance, and cross-chain interoperability.',
 		followerCount: 120,
 		followingCount: 50,
@@ -21,6 +22,7 @@ const users: User[] = [
 		name: 'Bob Smith',
 		username: 'bobsmith',
 		image: '/assets/ima1.jpg',
+
 		bio: 'Codypharm is a full-stack developer with extensive experience in blockchain technology and a strong foundation in pharmacy. Their work spans various Web3 technologies, including smart contract development, decentralized applications (dApps), and cross-chain solutions. With a focus on creating seamless user experiences and scalable platforms, Codypharm has contributed to projects utilizing Next.js, Solidity, TypeScript, and decentralized protocols like Wormhole and zkSync. They thrive in dynamic, tech-driven environments where innovation meets practical application.',
 		followerCount: 200,
 		followingCount: 180,
@@ -43,6 +45,7 @@ const posts: Post[] = [
 		category: 'GENERATION',
 		likes: 120,
 		images: ['/assets/ima2.jpeg', '/assets/ima1.jpg'],
+
 		createdAt: new Date('2024-12-01T08:30:00Z')
 	},
 	{
@@ -54,6 +57,7 @@ const posts: Post[] = [
 		category: 'EDIT',
 		likes: 300,
 		images: ['/assets/ima1.jpg'],
+
 		createdAt: new Date('2024-12-03T12:15:00Z')
 	}
 ];
