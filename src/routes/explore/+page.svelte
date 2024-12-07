@@ -2,11 +2,12 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import { generateImage } from '@/api';
+	import { generateImage, postsByFollowed } from '@/api';
 	import PostList from '@/components/explore/PostList.svelte';
 	import { store } from '$lib/store';
 
 	let text = $state('');
+	let postFromFollowedUsers = $derived(postsByFollowed($store.user.id));
 
 	const onclick = () => {
 		const dto = {
@@ -51,7 +52,7 @@
 				<PostList data={$store.posts} />
 			</Tabs.Content>
 			<Tabs.Content value="following">
-				<PostList data={$store.posts} />
+				<PostList data={postFromFollowedUsers} />
 			</Tabs.Content>
 			<Tabs.Content value="top">
 				<PostList data={$store.posts} />

@@ -3,9 +3,20 @@
 	import { Ellipsis, Heart } from 'lucide-svelte';
 	import type { Post } from '@/types';
 	import { formatDistanceToNow } from 'date-fns';
-	import { getPostUserImage, getPostUserName } from '@/api';
+	import { getPostUserImage, getPostUserName, likePost, userLikedPosts } from '@/api';
+	import { store } from '$lib/store';
 
+	let likedPosts = $derived(userLikedPosts($store.user?.id));
 	let { data }: { data: Post[] } = $props();
+
+	const like = (item: Post) => {
+		if (!$store.user?.id) return;
+		likePost(item.id, $store.user?.id);
+	};
+
+	const isInLikedPosts = (id: string): boolean => {
+		return likedPosts.filter((item) => item.id == id).length > 0;
+	};
 </script>
 
 <div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
@@ -24,8 +35,17 @@
 				</div>
 				<div class="flex items-center">
 					<Button variant="ghost"><Ellipsis size={20} /></Button>
-					<p class="text-light text-sm">{item.likes}</p>
-					<Button variant="ghost"><Heart size={20} /></Button>
+					<Button
+						variant="ghost"
+						onclick={() => like(item)}
+						class="flex space-x-2 hover:bg-black/50 hover:text-white"
+					>
+						<span>{item.likes}</span>
+						<Heart
+							size={20}
+							class={`${isInLikedPosts(item.id) ? 'fill-pink-500 text-pink-500' : ''}`}
+						></Heart></Button
+					>
 				</div>
 			</div>
 		</div>
