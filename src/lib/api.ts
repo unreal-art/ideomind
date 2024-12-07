@@ -32,6 +32,10 @@ export const userPosts = (id: string | undefined): Post[] => {
 	if (!id) return [];
 	return store.getState().posts.filter((item) => item.author == id);
 };
+export const userOtherPosts = (id: string | undefined, postId: string, posts: Post[]): Post[] => {
+	if (!id) return [];
+	return posts.filter((item) => item.author == id && item.id != postId);
+};
 
 export const userLikedPosts = (id: string | undefined): Post[] => {
 	if (!id) return []; // Handle case where id is undefined
@@ -40,6 +44,10 @@ export const userLikedPosts = (id: string | undefined): Post[] => {
 		.getState()
 		.likes.filter((item) => item.user.id === id) // Filter by user ID
 		.map((item) => item.post);
+};
+
+export const getPost = (id: string, posts: Post[]): Post | null => {
+	return posts.find((post) => post.id == id) || null;
 };
 
 export const getPostUserName = (authorId: string): string => {
@@ -52,7 +60,6 @@ export const getPostUserImage = (authorId: string): string => {
 };
 
 export const filterPostByCat = (posts: Post[], category: string): Post[] => {
-	console.log(posts);
 	if (category == 'everything') return posts;
 	return posts.filter((post) => post.category == category.toUpperCase());
 };
