@@ -1,24 +1,24 @@
 <script lang="ts">
 	import pic from '$lib/assets/ima1.jpg';
 	import Button from '@/components/ui/button/button.svelte';
-	import { inAppWallet } from 'thirdweb/wallets';
-	import client from '$lib/client';
-	const wallet = inAppWallet();
-	import {} from 'thirdweb/chains';
-	import { defineChain } from 'thirdweb';
+	// import { inAppWallet } from 'thirdweb/wallets';
+	// import client from '$lib/client';
+	// const wallet = inAppWallet();
+	// import {} from 'thirdweb/chains';
+	// import { defineChain } from 'thirdweb';
 	import { goto } from '$app/navigation';
-
-	const myChain = defineChain(8194);
-	let account = $state();
+	import { initializeStore } from '@/api';
 
 	async function connect() {
-		account = await wallet.connect({
-			client,
-			chain: myChain,
-			strategy: 'google'
-		});
+		// account = await wallet.connect({
+		// 	client,
+		// 	chain: myChain,
+		// 	strategy: 'google'
+		// });
 		goto('/explore');
 	}
+
+	initializeStore();
 </script>
 
 <main class="flex h-screen w-screen flex-col items-center justify-center">

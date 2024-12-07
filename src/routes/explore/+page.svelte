@@ -2,12 +2,9 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import image1 from '$lib/assets/ima1.jpg';
-	import image2 from '$lib/assets/ima2.jpeg';
-	import { Ellipsis, Heart } from 'lucide-svelte';
 	import { generateImage } from '@/api';
-
-	let imgs = [image1, image2];
+	import PostList from '@/components/explore/PostList.svelte';
+	import { store } from '$lib/store';
 
 	let text = $state('');
 
@@ -51,73 +48,13 @@
 				</Tabs.List>
 			</div>
 			<Tabs.Content value="explore" class="h-[92%] w-full  ">
-				<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
-					{#each Array(6) as _, index}
-						<div class="mb-6 break-inside-avoid">
-							<img src={imgs[(index + 2) % 2]} alt="user profile" class="mb-6 w-full rounded-sm" />
-							<div class="mt-3 flex h-10 w-full items-center justify-between">
-								<div class="flex h-full space-x-2">
-									<img src={image1} alt="user profile" class="h-full rounded-full" />
-									<div class="flex flex-col">
-										<p class="text-sm">Codypharm</p>
-										<p class="text-light text-sm text-gray-400">11min ago</p>
-									</div>
-								</div>
-								<div class="flex items-center">
-									<Button variant="ghost"><Ellipsis size={20} /></Button>
-									<p class="text-light text-sm">2</p>
-									<Button variant="ghost"><Heart size={20} /></Button>
-								</div>
-							</div>
-						</div>
-					{/each}
-				</div>
+				<PostList data={$store.posts} />
 			</Tabs.Content>
 			<Tabs.Content value="following">
-				<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
-					{#each Array(6) as _, index}
-						<div class="mb-6 break-inside-avoid">
-							<img src={imgs[(index + 2) % 2]} alt="user profile" class="mb-6 w-full rounded-sm" />
-							<div class="mt-3 flex h-10 w-full items-center justify-between">
-								<div class="flex h-full space-x-2">
-									<img src={image1} alt="user profile" class="h-full rounded-full" />
-									<div class="flex flex-col">
-										<p class="text-sm">Codypharm</p>
-										<p class="text-light text-sm text-gray-400">11min ago</p>
-									</div>
-								</div>
-								<div class="flex items-center">
-									<Button variant="ghost"><Ellipsis size={20} /></Button>
-									<p class="text-light text-sm">2</p>
-									<Button variant="ghost"><Heart size={20} /></Button>
-								</div>
-							</div>
-						</div>
-					{/each}
-				</div>
+				<PostList data={$store.posts} />
 			</Tabs.Content>
 			<Tabs.Content value="top">
-				<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
-					{#each Array(6) as _, index}
-						<div class="mb-6 break-inside-avoid">
-							<img src={imgs[(index + 2) % 2]} alt="user profile" class="mb-6 w-full rounded-sm" />
-							<div class="mt-3 flex h-10 w-full items-center justify-between">
-								<div class="flex h-full space-x-2">
-									<img src={image1} alt="user profile" class="h-full rounded-full" />
-									<div class="flex flex-col">
-										<p class="text-sm">Codypharm</p>
-										<p class="text-light text-sm text-gray-400">11min ago</p>
-									</div>
-								</div>
-								<div class="flex items-center">
-									<Button variant="ghost"><Ellipsis size={20} /></Button>
-									<p class="text-light text-sm">2</p>
-									<Button variant="ghost"><Heart size={20} /></Button>
-								</div>
-							</div>
-						</div>
-					{/each}
-				</div>
+				<PostList data={$store.posts} />
 			</Tabs.Content>
 		</Tabs.Root>
 	</div>

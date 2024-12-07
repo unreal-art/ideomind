@@ -3,13 +3,13 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import * as Tabs from '$lib/components/ui/tabs';
 	import image1 from '$lib/assets/ima1.jpg';
-	import image2 from '$lib/assets/ima2.jpeg';
-	import { Ellipsis, Heart, Search, X, CalendarRange, MapPinHouse } from 'lucide-svelte';
+	import { Search, X, CalendarRange, MapPinHouse } from 'lucide-svelte';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
 	import { Label } from '$lib/components/ui/label/index.js';
 	import Textarea from '@/components/ui/textarea/textarea.svelte';
-
-	let imgs = [image1, image2];
+	import { store } from '$lib/store';
+	import { updateUserDetails, userLikedPosts, userPosts } from '@/api';
+	import UserPostList from '@/components/profile/UserPostList.svelte';
 
 	let showInput: boolean = $state(false);
 	let inputRef: HTMLDivElement | null = $state(null);
@@ -19,6 +19,17 @@
 	let targetPosition: number = $state(0);
 	let targetElement: HTMLElement | null = $state(null);
 	let scrollContainer: HTMLElement | null = $state(null);
+
+	let name = $state($store.user?.name);
+	let username = $state($store.user?.username);
+	let bio = $state($store.user?.bio);
+	let location = $state($store.user?.location);
+	let open = $state(false);
+	let posts = $derived(userPosts($store.user?.id));
+	let likedPosts = $derived(userLikedPosts($store.user?.id));
+	let pinnedPosts = $derived(posts.filter((item) => item.isPinned));
+	let privatePosts = $derived(posts.filter((item) => item.isPrivate));
+	let publicPosts = $derived(posts.filter((item) => !item.isPrivate));
 
 	// Toggle input visibility
 	const toggleInput = (): void => {
@@ -72,6 +83,29 @@
 			}
 		};
 	});
+
+	// $effect(() => {
+	// 	userPosts($store.user?.id);
+	// });
+
+	const getDate = (date: Date | undefined): string => {
+		if (!date) return '';
+		const month = date.toLocaleString('default', { month: 'long' }); // Get full month name (e.g., 'December')
+		const year = date.getFullYear();
+		return `${month} ${year}`;
+	};
+
+	const updateProfile = () => {
+		const data = {
+			name,
+			username,
+			bio,
+			location
+		};
+		//update detail
+		updateUserDetails(data);
+		open = false;
+	};
 </script>
 
 <section bind:this={scrollContainer} class="relative h-full w-full overflow-auto px-2">
@@ -80,50 +114,51 @@
 		"
 	>
 		<div class="gap-6 lg:flex">
-			<img src={image1} alt="user profile" class="h-32 w-32 rounded-full" />
+			<img src={$store.user?.image} alt="user profile" class="h-32 w-32 rounded-full" />
 			<div class="flex flex-col gap-4 px-2 pt-4">
 				<div class="">
-					<p class="text-md font-semibold">Williamikeji</p>
-					<p class="text-sm font-extralight text-gray-500">Chukwunonso Ikeji</p>
+					<p class="text-md font-semibold">{$store.user?.username}</p>
+					<p class="text-sm font-extralight text-gray-500">{$store.user?.name}</p>
 				</div>
 				<div class="flex gap-6">
 					<div class="">
-						<p class="text-lg font-semibold">0</p>
+						<p class="text-lg font-semibold">{$store.user?.followerCount}</p>
 						<p class="text-md font-extralight text-gray-500">follower</p>
 					</div>
 					<div class="">
-						<p class="text-lg font-semibold">0</p>
+						<p class="text-lg font-semibold">{$store.user?.followingCount}</p>
 						<p class="text-md font-extralight text-gray-500">following</p>
 					</div>
 					<div class="">
-						<p class="text-lg font-semibold">0</p>
+						<p class="text-lg font-semibold">{$store.user?.likesReceived}</p>
 						<p class="text-md font-extralight text-gray-500">like received</p>
 					</div>
 				</div>
 				<div class="">
 					<p class="text-md font-semibold">Bio</p>
-					<p class="text-md prose font-extralight text-gray-500">I am who I am</p>
+					<p class="text-md prose font-extralight text-gray-500">{$store.user?.bio}</p>
 				</div>
 				<div class="flex gap-4">
 					<div class="flex items-center gap-2 font-extralight text-gray-500">
 						<CalendarRange size={20} />
-						<p class="text-md prose whitespace-nowrap">Joined November 2024</p>
+						<p class="text-md prose whitespace-nowrap">Joined {getDate($store.user?.createdAt)}</p>
 					</div>
 					<div class="flex items-center gap-2 font-extralight text-gray-500">
 						<MapPinHouse size={20} />
-						<p class="text-md prose whitespace-nowrap">Lagos, Nigeria</p>
+						<p class="text-md prose whitespace-nowrap">{$store.user?.location}</p>
 					</div>
 				</div>
 			</div>
 		</div>
 
 		<div class="flex h-full items-start">
-			<Dialog.Root>
+			<Dialog.Root bind:open>
 				<Dialog.Trigger
 					class={buttonVariants({ variant: 'outline' }) +
 						` absolute right-2 mt-3 h-10 rounded-md bg-stone-50 text-sm font-extralight lg:relative lg:top-10`}
-					>Edit profile</Dialog.Trigger
 				>
+					Edit Profile
+				</Dialog.Trigger>
 				<Dialog.Content class="sm:max-w-[500px]">
 					<Dialog.Header>
 						<Dialog.Title>Edit profile</Dialog.Title>
@@ -134,31 +169,31 @@
 					<form class="grid gap-4 py-4">
 						<div class="items-center gap-4">
 							<Label for="username" class="text-right">Username</Label>
-							<Input id="username" value="@peduarte" class="col-span-3"></Input>
+							<Input id="username" bind:value={username} class="col-span-3"></Input>
 						</div>
 						<div class=" items-center gap-4">
 							<Label for="name" class="text-right"
 								>Name <span class="font-extralight">(Optional)</span></Label
 							>
-							<Input id="name" value="Pedro Duarte" class="col-span-3"></Input>
+							<Input id="name" bind:value={name} class="col-span-3"></Input>
 							<p class="w-full text-right text-xs font-extralight">(0/30)</p>
 						</div>
 						<div class=" items-center gap-4">
 							<Label for="name" class="text-right"
 								>Location <span class="font-extralight">(Optional)</span></Label
 							>
-							<Input id="name" value="Pedro Duarte" class="col-span-3"></Input>
+							<Input id="name" bind:value={location} class="col-span-3"></Input>
 							<p class="w-full text-right text-xs font-extralight">(0/30)</p>
 						</div>
 						<div class=" items-center gap-4">
 							<Label for="name" class="text-right"
 								>Bio <span class="font-extralight">(Optional)</span></Label
 							>
-							<Textarea />
+							<Textarea bind:value={bio} />
 							<p class="w-full text-right text-xs font-extralight">(0/150)</p>
 						</div>
 						<Dialog.Footer>
-							<Button type="submit">Save changes</Button>
+							<Button onclick={updateProfile} type="button">Save changes</Button>
 						</Dialog.Footer>
 					</form>
 				</Dialog.Content>
@@ -208,25 +243,18 @@
 			</div>
 
 			<Tabs.Content value="pinned">
-				<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
-					{#each Array(6) as _, index}<div class="relative mb-6 break-inside-avoid">
-							<div class="absolute bottom-1 right-0 flex items-center text-white">
-								<Button variant="ghost"><Ellipsis size={20}></Ellipsis></Button>
-
-								<Button variant="ghost" class="flex space-x-2 hover:bg-black/50 hover:text-white">
-									<span>2</span>
-									<Heart size={20}></Heart></Button
-								>
-							</div>
-							<img src={imgs[(index + 2) % 2]} alt="user profile" class="mb-6 w-full rounded-sm" />
-						</div>
-					{/each}
-				</div>
+				<UserPostList data={pinnedPosts} />
 			</Tabs.Content>
-			<Tabs.Content value="public"></Tabs.Content>
-			<Tabs.Content value="private"></Tabs.Content>
+			<Tabs.Content value="public">
+				<UserPostList data={publicPosts} />
+			</Tabs.Content>
+			<Tabs.Content value="private">
+				<UserPostList data={privatePosts} />
+			</Tabs.Content>
 
-			<Tabs.Content value="liked" class="h-[95%] w-full  "></Tabs.Content>
+			<Tabs.Content value="liked" class="h-[95%] w-full  ">
+				<UserPostList data={likedPosts} isLikes={true} />
+			</Tabs.Content>
 		</Tabs.Root>
 	</div>
 </section>
