@@ -57,6 +57,12 @@ export const filterPostByCat = (posts: Post[], category: string): Post[] => {
 	return posts.filter((post) => post.category == category.toUpperCase());
 };
 
+export const postsByFollowed = (userId: string): Post[] => {
+	const followedUsers = store.getState().users.filter((user) => user.id === userId);
+	// Combine all posts from followed users
+	return followedUsers.flatMap((user) => userPosts(user.id));
+};
+
 // Function to like a post
 export const likePost = (postId: string, userId: string) => {
 	store.likePost(postId, userId);
