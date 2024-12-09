@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { JobSpec, Post, User, Like } from './types';
+import type { JobSpec, Post, User } from './types';
 import { store } from '$lib/store';
 
 export async function generateImage(dto: JobSpec) {
