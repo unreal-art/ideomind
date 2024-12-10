@@ -1,8 +1,6 @@
-export interface JobSpec {
-	module?: string;
-	version?: string;
-	inputs?: Record<string, string>;
-}
+import type { JobSpec as IJobSpec } from '../routes/darts/+server';
+
+export type JobSpec = IJobSpec;
 
 export type Category = 'EDIT' | 'UPSCALE' | 'GENERATION' | 'UPLOAD';
 

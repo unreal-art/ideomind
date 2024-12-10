@@ -5,19 +5,21 @@
 	import { generateImage, postsByFollowed } from '@/api';
 	import PostList from '@/components/explore/PostList.svelte';
 	import { store } from '$lib/store';
+	import type { JobSpec } from '@/types';
 
 	let text = $state('');
 	let postFromFollowedUsers = $derived(postsByFollowed($store.user.id));
 
 	const onclick = () => {
-		const dto = {
+		const dto: JobSpec = {
 			module: 'isdxl',
 			version: 'v1.2.0',
 			inputs: {
-				Message: text
+				Prompt: text,
+				cpu: 30,
+				Device: 'xpu'
 			}
 		};
-
 		generateImage(dto);
 	};
 </script>
