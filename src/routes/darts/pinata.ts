@@ -3,10 +3,11 @@ import { v4 as uuidv4 } from 'uuid';
 import mime from 'mime-types';
 import path from 'path';
 import fs from 'fs/promises';
+import { PINATA_GATEWAY, PINATA_JWT } from '$env/static/private';
 
 const pinata = new PinataSDK({
-	pinataJwt: process.env.PINATA_JWT,
-	pinataGateway: process.env.PINATA_GATEWAY || 'tan-neighbouring-scallop-560.mypinata.cloud'
+	pinataJwt: PINATA_JWT,
+	pinataGateway: PINATA_GATEWAY || 'tan-neighbouring-scallop-560.mypinata.cloud'
 });
 
 export async function uploadImage(generatedImagePath: string) {

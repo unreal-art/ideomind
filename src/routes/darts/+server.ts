@@ -6,7 +6,7 @@ import { extractLocationURL } from './darts';
 import { DEBUG } from '$env/static/private';
 import { dev } from '$app/environment';
 
-import { PRIVATE_KEY } from '$env/static/private';
+import { PRIVATE_KEY, DARTS_CLI } from '$env/static/private';
 
 const execAsync = promisify(exec);
 
@@ -68,7 +68,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const platform = process.platform;
 	const dartsBin = platform === 'linux' ? 'darts-linux' : 'darts-mac';
 
-	const dartsCli = process.env.DARTS_CLI || 'darts';
+	const dartsCli = DARTS_CLI || 'darts';
 
 	const envVars = {
 		DARTS_PRIVATE_KEY: pKey,
