@@ -51,10 +51,3 @@ Content-Type: application/json
     "Device": "xpu"
   }
 }
-
-HTTP/1.1 200  - OK
-access-control-allow-origin: *
-content-length: 677
-content-type: application/json
-date: Sat, 30 Nov 2024 05:34:12 GMT
-connection: close

@@ -33,10 +33,10 @@ export interface JobSpec {
 	inputs?: Record<string, string | number>;
 }
 
-if (!dev) {
-	// await execAsync(`curl -sSL https://bit.ly/install-darts | bash -s -- darts`);
-	await installDarts();
-}
+// if (!dev) {
+// 	// await execAsync(`curl -sSL https://bit.ly/install-darts | bash -s -- darts`);
+// 	await installDarts();
+// }
 
 // function formatText(input: string): string {
 // 	// Replace all spaces with '-'
