@@ -2,15 +2,17 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import { generateImage, postsByFollowed } from '@/api';
+	import { createNewPost, generateImage, postsByFollowed } from '@/api';
 	import PostList from '@/components/explore/PostList.svelte';
 	import { store } from '$lib/store';
-	import type { JobSpec } from '@/types';
+	import type { DartsJobData, JobSpec, Output, Post } from '@/types';
+	import { v4 as uuidv4 } from 'uuid';
+	import type { UploadResponse } from 'pinata';
 
 	let text = $state('');
-	let postFromFollowedUsers = $derived(postsByFollowed($store.user.id));
+	let postFromFollowedUsers = $derived(postsByFollowed($store.user?.id || '0'));
 
-	const onclick = () => {
+	const onclick = async () => {
 		const dto: JobSpec = {
 			module: 'isdxl',
 			version: 'v1.2.0',
@@ -20,7 +22,24 @@
 				Device: 'xpu'
 			}
 		};
-		generateImage(dto);
+		const data: Output | undefined = await generateImage(dto);
+		//store the post
+		const post: Post = {
+			id: uuidv4(),
+			author: $store.user?.id as string,
+			isPrivate: false,
+			prompt: text,
+			isPinned: false,
+			category: 'GENERATION',
+			likes: 0,
+			images: [],
+			ipfsImages: data?.uploadResponse as UploadResponse[],
+			cpu: dto.inputs?.cpu as number,
+			device: dto.inputs?.Device as string,
+			createdAt: new Date()
+		};
+
+		createNewPost(post);
 	};
 </script>
 

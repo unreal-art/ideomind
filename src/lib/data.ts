@@ -37,28 +37,56 @@ const users: User[] = [
 
 const posts: Post[] = [
 	{
-		id: 'p1',
+		id: 'd3aed157-239d-42a0-ae41-935ae9cb1f38',
 		author: 'u1',
 		isPrivate: false,
-		prompt: 'A serene forest with a magical aura',
-		isPinned: true,
+		prompt:
+			'closeup portrait photo of beautiful goth woman, makeup, 8k uhd, high quality, dramatic, cinematic',
+		isPinned: false,
 		category: 'GENERATION',
-		likes: 120,
-		images: ['/assets/ima2.jpeg', '/assets/ima1.jpg'],
-
-		createdAt: new Date('2024-12-01T08:30:00Z')
+		likes: 1,
+		images: [],
+		ipfsImages: [
+			{
+				id: '0193b239-6416-7abc-851d-88cec70d8ab1',
+				name: 'b73519a5-0772-4204-9cc0-193c33d74aeb.png',
+				cid: 'bafybeihtr4p4dtezmffggxknh7i2vqmeawq6chp7wmhab3hlxh5rmilubi',
+				created_at: '2024-12-10T20:18:51.231Z',
+				size: 1386994,
+				number_of_files: 1,
+				mime_type: 'image/png',
+				user_id: '9bdabd8f-cfa3-4c5d-9b92-ac18128b6c15'
+			}
+		],
+		device: 'xpu',
+		cpu: 30,
+		createdAt: new Date('2024-12-10T20:18:51.739Z')
 	},
 	{
-		id: 'p2',
+		id: 'c22a74a7-14a2-481d-805a-22485c1d7c36',
 		author: 'u1',
-		isPrivate: true,
-		prompt: 'A futuristic cityscape at night',
+		isPrivate: false,
+		prompt:
+			'close up photo of a rabbit, forest in spring, haze, halation, bloom, dramatic atmosphere, centred, rule of thirds, 200mm 1.4f macro shot',
 		isPinned: false,
-		category: 'EDIT',
-		likes: 300,
-		images: ['/assets/ima1.jpg'],
-
-		createdAt: new Date('2024-12-03T12:15:00Z')
+		category: 'GENERATION',
+		likes: 1,
+		images: [],
+		ipfsImages: [
+			{
+				id: '0193b265-5b15-7994-9b91-bead4e8825fc',
+				name: '6aaa991e-2ca0-47ff-a64c-1512a23dac45.png',
+				cid: 'bafybeifdgzkvqqckfvmy2bfdzum6l7gbzfatfhlqumvk5uvjyi5bhq5myi',
+				created_at: '2024-12-10T21:06:48.869Z',
+				size: 1336763,
+				number_of_files: 1,
+				mime_type: 'image/png',
+				user_id: '9bdabd8f-cfa3-4c5d-9b92-ac18128b6c15'
+			}
+		],
+		cpu: 30,
+		device: 'xpu',
+		createdAt: new Date('2024-12-10T21:06:49.696Z')
 	}
 ];
 
@@ -66,12 +94,12 @@ const likes: Like[] = [
 	{
 		id: 'l1',
 		post: posts[0],
-		user: users[1] // Bob liked Alice's post
+		user: users[0] // Bob liked Alice's post
 	},
 	{
-		id: 'l2',
+		id: 'l1',
 		post: posts[1],
-		user: users[0] // Alice liked Bob's post
+		user: users[0] // Bob liked Alice's post
 	}
 ];
 

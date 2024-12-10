@@ -4,6 +4,17 @@ export type JobSpec = IJobSpec;
 
 export type Category = 'EDIT' | 'UPSCALE' | 'GENERATION' | 'UPLOAD';
 
+export interface UploadResponse {
+	id: string;
+	name: string;
+	cid: string;
+	created_at: string;
+	size: number;
+	number_of_files: number;
+	mime_type: string;
+	user_id: string;
+}
+
 export interface Post {
 	id: string;
 	author: string;
@@ -13,6 +24,9 @@ export interface Post {
 	category: Category;
 	likes: number;
 	images: string[];
+	ipfsImages: UploadResponse[];
+	cpu: number;
+	device: string;
 	createdAt: Date;
 }
 
@@ -37,3 +51,19 @@ export interface User {
 	createdAt: Date;
 	updatedAt: Date;
 }
+
+export type DartsJobData = {
+	data: {
+		command: string;
+		outputFolder: string;
+		stdout: string;
+		uploadResponse: UploadResponse[];
+	};
+};
+
+export type Output = {
+	command: string;
+	outputFolder: string;
+	stdout: string;
+	uploadResponse: UploadResponse[];
+};

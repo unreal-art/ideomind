@@ -1,6 +1,8 @@
 import { writable } from 'svelte/store';
+import { browser } from '$app/environment'; // Import SvelteKit's environment helper
 import * as db from '$lib/data';
 import type { Post, User, Like } from '$lib/types';
+import CircularJSON from 'circular-json';
 
 // Define the initial state
 const initialState: {
@@ -10,31 +12,59 @@ const initialState: {
 	isAuthenticated: boolean;
 	users: User[];
 } = {
-	user: null, // Stores the authenticated user
-	posts: [], // Array of posts
-	likes: [], // Array of likes
+	user: null,
+	posts: [],
+	likes: [],
 	users: [],
-	isAuthenticated: false // Authentication status
+	isAuthenticated: false
+};
+
+// Helper to persist and load state from localStorage
+const persistKey = 'app-store';
+
+const loadState = (): typeof initialState => {
+	if (!browser) return initialState; // Return default state during SSR
+	const storedState = localStorage.getItem(persistKey);
+	return storedState ? JSON.parse(storedState) : initialState;
+};
+
+const saveState = (state: typeof initialState) => {
+	if (browser) {
+		const safeState = CircularJSON.stringify(state);
+		localStorage.setItem(persistKey, safeState);
+	}
 };
 
 const createStore = () => {
 	const { subscribe, set, update } = writable(initialState);
 
+	// Load state only on the client
+	if (browser) {
+		const savedState = loadState();
+		set(savedState);
+	}
+
+	// Persist store updates to localStorage
+	subscribe((state) => {
+		if (browser) {
+			saveState(state);
+		}
+	});
+
 	return {
 		subscribe,
-		// Fetch and initialize data
 		initialize: () => {
+			if (!browser) return; // Avoid initializing on the server
 			const { users, posts, likes } = db;
 
 			set({
-				user: users[0], // Assuming Alice is the authenticated user
+				user: users[0],
 				posts,
 				likes,
 				users,
 				isAuthenticated: true
 			});
 		},
-		// Function to authenticate a user
 		authenticateUser: (user: User) => {
 			update((state) => ({
 				...state,
@@ -42,47 +72,36 @@ const createStore = () => {
 				isAuthenticated: true
 			}));
 		},
-
-		// Function to update user details
 		updateUser: (user: Partial<User>) => {
 			update((state) => ({
 				...state,
 				user: { ...state.user, ...user }
 			}));
 		},
-
-		// Function to create a post
 		createPost: (post: Post) => {
 			update((state) => ({
 				...state,
 				posts: [...state.posts, post]
 			}));
 		},
-
-		// Function to like a post
 		likePost: (postId: string, userId: string) => {
 			update((state) => {
 				const post = state.posts.find((p) => p.id === postId);
 				const user = state.user;
 
-				if (!post || !user || user.id !== userId) return state; // Return unchanged state if post or user not found
+				if (!post || !user || user.id !== userId) return state;
 
-				// Check if the user has already liked the post
 				const likeIndex = state.likes.findIndex(
 					(like) => like.post.id === postId && like.user.id === userId
 				);
 
 				if (likeIndex !== -1) {
-					// User already liked the post, so unlike it
 					return {
 						...state,
-						likes: state.likes.filter((_, index) => index !== likeIndex), // Remove the like
-						posts: state.posts.map(
-							(p) => (p.id === postId ? { ...p, likes: p.likes - 1 } : p) // Decrement the likes count for the post
-						)
+						likes: state.likes.filter((_, index) => index !== likeIndex),
+						posts: state.posts.map((p) => (p.id === postId ? { ...p, likes: p.likes - 1 } : p))
 					};
 				} else {
-					// User has not liked the post, so like it
 					const newLike: Like = {
 						id: `${userId}-${postId}`,
 						post,
@@ -91,10 +110,8 @@ const createStore = () => {
 
 					return {
 						...state,
-						likes: [...state.likes, newLike], // Add the new like to the likes array
-						posts: state.posts.map(
-							(p) => (p.id === postId ? { ...p, likes: p.likes + 1 } : p) // Increment the likes count for the post
-						)
+						likes: [...state.likes, newLike],
+						posts: state.posts.map((p) => (p.id === postId ? { ...p, likes: p.likes + 1 } : p))
 					};
 				}
 			});
@@ -106,8 +123,6 @@ const createStore = () => {
 			})();
 			return state;
 		},
-
-		// Reset store to the initial state
 		reset: () => set(initialState)
 	};
 };

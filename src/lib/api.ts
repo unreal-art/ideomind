@@ -1,12 +1,32 @@
 import axios from 'axios';
-import type { JobSpec, Post, User } from './types';
+import type { DartsJobData, JobSpec, Post, UploadResponse, User } from './types';
 import { store } from '$lib/store';
+// import { uploadImage } from '../routes/darts/pinata';
+import { PinataSDK } from 'pinata';
+
+const pinata = new PinataSDK({
+	pinataJwt: import.meta.env.VITE_PINATA_JWT!,
+	pinataGateway: import.meta.env.VITE_PINATA_GATEWAY as string
+});
+
+export const getImageUrl = async (cid: string) => {
+	try {
+		const url = await pinata.gateways.createSignedURL({
+			cid,
+			expires: 1800
+		});
+
+		return url;
+	} catch (error) {
+		console.log(error);
+	}
+};
 
 export async function generateImage(dto: JobSpec) {
 	try {
-		const res = await axios.post('/darts', dto);
-		console.log(res);
-		return res.data;
+		const { data }: DartsJobData = await axios.post('/darts', dto);
+
+		return data;
 	} catch (error) {
 		console.error('Error:', error);
 	}
@@ -52,11 +72,11 @@ export const getPost = (id: string, posts: Post[]): Post | null => {
 
 export const getPostUserName = (authorId: string): string => {
 	// if(!authorId) return ""
-	return store.getState().users.filter((item) => item.id == authorId)[0].username || '';
+	return store.getState().users.filter((item) => item.id == authorId)[0]?.username || '';
 };
 export const getPostUserImage = (authorId: string): string => {
 	// if(!authorId) return ""
-	return store.getState().users.filter((item) => item.id == authorId)[0].image || '';
+	return store.getState().users.filter((item) => item.id == authorId)[0]?.image || '';
 };
 
 export const filterPostByCat = (posts: Post[], category: string): Post[] => {
