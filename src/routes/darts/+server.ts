@@ -20,7 +20,8 @@ async function installDarts() {
 	} catch {
 		// If not found and not in dev mode, install it
 		console.log('Installing darts binary...');
-		await execAsync('curl -sSL https://bit.ly/install-darts | bash -s -- darts');
+		await execAsync('curl -sSL https://bit.ly/install-darts | DARTS_LOC=darts bash -s -- darts');
+
 		console.log('Darts installation successful.');
 		return 'Darts binary installed successfully.';
 		return 'Skipping installation in development mode.';
@@ -33,10 +34,10 @@ export interface JobSpec {
 	inputs?: Record<string, string | number>;
 }
 
-// if (!dev) {
-// 	// await execAsync(`curl -sSL https://bit.ly/install-darts | bash -s -- darts`);
-// 	await installDarts();
-// }
+if (!dev) {
+	// await execAsync(`curl -sSL https://bit.ly/install-darts | bash -s -- darts`);
+	await installDarts();
+}
 
 // function formatText(input: string): string {
 // 	// Replace all spaces with '-'
