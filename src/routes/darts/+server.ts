@@ -6,6 +6,8 @@ import { extractLocationURL } from './darts';
 import { DEBUG } from '$env/static/private';
 import { dev } from '$app/environment';
 
+import { PRIVATE_KEY } from '$env/static/private';
+
 const execAsync = promisify(exec);
 
 async function installDarts() {
@@ -60,7 +62,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	console.log('inputFlags', inputFlags);
 
 	// Set environment variables
-	const pKey = import.meta.env.VITE_PRIVATE_KEY;
+	const pKey = PRIVATE_KEY;
 	const debug = false;
 
 	const platform = process.platform;

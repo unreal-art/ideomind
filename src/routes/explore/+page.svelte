@@ -12,7 +12,7 @@
 	const onclick = () => {
 		const dto = {
 			module: 'isdxl',
-			version: import.meta.env.VITE_VERSION,
+			version: 'v1.2.0',
 			inputs: {
 				Message: text
 			}
