@@ -31,6 +31,13 @@ Content-Type: application/json
     "cpu": "30"
   }
 }
+
+HTTP/1.1 200  - OK
+access-control-allow-origin: *
+content-length: 704
+content-type: application/json
+date: Tue, 10 Dec 2024 05:17:09 GMT
+connection: close
 ###
 
 POST http://localhost:5173/darts
