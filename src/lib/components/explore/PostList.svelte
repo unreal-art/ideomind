@@ -5,6 +5,7 @@
 	import { formatDistanceToNow } from 'date-fns';
 	import { getPostUserImage, getPostUserName, likePost, userLikedPosts } from '@/api';
 	import { store } from '$lib/store';
+	import Image from './Image.svelte';
 
 	let likedPosts = $derived(userLikedPosts($store.user?.id));
 	let { data }: { data: Post[] } = $props();
@@ -22,9 +23,7 @@
 <div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
 	{#each data as item}
 		<div class="mb-6 break-inside-avoid">
-			<a href={`/details/${item.id}`}
-				><img src={item.images[0]} alt="user profile" class="mb-6 w-full rounded-sm" /></a
-			>
+			<Image {item} />
 			<div class="mt-3 flex h-10 w-full items-center justify-between">
 				<div class="flex h-full space-x-2">
 					<img src={getPostUserImage(item.author)} alt="user profile" class="h-full rounded-full" />

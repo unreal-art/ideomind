@@ -7,6 +7,7 @@ import { DEBUG } from '$env/static/private';
 import { dev } from '$app/environment';
 
 import { DARTS_PRIVATE_KEY, DARTS_CLI } from '$env/static/private';
+import { uploadFilesInOutputs } from './pinata';
 
 const execAsync = promisify(exec);
 
@@ -36,6 +37,13 @@ if (!dev) {
 	// await execAsync(`curl -sSL https://bit.ly/install-darts | bash -s -- darts`);
 	await installDarts();
 }
+
+// function formatText(input: string): string {
+// 	// Replace all spaces with '-'
+// 	const formattedText = input.replace(/\s+/g, '-');
+// 	// Append '.png' at the end
+// 	return `${formattedText}.png`;
+// }
 
 export const POST: RequestHandler = async ({ request }) => {
 	const jobDto: JobSpec = await request.json();
@@ -104,10 +112,29 @@ export const POST: RequestHandler = async ({ request }) => {
 			stderr = _stderr.toString();
 		});
 
-		childProcess.on('close', (code) => {
+		childProcess.on('close', async (code) => {
 			console.log(`child process exited with code ${code}`);
 			if (code === 0 && outputFolder) {
-				resolve(json({ outputFolder, stdout, command }));
+				//upload image + `/outputs/${formatText(jobDto.inputs?.Prompt as string)}`
+				try {
+					const uploadResponse = await uploadFilesInOutputs(outputFolder);
+					console.log('Image upload successful:', uploadResponse);
+					resolve(json({ outputFolder, stdout, command, uploadResponse }));
+				} catch (uploadError) {
+					console.error('Error uploading image:', uploadError);
+					resolve(
+						json(
+							{
+								error: 'Image upload failed.',
+								details: uploadError instanceof Error ? uploadError.message : 'Unknown error',
+								outputFolder,
+								stdout,
+								command
+							},
+							{ status: 500 }
+						)
+					);
+				}
 			} else {
 				resolve(
 					json(

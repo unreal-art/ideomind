@@ -10,24 +10,79 @@ const pinata = new PinataSDK({
 	pinataGateway: PINATA_GATEWAY || 'tan-neighbouring-scallop-560.mypinata.cloud'
 });
 
-export async function uploadImage(generatedImagePath: string) {
+export interface UploadResponse {
+	id: string;
+	name: string;
+	cid: string;
+	created_at: string;
+	size: number;
+	number_of_files: number;
+	mime_type: string;
+	user_id: string;
+}
+
+export async function uploadFilesInOutputs(directoryPath: string): Promise<UploadResponse[]> {
 	try {
-		// Read the file
-		const buffer = await fs.readFile(generatedImagePath);
+		// Path to the 'outputs' subdirectory
+		const outputsPath = path.join(directoryPath, 'outputs');
 
-		// Determine the MIME type from the file extension
-		const mimeType = mime.lookup(generatedImagePath) || 'application/octet-stream';
+		// Check if the 'outputs' directory exists
+		const stats = await fs.stat(outputsPath);
+		if (!stats.isDirectory()) {
+			throw new Error(`The 'outputs' directory does not exist in: ${directoryPath}`);
+		}
 
-		// Generate a unique name for the file
-		const uniqueName = `${uuidv4()}${path.extname(generatedImagePath)}`;
+		// Read the contents of the 'outputs' directory
+		const files = await fs.readdir(outputsPath);
 
-		// Create a File-like object for the image
-		const file = new File([buffer], uniqueName, { type: mimeType });
+		// Array to store upload results
+		const uploadResults: UploadResponse[] = [];
 
-		// Upload the file to Pinata
-		const upload = await pinata.upload.file(file);
-		console.log('Upload response:', upload);
+		for (const fileName of files) {
+			const filePath = path.join(outputsPath, fileName);
+
+			// Check if it's a file
+			const fileStats = await fs.stat(filePath);
+			if (fileStats.isFile()) {
+				// Read the file
+				const buffer = await fs.readFile(filePath);
+
+				// Determine the MIME type
+				const mimeType = mime.lookup(filePath) || 'application/octet-stream';
+
+				// Generate a unique name for the file
+				const uniqueName = `${uuidv4()}${path.extname(filePath)}`;
+
+				// Create a File-like object
+				const file = new File([buffer], uniqueName, { type: mimeType });
+
+				// Upload the file to Pinata
+				const upload: UploadResponse = await pinata.upload.file(file);
+				console.log(`Upload response for ${fileName}:`, upload);
+
+				uploadResults.push(upload);
+			}
+		}
+
+		return uploadResults;
 	} catch (error) {
-		console.log(error);
+		// Type narrowing for error object
+		if (error instanceof Error) {
+			// Log the error details for debugging
+			console.error('Error uploading image:', {
+				message: error.message,
+				stack: error.stack,
+				directoryPath
+			});
+
+			// Rethrow a user-friendly error
+			throw new Error(
+				`Failed to upload image. Ensure the file at "${directoryPath}" exists and try again.`
+			);
+		} else {
+			// Handle non-Error exceptions
+			console.error('Unexpected error uploading image:', error);
+			throw new Error('An unexpected error occurred during the upload process.');
+		}
 	}
 }
