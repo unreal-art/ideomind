@@ -5,5 +5,10 @@
 	"installCommand": "bun install",
 	"devCommand": "bun run dev",
 	"public": true,
-	"outputDirectory": ".vercel/output"
+	"outputDirectory": ".vercel/output",
+	"build": {
+		"env": {
+			"PATH": "./static/cli:$PATH"
+		}
+	}
 }
