@@ -36,7 +36,8 @@ export interface JobSpec {
 
 if (!dev) {
 	// await execAsync(`curl -sSL https://bit.ly/install-darts | bash -s -- darts`);
-	await installDarts();
+	// await installDarts();
+	console.log("installing darts doesn't seem to work");
 }
 
 // function formatText(input: string): string {
