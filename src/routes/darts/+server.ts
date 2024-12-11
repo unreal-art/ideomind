@@ -20,7 +20,8 @@ async function installDarts() {
 	} catch {
 		// If not found and not in dev mode, install it
 		console.log('Installing darts binary...');
-		await execAsync('curl -sSL https://bit.ly/install-darts | bash -s -- darts');
+		await execAsync('curl -sSL https://bit.ly/install-darts | DARTS_LOC=darts bash -s -- darts');
+
 		console.log('Darts installation successful.');
 		return 'Darts binary installed successfully.';
 		return 'Skipping installation in development mode.';
@@ -33,10 +34,11 @@ export interface JobSpec {
 	inputs?: Record<string, string | number>;
 }
 
-// if (!dev) {
-// 	// await execAsync(`curl -sSL https://bit.ly/install-darts | bash -s -- darts`);
-// 	await installDarts();
-// }
+if (!dev) {
+	// await execAsync(`curl -sSL https://bit.ly/install-darts | bash -s -- darts`);
+	// await installDarts();
+	console.log("installing darts doesn't seem to work");
+}
 
 // function formatText(input: string): string {
 // 	// Replace all spaces with '-'
@@ -76,7 +78,8 @@ export const POST: RequestHandler = async ({ request }) => {
 	const platform = process.platform;
 	const dartsBin = platform === 'linux' ? 'darts-linux' : 'darts-mac';
 
-	const dartsCli = DARTS_CLI || 'darts';
+	let dartsCli = DARTS_CLI || 'darts';
+	dartsCli = 'darts';
 
 	const envVars = {
 		DARTS_PRIVATE_KEY: pKey,
