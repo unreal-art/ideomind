@@ -33,3 +33,16 @@ Content-Type: application/json
     "Device": "xpu"
   }
 }
+###
+
+POST http://darts.decenterai.com:8080/darts
+Content-Type: application/json
+
+{
+  "module": "github.com/darts2024/dart-isdxl",
+  "version": "v0.3.0",
+  "inputs": {
+    "Prompt": "Beautiful girl",
+    "Device": "xpu"
+  }
+}
