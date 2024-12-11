@@ -1,8 +1,10 @@
 import axios from 'axios';
-import type { DartsJobData, JobSpec, Post, UploadResponse, User } from './types';
+import type { DartsJobData, JobSpec, Post, User } from './types';
 import { store } from '$lib/store';
 // import { uploadImage } from '../routes/darts/pinata';
 import { PinataSDK } from 'pinata';
+
+import { API_URL } from '$env/static/private';
 
 const pinata = new PinataSDK({
 	pinataJwt: import.meta.env.VITE_PINATA_JWT!,
@@ -24,7 +26,7 @@ export const getImageUrl = async (cid: string) => {
 
 export async function generateImage(dto: JobSpec) {
 	try {
-		const { data }: DartsJobData = await axios.post('/darts', dto);
+		const { data }: DartsJobData = await axios.post(API_URL + '/darts', dto);
 
 		return data;
 	} catch (error) {
