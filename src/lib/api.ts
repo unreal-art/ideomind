@@ -4,7 +4,7 @@ import { store } from '$lib/store';
 // import { uploadImage } from '../routes/darts/pinata';
 import { PinataSDK } from 'pinata';
 
-import { API_URL } from '$env/static/private';
+import { PUBLIC_API_URL } from '$env/static/public';
 
 const pinata = new PinataSDK({
 	pinataJwt: import.meta.env.VITE_PINATA_JWT!,
