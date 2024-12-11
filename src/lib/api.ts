@@ -26,7 +26,7 @@ export const getImageUrl = async (cid: string) => {
 
 export async function generateImage(dto: JobSpec) {
 	try {
-		const { data }: DartsJobData = await axios.post(API_URL + '/darts', dto);
+		const { data }: DartsJobData = await axios.post(PUBLIC_API_URL || '' + '/darts', dto);
 
 		return data;
 	} catch (error) {
