@@ -11,12 +11,14 @@ const initialState: {
 	likes: Like[];
 	isAuthenticated: boolean;
 	users: User[];
+	isGeneratingFiles: boolean;
 } = {
 	user: null,
 	posts: [],
 	likes: [],
 	users: [],
-	isAuthenticated: false
+	isAuthenticated: false,
+	isGeneratingFiles: false
 };
 
 // Helper to persist and load state from localStorage
@@ -62,7 +64,8 @@ const createStore = () => {
 				posts,
 				likes,
 				users,
-				isAuthenticated: true
+				isAuthenticated: true,
+				isGeneratingFiles: false
 			});
 		},
 		authenticateUser: (user: User) => {
@@ -116,6 +119,15 @@ const createStore = () => {
 				}
 			});
 		},
+
+		updateLoader: (status: boolean) => {
+			update((state) => ({
+				...state,
+
+				isGeneratingFiles: status
+			}));
+		},
+
 		getState: () => {
 			let state: typeof initialState;
 			subscribe(($store) => {

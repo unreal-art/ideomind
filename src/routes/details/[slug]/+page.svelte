@@ -20,7 +20,7 @@
 	import { formatDistanceToNow } from 'date-fns';
 
 	let params = $page.params;
-	let post: Post = $derived(getPost(params.slug, $store.posts));
+	let post: Post = $derived(getPost(params.slug, $store.posts) as Post);
 	let otherPosts: Post[] = $derived(userOtherPosts(post.author, post.id, $store.posts));
 
 	let imgs = [image1, image2];
