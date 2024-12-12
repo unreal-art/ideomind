@@ -5,7 +5,7 @@
 	import { formatDistanceToNow } from 'date-fns';
 	import { getPostUserImage, getPostUserName, likePost, userLikedPosts } from '@/api';
 	import { store } from '$lib/store';
-	import Image from './Image.svelte';
+	import Image from '../Image.svelte';
 
 	let likedPosts = $derived(userLikedPosts($store.user?.id));
 	let { data }: { data: Post[] } = $props();

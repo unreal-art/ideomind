@@ -8,8 +8,9 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import Textarea from '@/components/ui/textarea/textarea.svelte';
 	import { store } from '$lib/store';
-	import { updateUserDetails, userLikedPosts, userPosts } from '@/api';
+	import { getUser, updateUserDetails, userLikedPosts, userPosts } from '@/api';
 	import UserPostList from '@/components/profile/UserPostList.svelte';
+	import { page } from '$app/stores';
 
 	let showInput: boolean = $state(false);
 	let inputRef: HTMLDivElement | null = $state(null);
@@ -20,16 +21,20 @@
 	let targetElement: HTMLElement | null = $state(null);
 	let scrollContainer: HTMLElement | null = $state(null);
 
-	let name = $state($store.user?.name);
-	let username = $state($store.user?.username);
-	let bio = $state($store.user?.bio);
-	let location = $state($store.user?.location);
+	let params = $state($page.params);
+	let user = $state(getUser(params.slug));
+
+	let name = $state(user.name);
+	let username = $state(user.username);
+	let bio = $state(user.bio);
+	let location = $state(user.location);
 	let open = $state(false);
-	let posts = $derived(userPosts($store.user?.id));
-	let likedPosts = $derived(userLikedPosts($store.user?.id));
-	let pinnedPosts = $derived(posts.filter((item) => item.isPinned));
-	let privatePosts = $derived(posts.filter((item) => item.isPrivate));
-	let publicPosts = $derived(posts.filter((item) => !item.isPrivate));
+	let posts = $state(userPosts(user.id, $store.posts));
+	let likedPosts = $state(userLikedPosts(user.id));
+	let pinnedPosts = $state(posts.filter((item) => item.isPinned));
+	let privatePosts = $state(posts.filter((item) => item.isPrivate));
+	let publicPosts = $state(posts.filter((item) => !item.isPrivate));
+	let refetch = $state(false);
 
 	// Toggle input visibility
 	const toggleInput = (): void => {
@@ -82,6 +87,21 @@
 				scrollContainer.removeEventListener('scroll', handleScroll);
 			}
 		};
+	});
+
+	function triggerRefetch() {
+		refetch = true;
+	}
+
+	$effect(() => {
+		if (refetch) {
+			posts = userPosts(user.id, $store.posts);
+			likedPosts = userLikedPosts(user.id);
+			pinnedPosts = posts.filter((item) => item.isPinned);
+			privatePosts = posts.filter((item) => item.isPrivate);
+			publicPosts = posts.filter((item) => !item.isPrivate);
+			refetch = false;
+		}
 	});
 
 	// $effect(() => {
@@ -243,17 +263,17 @@
 			</div>
 
 			<Tabs.Content value="pinned">
-				<UserPostList data={pinnedPosts} />
+				<UserPostList data={pinnedPosts} {triggerRefetch} />
 			</Tabs.Content>
 			<Tabs.Content value="public">
-				<UserPostList data={publicPosts} />
+				<UserPostList data={publicPosts} {triggerRefetch} />
 			</Tabs.Content>
 			<Tabs.Content value="private">
-				<UserPostList data={privatePosts} />
+				<UserPostList data={privatePosts} {triggerRefetch} />
 			</Tabs.Content>
 
 			<Tabs.Content value="liked" class="h-[95%] w-full  ">
-				<UserPostList data={likedPosts} isLikes={true} />
+				<UserPostList data={likedPosts} isLikes={true} {triggerRefetch} />
 			</Tabs.Content>
 		</Tabs.Root>
 	</div>

@@ -9,11 +9,16 @@
 
 	import Button from '@/components/ui/button/button.svelte';
 	import { MoveLeft } from 'lucide-svelte';
+	import { store } from '$lib/store';
+
+	import { Toaster } from '$lib/components/ui/sonner/index.js';
 
 	function goBack() {
 		window.history.back();
 	}
 </script>
+
+<Toaster />
 
 {#if $page.url.pathname === '/'}
 	{@render children()}
@@ -31,6 +36,20 @@
 				</Button>
 				{@render children()}
 			</section>
+			{#if $store.isGeneratingFiles}
+				<div
+					class="fixed bottom-20 right-0 flex items-center justify-center bg-gray-100 p-2 lg:bottom-0"
+				>
+					<div class="flex items-center space-x-4">
+						<!-- Spinner -->
+						<div
+							class="h-6 w-6 animate-spin rounded-full border-4 border-primary border-t-transparent"
+						></div>
+						<!-- Loading Text -->
+						<p class="text-lg font-light text-gray-700">Generating files</p>
+					</div>
+				</div>
+			{/if}
 			<MobileSideBar />
 		</div>
 	</main>

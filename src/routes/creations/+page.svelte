@@ -8,6 +8,7 @@
 	import CreationList from '@/components/creations/CreationList.svelte';
 	import { store } from '$lib/store';
 	import { userPosts } from '@/api';
+	import PromptForm from '@/components/PromptForm.svelte';
 
 	const choices = [
 		{ value: 'everything', label: 'Everything' },
@@ -26,7 +27,7 @@
 	let inputRef: HTMLDivElement | null = $state(null);
 	let buttonRef: HTMLDivElement | null = $state(null);
 
-	let posts = $derived(userPosts($store.user?.id));
+	let posts = $derived(userPosts($store.user?.id, $store.posts));
 	let pinnedPosts = $derived(posts.filter((item) => item.isPinned));
 	let privatePosts = $derived(posts.filter((item) => item.isPrivate));
 	let publicPosts = $derived(posts.filter((item) => !item.isPrivate));
@@ -58,16 +59,7 @@
 <section class="h-full w-full overflow-auto px-2">
 	<div class="hidden h-[20%] flex-col items-center justify-center gap-3 lg:flex">
 		<h2 class="text-sm font-semibold md:text-2xl lg:text-4xl">Unleash your creative juice</h2>
-		<form class="flex h-12 w-full max-w-6xl items-center">
-			<Input
-				type="text"
-				placeholder="Describe what you want to see"
-				class="h-full w-[60%] rounded-none rounded-l-2xl md:w-[80%]"
-			/>
-			<Button type="submit" class="h-full w-[40%] rounded-none rounded-r-2xl text-white md:w-[20%]"
-				>Generate</Button
-			>
-		</form>
+		<PromptForm section={'body'} />
 	</div>
 	<div class="h-full lg:h-[79%]">
 		<Tabs.Root value="all" class="h-full w-full">
