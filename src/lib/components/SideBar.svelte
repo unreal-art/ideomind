@@ -17,6 +17,7 @@
 	import { RiDocumentContractLine } from 'svelte-icons-pack/ri';
 	import Badge from './ui/badge/badge.svelte';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
+	import { store } from '$lib/store';
 </script>
 
 <aside class="z-50 hidden h-full w-[5%] min-w-[100px] border-r px-2 py-2 lg:block">
@@ -62,7 +63,7 @@
 			</Sheet.Content>
 		</Sheet.Root>
 
-		<a href="/profile">
+		<a href={`/profile/${$store.user?.id}`}>
 			<Button variant="ghost" class=" w-full hover:bg-transparent">
 				<img src={profileImage} alt="user profile" class="h-12 w-12 rounded-full" />
 			</Button></a

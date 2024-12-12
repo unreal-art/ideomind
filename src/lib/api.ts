@@ -50,9 +50,9 @@ export const createNewPost = (post: Post) => {
 };
 
 //get post belonging to a user
-export const userPosts = (id: string | undefined): Post[] => {
+export const userPosts = (id: string | undefined, posts: Post[]): Post[] => {
 	if (!id) return [];
-	return store.getState().posts.filter((item) => item.author == id);
+	return posts.filter((item) => item.author == id);
 };
 export const userOtherPosts = (id: string | undefined, postId: string, posts: Post[]): Post[] => {
 	if (!id) return [];
@@ -72,6 +72,11 @@ export const getPost = (id: string, posts: Post[]): Post | null => {
 	return posts.find((post) => post.id == id) || null;
 };
 
+export const getUser = (id: string): User => {
+	// if(!authorId) return ""
+	return store.getState().users.filter((user) => user.id == id)[0];
+};
+
 export const getPostUserName = (authorId: string): string => {
 	// if(!authorId) return ""
 	return store.getState().users.filter((item) => item.id == authorId)[0]?.username || '';
@@ -89,7 +94,7 @@ export const filterPostByCat = (posts: Post[], category: string): Post[] => {
 export const postsByFollowed = (userId: string): Post[] => {
 	const followedUsers = store.getState().users.filter((user) => user.id === userId);
 	// Combine all posts from followed users
-	return followedUsers.flatMap((user) => userPosts(user.id));
+	return followedUsers.flatMap((user) => userPosts(user.id, store.getState().posts));
 };
 
 // Function to like a post

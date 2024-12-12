@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button/index.js';
-	import image1 from '$lib/assets/ima1.jpg';
-	import image2 from '$lib/assets/ima2.jpeg';
+
 	import { Ellipsis, Heart, Files, Plus } from 'lucide-svelte';
 	import Separator from '@/components/ui/separator/separator.svelte';
 	import { page } from '$app/stores';

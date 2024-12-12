@@ -27,7 +27,7 @@
 	let inputRef: HTMLDivElement | null = $state(null);
 	let buttonRef: HTMLDivElement | null = $state(null);
 
-	let posts = $derived(userPosts($store.user?.id));
+	let posts = $derived(userPosts($store.user?.id, $store.posts));
 	let pinnedPosts = $derived(posts.filter((item) => item.isPinned));
 	let privatePosts = $derived(posts.filter((item) => item.isPrivate));
 	let publicPosts = $derived(posts.filter((item) => !item.isPrivate));

@@ -4,6 +4,7 @@
 	import type { Post } from '@/types';
 	import { filterPostByCat, likePost, userLikedPosts } from '@/api';
 	import { store } from '$lib/store';
+	import Image from '../Image.svelte';
 
 	let likedPosts = $derived(userLikedPosts($store.user?.id));
 	let { data, choice }: { data: Post[]; choice: string } = $props();
@@ -36,7 +37,7 @@
 				>
 			</div>
 			<a href={`/details/${item.id}`}>
-				<img src={item.images[0]} alt="user profile" class="mb-6 w-full rounded-sm" />
+				<Image {item} />
 			</a>
 		</div>
 	{/each}

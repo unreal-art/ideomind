@@ -6,22 +6,29 @@
 	import { store } from '$lib/store';
 
 	import { userLikedPosts } from '@/api';
-	let likedPosts = $derived(userLikedPosts($store.user?.id));
-	let { data, isLikes }: { data: Post[]; isLikes?: boolean } = $props();
+	import Image from '../Image.svelte';
+	let likedPosts = $state(userLikedPosts($store.user?.id));
+	let {
+		data,
+		isLikes,
+		triggerRefetch
+	}: { data: Post[]; isLikes?: boolean; triggerRefetch?: () => void } = $props();
 
 	const like = (item: Post) => {
 		if (!$store.user?.id) return;
 		likePost(item.id, $store.user?.id);
+		triggerRefetch && triggerRefetch();
 	};
 
 	const isInLikedPosts = (id: string): boolean => {
 		return likedPosts.filter((item) => item.id == id).length > 0;
 	};
+
+	$inspect(likedPosts);
 </script>
 
 <div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
 	{#each data as item}
-		>
 		<div class="relative mb-6 break-inside-avoid">
 			<div class="absolute bottom-1 right-0 flex items-center text-white">
 				<Button variant="ghost"><Ellipsis size={20}></Ellipsis></Button>
@@ -38,9 +45,7 @@
 					></Heart></Button
 				>
 			</div>
-			<a href={`/details/${item.id}`}
-				><img src={item.images[0]} alt="user profile" class="mb-6 w-full rounded-sm" /></a
-			>
+			<a href={`/details/${item.id}`}><Image {item} /></a>
 		</div>
 	{/each}
 </div>
