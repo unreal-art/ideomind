@@ -2,12 +2,13 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Ellipsis, Heart } from 'lucide-svelte';
 	import type { Post } from '@/types';
-	import { likePost } from '@/api';
+	import { likePost, getPostLikeCount } from '@/api';
 	import { store } from '$lib/store';
 
-	import { userLikedPosts } from '@/api';
+	import { getUserLikedPosts } from '@/api';
 	import Image from '../Image.svelte';
-	let likedPosts = $state(userLikedPosts($store.user?.id));
+
+	let likedPosts = $derived(getUserLikedPosts($store.user?.id));
 	let {
 		data,
 		isLikes,
@@ -16,6 +17,7 @@
 
 	const like = (item: Post) => {
 		if (!$store.user?.id) return;
+
 		likePost(item.id, $store.user?.id);
 		triggerRefetch && triggerRefetch();
 	};
@@ -23,8 +25,6 @@
 	const isInLikedPosts = (id: string): boolean => {
 		return likedPosts.filter((item) => item.id == id).length > 0;
 	};
-
-	$inspect(likedPosts);
 </script>
 
 <div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
@@ -38,7 +38,7 @@
 					onclick={() => like(item)}
 					class="flex space-x-2 hover:bg-black/50 hover:text-white"
 				>
-					<span>{item.likes}</span>
+					<span>{getPostLikeCount(item.id, $store.posts)}</span>
 					<Heart
 						size={20}
 						class={`${isLikes || isInLikedPosts(item.id) ? 'fill-pink-500 text-pink-500' : ''}`}

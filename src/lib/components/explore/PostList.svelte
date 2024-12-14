@@ -3,11 +3,11 @@
 	import { Ellipsis, Heart } from 'lucide-svelte';
 	import type { Post } from '@/types';
 	import { formatDistanceToNow } from 'date-fns';
-	import { getPostUserImage, getPostUserName, likePost, userLikedPosts } from '@/api';
+	import { getPostUserImage, getPostUserName, likePost, getUserLikedPosts } from '@/api';
 	import { store } from '$lib/store';
 	import Image from '../Image.svelte';
 
-	let likedPosts = $derived(userLikedPosts($store.user?.id));
+	let likedPosts = $derived(getUserLikedPosts($store.user?.id));
 	let { data }: { data: Post[] } = $props();
 
 	const like = (item: Post) => {

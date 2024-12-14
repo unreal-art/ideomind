@@ -7,7 +7,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import CreationList from '@/components/creations/CreationList.svelte';
 	import { store } from '$lib/store';
-	import { userPosts } from '@/api';
+	import { getUserPosts } from '@/api';
 	import PromptForm from '@/components/PromptForm.svelte';
 
 	const choices = [
@@ -27,7 +27,7 @@
 	let inputRef: HTMLDivElement | null = $state(null);
 	let buttonRef: HTMLDivElement | null = $state(null);
 
-	let posts = $derived(userPosts($store.user?.id, $store.posts));
+	let posts = $derived(getUserPosts($store.user?.id, $store.posts));
 	let pinnedPosts = $derived(posts.filter((item) => item.isPinned));
 	let privatePosts = $derived(posts.filter((item) => item.isPrivate));
 	let publicPosts = $derived(posts.filter((item) => !item.isPrivate));

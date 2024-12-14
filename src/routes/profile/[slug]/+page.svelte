@@ -8,7 +8,7 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import Textarea from '@/components/ui/textarea/textarea.svelte';
 	import { store } from '$lib/store';
-	import { getUser, updateUserDetails, userLikedPosts, userPosts } from '@/api';
+	import { getUser, updateUserDetails, getUserLikedPosts, getUserPosts } from '@/api';
 	import UserPostList from '@/components/profile/UserPostList.svelte';
 	import { page } from '$app/stores';
 
@@ -24,13 +24,13 @@
 	let params = $state($page.params);
 	let user = $state(getUser(params.slug));
 
-	let name = $state(user.name);
-	let username = $state(user.username);
-	let bio = $state(user.bio);
-	let location = $state(user.location);
+	let name = $state(user?.name);
+	let username = $state(user?.username);
+	let bio = $state(user?.bio);
+	let location = $state(user?.location);
 	let open = $state(false);
-	let posts = $state(userPosts(user.id, $store.posts));
-	let likedPosts = $state(userLikedPosts(user.id));
+	let posts = $state(getUserPosts(user?.id, $store.posts));
+	let likedPosts = $state(getUserLikedPosts(user?.id));
 	let pinnedPosts = $state(posts.filter((item) => item.isPinned));
 	let privatePosts = $state(posts.filter((item) => item.isPrivate));
 	let publicPosts = $state(posts.filter((item) => !item.isPrivate));
@@ -95,8 +95,8 @@
 
 	$effect(() => {
 		if (refetch) {
-			posts = userPosts(user.id, $store.posts);
-			likedPosts = userLikedPosts(user.id);
+			posts = getUserPosts(user?.id, $store.posts);
+			likedPosts = getUserLikedPosts(user?.id);
 			pinnedPosts = posts.filter((item) => item.isPinned);
 			privatePosts = posts.filter((item) => item.isPrivate);
 			publicPosts = posts.filter((item) => !item.isPrivate);

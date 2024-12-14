@@ -2,11 +2,11 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Ellipsis, Heart } from 'lucide-svelte';
 	import type { Post } from '@/types';
-	import { filterPostByCat, likePost, userLikedPosts } from '@/api';
+	import { filterPostByCat, likePost, getUserLikedPosts } from '@/api';
 	import { store } from '$lib/store';
 	import Image from '../Image.svelte';
 
-	let likedPosts = $derived(userLikedPosts($store.user?.id));
+	let likedPosts = $derived(getUserLikedPosts($store.user?.id));
 	let { data, choice }: { data: Post[]; choice: string } = $props();
 	let posts = $derived(filterPostByCat(data, choice));
 

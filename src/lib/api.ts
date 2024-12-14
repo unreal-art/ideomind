@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { DartsJobData, JobSpec, Post, User } from './types';
+import type { DartsJobData, JobSpec, Like, Post, User } from './types';
 import { store } from '$lib/store';
 // import { uploadImage } from '../routes/darts/pinata';
 import { PinataSDK } from 'pinata';
@@ -49,57 +49,110 @@ export const createNewPost = (post: Post) => {
 	store.createPost(post);
 };
 
-//get post belonging to a user
-export const userPosts = (id: string | undefined, posts: Post[]): Post[] => {
-	if (!id) return [];
-	return posts.filter((item) => item.author == id);
-};
-export const userOtherPosts = (id: string | undefined, postId: string, posts: Post[]): Post[] => {
-	if (!id) return [];
-	return posts.filter((item) => item.author == id && item.id != postId);
-};
+/**
+ * Filters posts authored by the specified user.
+ *
+ * @param userId - The ID of the user whose posts to filter. If undefined, an empty array is returned.
+ * @param allPosts - The array of posts to filter.
+ * @returns An array of posts authored by the specified user.
+ */
+export const getUserPosts = (userId: string | undefined, allPosts: Post[]): Post[] => {
+	// If no userId is provided, return an empty array (no filtering possible).
+	if (!userId) return [];
 
-export const userLikedPosts = (id: string | undefined): Post[] => {
-	if (!id) return []; // Handle case where id is undefined
-
-	return store
-		.getState()
-		.likes.filter((item) => item.user.id === id) // Filter by user ID
-		.map((item) => item.post);
+	// Filter posts where the author's ID matches the provided userId.
+	return allPosts.filter((post) => post.author === userId);
 };
 
+/**
+ * Filters posts authored by a specific user, excluding a specific post.
+ *
+ * @param userId - The ID of the user whose posts to filter. If undefined, an empty array is returned.
+ * @param excludedPostId - The ID of the post to exclude from the results.
+ * @param allPosts - The array of posts to filter.
+ * @returns An array of posts authored by the user, excluding the specified post.
+ */
+export const getUserOtherPosts = (
+	userId: string | undefined,
+	excludedPostId: string,
+	allPosts: Post[]
+): Post[] => {
+	// If no userId is provided, return an empty array.
+	if (!userId) return [];
+
+	// Filter posts authored by the user, excluding the post with the given ID.
+	return allPosts.filter((post) => post.author === userId && post.id !== excludedPostId);
+};
+
+/**
+ * Retrieves posts liked by a specific user.
+ *
+ * @param userId - The ID of the user whose liked posts are to be retrieved. If undefined, an empty array is returned.
+ * @returns An array of posts liked by the specified user.
+ */
+export const getUserLikedPosts = (userId: string | undefined): Post[] => {
+	// If no userId is provided, return an empty array.
+	if (!userId) return [];
+
+	// Safely access the state and retrieve the list of liked posts for the user.
+	return (
+		store
+			.getState()
+			.likes // Filter by user ID.
+			.filter((like) => like.user.id === userId)
+			// Map the likes to their corresponding posts.
+			.map((like) => like.post) || []
+	);
+};
+
+// Get the like count for a specific post by its ID.
+export const getPostLikeCount = (postId: string | undefined, allPosts: Post[]): number => {
+	if (!postId) return 0; // Return 0 if no ID is provided.
+	const post = allPosts.find((post) => post.id === postId); // Find the post by ID.
+	return post?.likes || 0; // Return likes or 0 if post not found.
+};
+
+// Retrieve a post by its ID, or return null if not found.
 export const getPost = (id: string, posts: Post[]): Post | null => {
-	return posts.find((post) => post.id == id) || null;
+	return posts.find((post) => post.id === id) || null; // Use strict equality for type safety.
 };
 
-export const getUser = (id: string): User => {
-	// if(!authorId) return ""
-	return store.getState().users.filter((user) => user.id == id)[0];
+// Retrieve a user by their ID from the store, or return null if not found.
+export const getUser = (id: string): User | null => {
+	return store.getState().users.find((user) => user.id === id) || null;
 };
 
+// Retrieve a user's username by their ID, or return an empty string if not found.
 export const getPostUserName = (authorId: string): string => {
-	// if(!authorId) return ""
-	return store.getState().users.filter((item) => item.id == authorId)[0]?.username || '';
-};
-export const getPostUserImage = (authorId: string): string => {
-	// if(!authorId) return ""
-	return store.getState().users.filter((item) => item.id == authorId)[0]?.image || '';
+	if (!authorId) return ''; // Return an empty string if no authorId is provided.
+	const user = store.getState().users.find((user) => user.id === authorId); // Find user by ID.
+	return user?.username || ''; // Return username or an empty string if not found.
 };
 
+// Retrieve a user's profile image by their ID, or return an empty string if not found.
+export const getPostUserImage = (authorId: string): string => {
+	if (!authorId) return ''; // Return an empty string if no authorId is provided.
+	const user = store.getState().users.find((user) => user.id === authorId); // Find user by ID.
+	return user?.image || ''; // Return the image URL or an empty string if not found.
+};
+
+// Filter posts by category, returning all posts if 'everything' is selected.
 export const filterPostByCat = (posts: Post[], category: string): Post[] => {
-	if (category == 'everything') return posts;
-	return posts.filter((post) => post.category == category.toUpperCase());
+	if (category.toLowerCase() === 'everything') return posts; // Handle 'everything' category.
+	return posts.filter((post) => post.category === category.toUpperCase()); // Filter by category.
 };
 
 export const postsByFollowed = (userId: string): Post[] => {
 	const followedUsers = store.getState().users.filter((user) => user.id === userId);
 	// Combine all posts from followed users
-	return followedUsers.flatMap((user) => userPosts(user.id, store.getState().posts));
+	return followedUsers.flatMap((user) => getUserPosts(user.id, store.getState().posts));
 };
 
 // Function to like a post
-export const likePost = (postId: string, userId: string) => {
-	store.likePost(postId, userId);
+// Like a post for the given user by postId.
+export const likePost = (postId: string, userId: string): void => {
+	if (!postId || !userId) return; // Ensure both postId and userId are provided.
+	store.likePost(postId, userId); // Call the store's likePost method.
 };
 
 // Function to reset the store (e.g., logout)

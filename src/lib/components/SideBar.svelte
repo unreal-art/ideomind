@@ -22,12 +22,15 @@
 
 <aside class="z-50 hidden h-full w-[5%] min-w-[100px] border-r px-2 py-2 lg:block">
 	<div class="flex h-[50%] w-full flex-col gap-4">
-		<div class="flex h-16 w-full items-center justify-center">
-			<BrainCircuit size={30} />
-		</div>
+		<a href="/explore">
+			<div class="flex h-16 w-full items-center justify-center">
+				<img src="/vertical-black.png" alt="unreal-art logo" class="flex dark:hidden" />
+				<img src="/vertical-white.png" alt="unreal-art logo" class="hidden dark:flex" />
+			</div>
+		</a>
 		<a href="/explore">
 			<Button
-				class="flex h-16 w-full flex-col justify-center gap-2 bg-gray-200 text-gray-600 hover:bg-gray-300 hover:text-black"
+				class="mt-6 flex h-16 w-full flex-col justify-center gap-2 bg-gray-200 text-gray-600 hover:bg-gray-300 hover:text-black"
 				><House size={20} />
 				<span class="text-xs">Home</span>
 			</Button>
@@ -49,7 +52,7 @@
 			>
 				<div class="relative flex h-16 w-full items-center justify-center">
 					<Icon src={BsBell} className=" " />
-					<Badge variant="destructive" class="absolute -right-1 top-1  rounded-full">10</Badge>
+					<Badge variant="destructive" class="absolute -right-1 top-1  rounded-full">0</Badge>
 				</div>
 			</Sheet.Trigger>
 			<Sheet.Content side="left">
@@ -102,10 +105,13 @@
 
 					<Button class="my-3 w-full"><Zap size={15} /> Upgrade plan</Button>
 					<DropdownMenu.Group>
-						<DropdownMenu.Item>
-							<User class="mr-2 size-4"></User>
-							<span>Profile</span>
-						</DropdownMenu.Item>
+						<a href={`/profile/${$store.user?.id}`}>
+							<DropdownMenu.Item>
+								<User class="mr-2 size-4"></User>
+								<span>Profile</span>
+							</DropdownMenu.Item>
+						</a>
+
 						<DropdownMenu.Item>
 							<CreditCard class="mr-2 size-4"></CreditCard>
 							<span>Billing</span>
