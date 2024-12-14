@@ -87,6 +87,33 @@ const posts: Post[] = [
 		cpu: 30,
 		device: 'xpu',
 		createdAt: new Date('2024-12-10T21:06:49.696Z')
+	},
+
+	{
+		id: '5950624c-3223-4931-b5a8-c5ddd10a548e',
+		author: 'u1',
+		isPrivate: false,
+		prompt:
+			'johnny depp photo portrait, film noir style, monochrome, high contrast, dramatic shadows, 1940s style, mysterious, cinematic',
+		isPinned: false,
+		category: 'GENERATION',
+		likes: 1,
+		images: [],
+		ipfsImages: [
+			{
+				id: '0193c5b2-f154-72d8-a74a-9321063d161b',
+				name: '7230d2da-3a2f-4824-8635-e8edcdee9b34.png',
+				cid: 'bafybeidwjhdltsex7xbhuh7dl6xhrrpoevv5p37gfqjka2du3uazwwnzwi',
+				created_at: '2024-12-14T15:04:20.807Z',
+				size: 1494218,
+				number_of_files: 1,
+				mime_type: 'image/png',
+				user_id: '9bdabd8f-cfa3-4c5d-9b92-ac18128b6c15'
+			}
+		],
+		cpu: 30,
+		device: 'xpu',
+		createdAt: new Date('2024-12-14T15:04:21.416Z')
 	}
 ];
 
@@ -99,6 +126,11 @@ const likes: Like[] = [
 	{
 		id: 'l1',
 		post: posts[1],
+		user: users[0] // Bob liked Alice's post
+	},
+	{
+		id: 'l1',
+		post: posts[2],
 		user: users[0] // Bob liked Alice's post
 	}
 ];
