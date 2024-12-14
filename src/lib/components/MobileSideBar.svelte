@@ -19,6 +19,7 @@
 	import User from 'lucide-svelte/icons/user';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
 	import { BsBell } from 'svelte-icons-pack/bs';
+	import { store } from '$lib/store';
 </script>
 
 <section class="fixed bottom-0 h-20 w-full bg-stone-50 lg:hidden">
@@ -48,7 +49,7 @@
 				>
 					<div class="relative flex h-16 w-full items-center justify-center">
 						<Bell size={30} />
-						<Badge variant="destructive" class="absolute -right-8 top-1  rounded-full">10</Badge>
+						<Badge variant="destructive" class="absolute -right-8 top-1  rounded-full">0</Badge>
 					</div>
 				</Sheet.Trigger>
 				<Sheet.Content side="bottom">
@@ -88,7 +89,7 @@
 							<p class=" font-semibold">Free</p>
 							<div class="flex space-x-2">
 								<div class="flex h-full items-center space-x-1 font-semibold">
-									<Zap size={15} /> <span>10 / 10</span>
+									<Zap size={15} /> <span>0 / 10</span>
 								</div>
 								<span class="font-extralight"> credits left</span>
 							</div>
@@ -96,10 +97,12 @@
 
 						<Button class="my-3 w-full"><Zap size={15} /> Upgrade plan</Button>
 						<DropdownMenu.Group>
-							<DropdownMenu.Item>
-								<User class="mr-2 size-4"></User>
-								<span>Profile</span>
-							</DropdownMenu.Item>
+							<a href={`/profile/${$store.user?.id}`}>
+								<DropdownMenu.Item>
+									<User class="mr-2 size-4"></User>
+									<span>Profile</span>
+								</DropdownMenu.Item>
+							</a>
 							<DropdownMenu.Item>
 								<CreditCard class="mr-2 size-4"></CreditCard>
 								<span>Billing</span>

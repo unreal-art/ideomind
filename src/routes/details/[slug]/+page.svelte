@@ -9,8 +9,8 @@
 		getPostUserImage,
 		getPostUserName,
 		likePost,
-		userLikedPosts,
-		userOtherPosts
+		getUserLikedPosts,
+		getUserOtherPosts
 	} from '@/api';
 	import type { Post, UploadResponse } from '@/types';
 	import { store } from '$lib/store';
@@ -19,12 +19,12 @@
 	import { formatDistanceToNow } from 'date-fns';
 	import ImageComponent from '@/components/Image.svelte';
 
-	let likedPosts = $derived(userLikedPosts($store.user?.id));
+	let likedPosts = $derived(getUserLikedPosts($store.user?.id));
 
 	let imageUrls = $state(['']);
 	let params = $derived($page.params);
 	let post: Post = $derived(getPost(params.slug, $store.posts) as Post);
-	let otherPosts: Post[] = $derived(userOtherPosts(post.author, post.id, $store.posts));
+	let otherPosts: Post[] = $derived(getUserOtherPosts(post.author, post.id, $store.posts));
 	let resolution = $state('');
 
 	let fullPrompt = $state(false);

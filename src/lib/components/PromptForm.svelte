@@ -9,7 +9,7 @@
 	import { toast } from 'svelte-sonner';
 	import { page } from '$app/stores';
 
-	let section = $props();
+	let { section } = $props();
 	let text = $state('');
 	let postFromFollowedUsers = $derived(postsByFollowed($store.user?.id || '0'));
 
