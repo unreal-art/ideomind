@@ -38,7 +38,7 @@
 		</a>
 		<a href="/creations">
 			<Button
-				class={`mt-6 flex h-16 w-full flex-col justify-center gap-2 bg-gray-200 text-gray-600 ${$page.url.pathname.startsWith('/creations') ? 'bg-gray-300 text-black' : ''} hover:bg-gray-300 hover:text-black`}
+				class={`flex h-16 w-full flex-col justify-center gap-2 bg-gray-200 text-gray-600 ${$page.url.pathname.startsWith('/creations') ? 'bg-gray-300 text-black' : ''} hover:bg-gray-300 hover:text-black`}
 				><GalleryVertical size={20} />
 				<span class="text-xs">Creations</span>
 			</Button>
