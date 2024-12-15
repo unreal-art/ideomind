@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Button from './ui/button/button.svelte';
-	import { GalleryVertical, House, Menu, BrainCircuit } from 'lucide-svelte';
+	import { GalleryVertical, House, Menu, Telescope } from 'lucide-svelte';
 	import profileImage from '$lib/assets/ima1.jpg';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import CreditCard from 'lucide-svelte/icons/credit-card';
@@ -18,6 +18,7 @@
 	import Badge from './ui/badge/badge.svelte';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
 	import { store } from '$lib/store';
+	import { page } from '$app/stores';
 </script>
 
 <aside class="z-50 hidden h-full w-[5%] min-w-[100px] border-r px-2 py-2 lg:block">
@@ -30,17 +31,16 @@
 		</a>
 		<a href="/explore">
 			<Button
-				class="mt-6 flex h-16 w-full flex-col justify-center gap-2 bg-gray-200 text-gray-600 hover:bg-gray-300 hover:text-black"
-				><House size={20} />
-				<span class="text-xs">Home</span>
+				class={`mt-6 flex h-16 w-full flex-col justify-center gap-2 bg-gray-200 text-gray-600 ${$page.url.pathname.startsWith('/explore') ? 'bg-gray-300 text-black' : ''} hover:bg-gray-300 hover:text-black`}
+				><Telescope size={20} />
+				<span class="text-xs">Explore</span>
 			</Button>
 		</a>
 		<a href="/creations">
 			<Button
-				class="flex h-16  w-full flex-col justify-center gap-2 bg-gray-200 text-gray-600 hover:bg-gray-300 hover:text-black"
+				class={`mt-6 flex h-16 w-full flex-col justify-center gap-2 bg-gray-200 text-gray-600 ${$page.url.pathname.startsWith('/creations') ? 'bg-gray-300 text-black' : ''} hover:bg-gray-300 hover:text-black`}
 				><GalleryVertical size={20} />
-
-				<span class=" text-xs">Creations</span>
+				<span class="text-xs">Creations</span>
 			</Button>
 		</a>
 	</div>
@@ -58,10 +58,7 @@
 			<Sheet.Content side="left">
 				<Sheet.Header>
 					<Sheet.Title>Notifications</Sheet.Title>
-					<Sheet.Description>
-						This action cannot be undone. This will permanently delete your account and remove your
-						data from our servers.
-					</Sheet.Description>
+					<Sheet.Description>It looks like we do not have anything for you now.</Sheet.Description>
 				</Sheet.Header>
 			</Sheet.Content>
 		</Sheet.Root>
@@ -86,8 +83,8 @@
 							<div class="flex h-full space-x-2">
 								<img src={profileImage} alt="user profile" class="h-full rounded-full" />
 								<div class="flex flex-col">
-									<p class="text-sm">Codypharm</p>
-									<p class="text-sm font-extralight text-gray-400">williamikeji@gmail.com</p>
+									<p class="text-sm">{$store.user?.name}</p>
+									<p class="text-sm font-extralight text-gray-400">{$store.user?.email}</p>
 								</div>
 							</div>
 						</div>

@@ -6,6 +6,7 @@
 	import { getPostUserImage, getPostUserName, likePost, getUserLikedPosts } from '@/api';
 	import { store } from '$lib/store';
 	import Image from '../Image.svelte';
+	import More from '../More.svelte';
 
 	let likedPosts = $derived(getUserLikedPosts($store.user?.id));
 	let { data }: { data: Post[] } = $props();
@@ -35,7 +36,7 @@
 					</div>
 				</div>
 				<div class="flex items-center">
-					<Button variant="ghost"><Ellipsis size={20} /></Button>
+					<More />
 					<Button
 						variant="ghost"
 						onclick={() => like(item)}

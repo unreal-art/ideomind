@@ -58,7 +58,7 @@
 
 <section class="h-full w-full overflow-auto px-2">
 	<div class="hidden h-[20%] flex-col items-center justify-center gap-3 lg:flex">
-		<h2 class="text-sm font-semibold md:text-2xl lg:text-4xl">Unleash your creative juice</h2>
+		<h2 class="text-sm font-semibold md:text-2xl lg:text-4xl">Unleash your creative juice.</h2>
 		<PromptForm section={'body'} />
 	</div>
 	<div class="h-full lg:h-[79%]">

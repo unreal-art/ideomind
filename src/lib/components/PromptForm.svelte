@@ -11,7 +11,6 @@
 
 	let { section } = $props();
 	let text = $state('');
-	let postFromFollowedUsers = $derived(postsByFollowed($store.user?.id || '0'));
 
 	const onclick = async () => {
 		store.updateLoader(true);
