@@ -8,9 +8,14 @@
 	import type { UploadResponse } from 'pinata';
 	import { toast } from 'svelte-sonner';
 	import { page } from '$app/stores';
+	import Textarea from './ui/textarea/textarea.svelte';
 
 	let { section } = $props();
 	let text = $state('');
+
+	let showInput: boolean = $state(false);
+	let inputRef: HTMLDivElement | null = $state(null);
+	let minorInputRef: HTMLInputElement | null = $state(null);
 
 	const onclick = async () => {
 		store.updateLoader(true);
@@ -55,15 +60,57 @@
 			text = '';
 		}
 	};
+
+	$inspect(showInput);
+	// Toggle input visibility
+	const toggleInput = (): void => {
+		showInput = true;
+	};
+
+	// Handle clicks outside the input
+	const handleClickOutside = (event: MouseEvent): void => {
+		const target = event.target as Node;
+
+		if (inputRef && minorInputRef) {
+			// Check if the click was outside both the button and the input field
+			if (!inputRef.contains(target) && !minorInputRef.contains(target)) {
+				showInput = false;
+			}
+		}
+	};
+
+	// Attach and clean up event listeners
+	$effect(() => {
+		document.addEventListener('click', handleClickOutside);
+		return () => document.removeEventListener('click', handleClickOutside);
+	});
 </script>
 
 {#if section == 'body'}
-	<form class="flex h-12 w-full max-w-6xl items-center">
-		<Input
+	<form class="relative flex h-12 w-full max-w-6xl items-center">
+		<div
+			class={` ${showInput ? 'block' : 'hidden'} absolute top-0  w-full bg-white  z-20 py-4 px-3`}
+			bind:this={inputRef}
+		>
+			<Textarea bind:value={text} placeholder="Desribe what you want to see in detail" class="resize-none border-none shadow-none" rows={15}/>
+
+
+			<div class="flex  justify-end mt-10 h-12">
+				<Button
+			type="button"
+			{onclick}
+			class="h-full text-white  w-full">Generate</Button
+		>
+			</div>
+
+		</div>
+		<input
 			type="text"
 			bind:value={text}
+			bind:this={minorInputRef}
+			onclick={toggleInput}
 			placeholder="Describe what you want to see"
-			class="h-full w-[60%] rounded-none rounded-l-2xl md:w-[80%]"
+			class="h-full w-[60%] rounded-none rounded-l-2xl border bg-transparent px-5 outline-none focus:ring-0 md:w-[80%]"
 		/>
 		<Button
 			type="button"
@@ -73,13 +120,30 @@
 	</form>
 {:else}
 	<form
-		class={`${$page.url.pathname.startsWith('/details') || $page.url.pathname.startsWith('/profile') ? 'flex' : 'hidden'} h-12 w-full max-w-6xl items-center`}
+		class={`${$page.url.pathname.startsWith('/details') || $page.url.pathname.startsWith('/profile') ? 'flex' : 'hidden'} relative h-12 w-full max-w-6xl items-center`}
 	>
-		<Input
+		<div
+			class={` ${showInput ? 'block' : 'hidden'} absolute top-0  w-full bg-white  z-20 py-4 px-3`}
+			bind:this={inputRef}
+		>
+			<Textarea bind:value={text} placeholder="Desribe what you want to see in detail" class="resize-none border-none shadow-none" rows={15}/>
+
+			<div class="flex justify-end mt-10 h-12">
+				<Button
+			type="button"
+			{onclick}
+			class="h-full   text-white  w-full">Generate</Button
+		>
+			</div>
+
+		</div>
+		<input
 			type="text"
 			bind:value={text}
+			bind:this={minorInputRef}
+			onclick={toggleInput}
 			placeholder="Describe what you want to see"
-			class="h-full w-[60%] rounded-none rounded-l-2xl md:w-[80%]"
+			class="h-full w-[60%] rounded-none rounded-l-2xl border bg-transparent px-5 outline-none focus:ring-0 md:w-[80%]"
 		/>
 		<Button
 			type="button"
