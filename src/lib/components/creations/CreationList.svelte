@@ -5,6 +5,7 @@
 	import { filterPostByCat, likePost, getUserLikedPosts } from '@/api';
 	import { store } from '$lib/store';
 	import Image from '../Image.svelte';
+	import More from '../More.svelte';
 
 	let likedPosts = $derived(getUserLikedPosts($store.user?.id));
 	let { data, choice }: { data: Post[]; choice: string } = $props();
@@ -24,7 +25,7 @@
 	{#each posts as item: Post}
 		<div class="relative mb-6 break-inside-avoid">
 			<div class="absolute bottom-1 right-0 flex items-center text-white">
-				<Button variant="ghost"><Ellipsis size={20}></Ellipsis></Button>
+				<More />
 
 				<Button
 					variant="ghost"

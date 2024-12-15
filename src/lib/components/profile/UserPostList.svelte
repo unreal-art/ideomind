@@ -7,6 +7,7 @@
 
 	import { getUserLikedPosts } from '@/api';
 	import Image from '../Image.svelte';
+	import More from '../More.svelte';
 
 	let likedPosts = $derived(getUserLikedPosts($store.user?.id));
 	let {
@@ -31,8 +32,7 @@
 	{#each data as item}
 		<div class="relative mb-6 break-inside-avoid">
 			<div class="absolute bottom-1 right-0 flex items-center text-white">
-				<Button variant="ghost"><Ellipsis size={20}></Ellipsis></Button>
-
+				<More />
 				<Button
 					variant="ghost"
 					onclick={() => like(item)}

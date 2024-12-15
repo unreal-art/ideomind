@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Bell, House, Menu, Plus, GalleryVertical } from 'lucide-svelte';
+	import { Bell, House, Menu, Plus, GalleryVertical, Telescope } from 'lucide-svelte';
 	import Button from '@/components/ui/button/button.svelte';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 
@@ -7,7 +7,7 @@
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { buttonVariants } from '$lib/components/ui/button/index.js';
 	import { Zap } from 'lucide-svelte';
-
+	import * as Drawer from '$lib/components/ui/drawer/index.js';
 	import { Icon } from 'svelte-icons-pack';
 	import { RiLogosTwitterXFill } from 'svelte-icons-pack/ri';
 	import { AiOutlineDiscord } from 'svelte-icons-pack/ai';
@@ -19,7 +19,62 @@
 	import User from 'lucide-svelte/icons/user';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
 	import { BsBell } from 'svelte-icons-pack/bs';
+
+	import Textarea from './ui/textarea/textarea.svelte';
+	import { createNewPost, generateImage, postsByFollowed } from '@/api';
 	import { store } from '$lib/store';
+	import type { DartsJobData, JobSpec, Output, Post } from '@/types';
+	import { v4 as uuidv4 } from 'uuid';
+	import type { UploadResponse } from 'pinata';
+	import { toast } from 'svelte-sonner';
+
+	let text = $state('');
+	let open = $state(false);
+
+	const onclick = async () => {
+		open = false;
+		store.updateLoader(true);
+		const dto: JobSpec = {
+			module: 'isdxl',
+			version: 'v1.2.0',
+			inputs: {
+				Prompt: text,
+				cpu: 30,
+				Device: 'xpu'
+			}
+		};
+		const data: Output | undefined = await generateImage(dto);
+		//store the post
+		const post: Post = {
+			id: uuidv4(),
+			author: $store.user?.id as string,
+			isPrivate: false,
+			prompt: text,
+			isPinned: false,
+			category: 'GENERATION',
+			likes: 0,
+			images: [],
+			ipfsImages: data?.uploadResponse as UploadResponse[],
+			cpu: dto.inputs?.cpu as number,
+			device: dto.inputs?.Device as string,
+			createdAt: new Date()
+		};
+
+		if (!data) {
+			toast.error('Error', {
+				description: 'File generation failed'
+				// action: {
+				// 	label: 'Undo',
+				// 	onClick: () => console.info('Undo')
+				// }
+			});
+			store.updateLoader(false);
+		} else {
+			createNewPost(post);
+			store.updateLoader(false);
+			text = '';
+		}
+	};
 </script>
 
 <section class="fixed bottom-0 h-20 w-full bg-stone-50 lg:hidden">
@@ -27,17 +82,44 @@
 		class="before:absolute before:left-0 before:top-0 before:h-2 before:w-full before:bg-transparent before:shadow-md"
 	></div>
 	<div class="flex h-full w-full items-center justify-between px-4 pt-2">
-		<Button class="relative w-10 bg-transparent text-primary shadow-none hover:bg-transparent">
-			<House size={20} />
-		</Button>
+		<a href="/explore">
+			<Button class="relative w-10 bg-transparent text-primary shadow-none hover:bg-transparent">
+				<Telescope size={22} />
+			</Button>
+		</a>
 
-		<Button class="relative w-10 bg-transparent text-primary shadow-none hover:bg-transparent">
-			<GalleryVertical size={20} class="" />
-		</Button>
+		<a href="/creations">
+			<Button class="relative w-10 bg-transparent text-primary shadow-none hover:bg-transparent">
+				<GalleryVertical size={20} class="" />
+			</Button>
+		</a>
 
-		<Button class="h-12 w-12 rounded-full  p-0">
-			<Plus size={30} />
-		</Button>
+		<Drawer.Root bind:open>
+			<Drawer.Trigger>
+				<Button class="h-12 w-12 rounded-full  p-0 ">
+					<Plus size={30} />
+				</Button></Drawer.Trigger
+			>
+			<Drawer.Content>
+				<div class="mx-auto w-full max-w-sm">
+					<Drawer.Header>
+						<Drawer.Title>Generate Media</Drawer.Title>
+						<Drawer.Description>Unleash your creative juice.</Drawer.Description>
+					</Drawer.Header>
+					<Textarea
+						placeholder="Describe what you want to see"
+						rows={10}
+						class="ring-0"
+						bind:value={text}
+					/>
+
+					<Drawer.Footer>
+						<Button {onclick}>Generate</Button>
+						<Drawer.Close class={buttonVariants({ variant: 'outline' })}>Cancel</Drawer.Close>
+					</Drawer.Footer>
+				</div>
+			</Drawer.Content>
+		</Drawer.Root>
 
 		<Button
 			class="relative w-10 bg-transparent text-primary shadow-none ring-transparent hover:bg-transparent"
@@ -56,8 +138,7 @@
 					<Sheet.Header>
 						<Sheet.Title>Notifications</Sheet.Title>
 						<Sheet.Description>
-							This action cannot be undone. This will permanently delete your account and remove
-							your data from our servers.
+							It looks like we do not have anything for you now.
 						</Sheet.Description>
 					</Sheet.Header>
 				</Sheet.Content>
@@ -78,8 +159,8 @@
 								<div class="flex h-full space-x-2">
 									<img src={profileImage} alt="user profile" class="h-full rounded-full" />
 									<div class="flex flex-col">
-										<p class="text-sm">Codypharm</p>
-										<p class="text-sm font-extralight text-gray-400">williamikeji@gmail.com</p>
+										<p class="text-sm">{$store.user?.name}</p>
+										<p class="text-sm font-extralight text-gray-400">{$store.user?.email}</p>
 									</div>
 								</div>
 							</div>
