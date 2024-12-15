@@ -18,6 +18,8 @@
 	import { getImageUrl } from '@/api';
 	import { formatDistanceToNow } from 'date-fns';
 	import ImageComponent from '@/components/Image.svelte';
+ 	import { copy, type CopyDetail } from '@svelte-put/copy';
+	import { toast } from 'svelte-sonner';
 
 	let likedPosts = $derived(getUserLikedPosts($store.user?.id));
 
@@ -26,7 +28,8 @@
 	let post: Post = $derived(getPost(params.slug, $store.posts) as Post);
 	let otherPosts: Post[] = $derived(getUserOtherPosts(post.author, post.id, $store.posts));
 	let resolution = $state('');
-
+	let trigger: HTMLButtonElement | undefined = $state(undefined);
+	let copied = $state('');
 	let fullPrompt = $state(false);
 	let fullMagicPrompt = $state(false);
 	let text = $derived(post.prompt);
@@ -67,6 +70,15 @@
 		});
 	};
 
+
+	
+	function handleCopied(e: CustomEvent<CopyDetail>) {
+		copied = e.detail.text;
+		toast('Copied', {
+				description: ''
+				
+			});
+	}
 	$effect(() => {
 		const fetchResolution = async () => {
 			const result: { width: string; height: string } = (await getImageResolution(
@@ -114,6 +126,7 @@
 				</div>
 			</div>
 
+
 			<!-- image list -->
 			<div class="flex h-28 gap-3 overflow-x-auto">
 				{#each imageUrls as img}
@@ -131,15 +144,16 @@
 				<div class="flex h-12 w-full items-center justify-between">
 					<p class="font-semibold">Prompt</p>
 					<div class="flex h-full items-center gap-3">
-						<Button variant="outline" class="p-2 text-gray-500">
+						<button class="p-2 text-gray-500 rounded border hover:bg-secondary">
 							<Plus size={20} />
-						</Button>
-						<Button variant="outline" class="p-2 text-gray-500">
+						</button>
+						<button  class="p-2 text-gray-500 border  rounded-sm hover:bg-secondary"  bind:this={trigger}>
 							<Files size={20} />
-						</Button>
+						</button>
 					</div>
 				</div>
-				<p class="prose">
+				<p class="prose" use:copy={{ trigger }}
+		oncopied={handleCopied}>
 					{#if text.length > 200}
 						{#if !fullPrompt}
 							{text.substring(0, 200)}
