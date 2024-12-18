@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button/index.js';
+	import { Button } from "$lib/components/ui/button/index.js";
 
-	import { Ellipsis, Heart, Files, Plus } from 'lucide-svelte';
-	import Separator from '@/components/ui/separator/separator.svelte';
-	import { page } from '$app/stores';
+	import { Ellipsis, Heart, Files, Plus } from "lucide-svelte";
+	import Separator from "@/components/ui/separator/separator.svelte";
+	import { page } from "$app/stores";
 	import {
 		getPost,
 		getPostUserImage,
@@ -11,28 +11,33 @@
 		likePost,
 		getUserLikedPosts,
 		getUserOtherPosts
-	} from '@/api';
-	import type { Post, UploadResponse } from '@/types';
-	import { store } from '$lib/store';
+	} from "@/api";
+	import type { Post, UploadResponse } from "@/types";
+	import { store } from "$lib/store";
 
-	import { getImageUrl } from '@/api';
-	import { formatDistanceToNow } from 'date-fns';
-	import ImageComponent from '@/components/Image.svelte';
- 	import { copy, type CopyDetail } from '@svelte-put/copy';
-	import { toast } from 'svelte-sonner';
+	import { getImageUrl } from "@/api";
+	import { formatDistanceToNow } from "date-fns";
+	import ImageComponent from "@/components/Image.svelte";
+	import { copy, type CopyDetail } from "@svelte-put/copy";
+	import { toast } from "svelte-sonner";
+	import { goto } from "$app/navigation";
 
 	let likedPosts = $derived(getUserLikedPosts($store.user?.id));
 
-	let imageUrls = $state(['']);
+	let imageUrls = $state([""]);
 	let params = $derived($page.params);
 	let post: Post = $derived(getPost(params.slug, $store.posts) as Post);
 	let otherPosts: Post[] = $derived(getUserOtherPosts(post.author, post.id, $store.posts));
-	let resolution = $state('');
+	let resolution = $state("");
 	let trigger: HTMLButtonElement | undefined = $state(undefined);
-	let copied = $state('');
+	let copied = $state("");
 	let fullPrompt = $state(false);
 	let fullMagicPrompt = $state(false);
 	let text = $derived(post.prompt);
+
+	$effect(() => {
+		if (!$store.isAuthenticated) goto("/");
+	});
 
 	const like = (item: Post) => {
 		if (!$store.user?.id) return;
@@ -44,12 +49,12 @@
 	};
 
 	const getDate = (date: Date | undefined): string => {
-		if (!date) return '';
-		const month = date.toLocaleString('default', { month: 'short' }); // Get full month name (e.g., 'December')
+		if (!date) return "";
+		const month = date.toLocaleString("default", { month: "short" }); // Get full month name (e.g., 'December')
 		const year = date.getFullYear();
 		let hour = date.getHours();
-		const mins = date.getMinutes().toString().padStart(2, '0'); // Ensure minutes are 2 digits
-		const amOrPm = hour >= 12 ? 'pm' : 'am'; // Determine AM or PM
+		const mins = date.getMinutes().toString().padStart(2, "0"); // Ensure minutes are 2 digits
+		const amOrPm = hour >= 12 ? "pm" : "am"; // Determine AM or PM
 		hour = hour % 12 || 12; // Convert to 12-hour format, adjust for 0 to 12
 
 		return `${month} ${year} at ${hour}:${mins} ${amOrPm}`;
@@ -65,19 +70,16 @@
 		const img = new Image();
 		return new Promise((resolve, reject) => {
 			img.onload = () => resolve({ width: img.width, height: img.height });
-			img.onerror = () => reject(new Error('Failed to load image'));
+			img.onerror = () => reject(new Error("Failed to load image"));
 			img.src = url; // Start loading the image
 		});
 	};
 
-
-	
 	function handleCopied(e: CustomEvent<CopyDetail>) {
 		copied = e.detail.text;
-		toast('Copied', {
-				description: ''
-				
-			});
+		toast("Copied", {
+			description: ""
+		});
 	}
 	$effect(() => {
 		const fetchResolution = async () => {
@@ -120,12 +122,11 @@
 					<Button variant="ghost" onclick={() => like(post)}
 						><Heart
 							size={20}
-							class={`${isInLikedPosts(post.id) ? 'fill-pink-500 text-pink-500' : ''}`}
+							class={`${isInLikedPosts(post.id) ? "fill-pink-500 text-pink-500" : ""}`}
 						/></Button
 					>
 				</div>
 			</div>
-
 
 			<!-- image list -->
 			<div class="flex h-28 gap-3 overflow-x-auto">
@@ -144,16 +145,18 @@
 				<div class="flex h-12 w-full items-center justify-between">
 					<p class="font-semibold">Prompt</p>
 					<div class="flex h-full items-center gap-3">
-						<button class="p-2 text-gray-500 rounded border hover:bg-secondary">
+						<button class="rounded border p-2 text-gray-500 hover:bg-secondary">
 							<Plus size={20} />
 						</button>
-						<button  class="p-2 text-gray-500 border  rounded-sm hover:bg-secondary"  bind:this={trigger}>
+						<button
+							class="rounded-sm border p-2 text-gray-500 hover:bg-secondary"
+							bind:this={trigger}
+						>
 							<Files size={20} />
 						</button>
 					</div>
 				</div>
-				<p class="prose" use:copy={{ trigger }}
-		oncopied={handleCopied}>
+				<p class="prose" use:copy={{ trigger }} oncopied={handleCopied}>
 					{#if text.length > 200}
 						{#if !fullPrompt}
 							{text.substring(0, 200)}
@@ -275,7 +278,7 @@
 					<Button variant="ghost" onclick={() => like(post)}
 						><Heart
 							size={20}
-							class={`${isInLikedPosts(post.id) ? 'fill-pink-500 text-pink-500' : ''}`}
+							class={`${isInLikedPosts(post.id) ? "fill-pink-500 text-pink-500" : ""}`}
 						/></Button
 					>
 				</div>

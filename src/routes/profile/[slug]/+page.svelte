@@ -1,16 +1,17 @@
 <script lang="ts">
-	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import image1 from '$lib/assets/ima1.jpg';
-	import { Search, X, CalendarRange, MapPinHouse } from 'lucide-svelte';
-	import * as Dialog from '$lib/components/ui/dialog/index.js';
-	import { Label } from '$lib/components/ui/label/index.js';
-	import Textarea from '@/components/ui/textarea/textarea.svelte';
-	import { store } from '$lib/store';
-	import { getUser, updateUserDetails, getUserLikedPosts, getUserPosts } from '@/api';
-	import UserPostList from '@/components/profile/UserPostList.svelte';
-	import { page } from '$app/stores';
+	import { Button, buttonVariants } from "$lib/components/ui/button/index.js";
+	import { Input } from "$lib/components/ui/input/index.js";
+	import * as Tabs from "$lib/components/ui/tabs";
+	import image1 from "$lib/assets/ima1.jpg";
+	import { Search, X, CalendarRange, MapPinHouse } from "lucide-svelte";
+	import * as Dialog from "$lib/components/ui/dialog/index.js";
+	import { Label } from "$lib/components/ui/label/index.js";
+	import Textarea from "@/components/ui/textarea/textarea.svelte";
+	import { store } from "$lib/store";
+	import { getUser, updateUserDetails, getUserLikedPosts, getUserPosts } from "@/api";
+	import UserPostList from "@/components/profile/UserPostList.svelte";
+	import { page } from "$app/stores";
+	import { goto } from "$app/navigation";
 
 	let showInput: boolean = $state(false);
 	let inputRef: HTMLDivElement | null = $state(null);
@@ -35,6 +36,10 @@
 	let privatePosts = $state(posts.filter((item) => item.isPrivate));
 	let publicPosts = $state(posts.filter((item) => !item.isPrivate));
 	let refetch = $state(false);
+
+	$effect(() => {
+		if (!$store.isAuthenticated) goto("/");
+	});
 
 	// Toggle input visibility
 	const toggleInput = (): void => {
@@ -64,10 +69,10 @@
 
 	// Attach and clean up event listeners
 	$effect(() => {
-		document.addEventListener('click', handleClickOutside);
+		document.addEventListener("click", handleClickOutside);
 
 		return () => {
-			document.removeEventListener('click', handleClickOutside);
+			document.removeEventListener("click", handleClickOutside);
 		};
 	});
 	$effect(() => {
@@ -80,11 +85,11 @@
 
 		// Add a scroll listener to the container
 		if (scrollContainer) {
-			scrollContainer.addEventListener('scroll', handleScroll);
+			scrollContainer.addEventListener("scroll", handleScroll);
 		}
 		return () => {
 			if (scrollContainer) {
-				scrollContainer.removeEventListener('scroll', handleScroll);
+				scrollContainer.removeEventListener("scroll", handleScroll);
 			}
 		};
 	});
@@ -109,8 +114,8 @@
 	// });
 
 	const getDate = (date: Date | undefined): string => {
-		if (!date) return '';
-		const month = date.toLocaleString('default', { month: 'long' }); // Get full month name (e.g., 'December')
+		if (!date) return "";
+		const month = date.toLocaleString("default", { month: "long" }); // Get full month name (e.g., 'December')
 		const year = date.getFullYear();
 		return `${month} ${year}`;
 	};
@@ -174,7 +179,7 @@
 		<div class="flex h-full items-start">
 			<Dialog.Root bind:open>
 				<Dialog.Trigger
-					class={buttonVariants({ variant: 'outline' }) +
+					class={buttonVariants({ variant: "outline" }) +
 						` absolute right-2 mt-3 h-10 rounded-md bg-stone-50 text-sm font-extralight lg:relative lg:top-10`}
 				>
 					Edit Profile
@@ -224,10 +229,10 @@
 		<Tabs.Root value="pinned" class="relative h-full w-full">
 			<div
 				bind:this={targetElement}
-				class={`${isFixed ? 'fixed left-0 lg:top-16 ' : ' lg:relative'} top-0 z-20 flex h-12 w-full justify-center bg-stone-50 `}
+				class={`${isFixed ? "fixed left-0 lg:top-16 " : " lg:relative"} top-0 z-20 flex h-12 w-full justify-center bg-stone-50 `}
 			>
 				<div
-					class={`${showInput ? 'block' : 'hidden'} absolute left-0 top-0 z-20 h-full w-full max-w-[1000px] rounded-2xl border bg-stone-50`}
+					class={`${showInput ? "block" : "hidden"} absolute left-0 top-0 z-20 h-full w-full max-w-[1000px] rounded-2xl border bg-stone-50`}
 				>
 					<div class="absolute right-0 top-0 flex h-full w-10 items-center justify-center">
 						<Button variant="ghost" class="h-full hover:bg-transparent">
@@ -246,7 +251,7 @@
 					<img
 						src={image1}
 						alt="user profile"
-						class={`${isFixed ? 'block' : 'hidden'} absolute left-2 top-2 h-8 w-8 rounded-full lg:left-28`}
+						class={`${isFixed ? "block" : "hidden"} absolute left-2 top-2 h-8 w-8 rounded-full lg:left-28`}
 					/>
 					<div class="flex h-full items-center" bind:this={buttonRef}>
 						<Button onclick={toggleInput} variant="ghost" class="hidden h-full lg:block">
