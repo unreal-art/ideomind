@@ -1,8 +1,8 @@
-import { writable } from 'svelte/store';
-import { browser } from '$app/environment'; // Import SvelteKit's environment helper
-import * as db from '$lib/data';
-import type { Post, User, Like } from '$lib/types';
-import CircularJSON from 'circular-json';
+import { writable } from "svelte/store";
+import { browser } from "$app/environment"; // Import SvelteKit's environment helper
+import * as db from "$lib/data";
+import type { Post, User, Like } from "$lib/types";
+import CircularJSON from "circular-json";
 
 // Define the initial state
 const initialState: {
@@ -22,7 +22,7 @@ const initialState: {
 };
 
 // Helper to persist and load state from localStorage
-const persistKey = 'app-store';
+const persistKey = "app-store";
 
 const loadState = (): typeof initialState => {
 	if (!browser) return initialState; // Return default state during SSR
@@ -59,14 +59,16 @@ const createStore = () => {
 			if (!browser) return; // Avoid initializing on the server
 			const { users, posts, likes } = db;
 
-			set({
-				user: users[0],
-				posts,
-				likes,
-				users,
-				isAuthenticated: true,
-				isGeneratingFiles: false
-			});
+			// TODO: Fetch data from db if needed
+
+			// set({
+			// 	user,
+			// 	posts,
+			// 	likes,
+			// 	users,
+			// 	isAuthenticated: false,
+			// 	isGeneratingFiles: false
+			// });
 		},
 		authenticateUser: (user: User) => {
 			update((state) => ({

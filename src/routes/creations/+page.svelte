@@ -1,26 +1,27 @@
 <script lang="ts">
-	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import { Search, X, ListFilter } from 'lucide-svelte';
-	import * as Select from '$lib/components/ui/select/index.js';
-	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
-	import CreationList from '@/components/creations/CreationList.svelte';
-	import { store } from '$lib/store';
-	import { getUserPosts } from '@/api';
-	import PromptForm from '@/components/PromptForm.svelte';
+	import { Button, buttonVariants } from "$lib/components/ui/button/index.js";
+	import { Input } from "$lib/components/ui/input/index.js";
+	import * as Tabs from "$lib/components/ui/tabs";
+	import { Search, X, ListFilter } from "lucide-svelte";
+	import * as Select from "$lib/components/ui/select/index.js";
+	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
+	import CreationList from "@/components/creations/CreationList.svelte";
+	import { store } from "$lib/store";
+	import { getUserPosts } from "@/api";
+	import PromptForm from "@/components/PromptForm.svelte";
+	import { goto } from "$app/navigation";
 
 	const choices = [
-		{ value: 'everything', label: 'Everything' },
-		{ value: 'generation', label: 'Generations' },
-		{ value: 'edit', label: 'Edits' },
-		{ value: 'upload', label: 'Uploads' },
-		{ value: 'upscale', label: 'Upscales' }
+		{ value: "everything", label: "Everything" },
+		{ value: "generation", label: "Generations" },
+		{ value: "edit", label: "Edits" },
+		{ value: "upload", label: "Uploads" },
+		{ value: "upscale", label: "Upscales" }
 	];
-	let selectedChoice = $state('everything');
+	let selectedChoice = $state("everything");
 
 	const triggerContent = $derived(
-		choices.find((f) => f.value === selectedChoice)?.label ?? 'Filter'
+		choices.find((f) => f.value === selectedChoice)?.label ?? "Filter"
 	);
 
 	let showInput: boolean = $state(false);
@@ -31,6 +32,10 @@
 	let pinnedPosts = $derived(posts.filter((item) => item.isPinned));
 	let privatePosts = $derived(posts.filter((item) => item.isPrivate));
 	let publicPosts = $derived(posts.filter((item) => !item.isPrivate));
+
+	$effect(() => {
+		if (!$store.isAuthenticated) goto("/");
+	});
 
 	// Toggle input visibility
 	const toggleInput = (): void => {
@@ -51,21 +56,21 @@
 
 	// Attach and clean up event listeners
 	$effect(() => {
-		document.addEventListener('click', handleClickOutside);
-		return () => document.removeEventListener('click', handleClickOutside);
+		document.addEventListener("click", handleClickOutside);
+		return () => document.removeEventListener("click", handleClickOutside);
 	});
 </script>
 
 <section class="h-full w-full overflow-auto px-2">
 	<div class="hidden h-[20%] flex-col items-center justify-center gap-3 lg:flex">
 		<h2 class="text-sm font-semibold md:text-2xl lg:text-4xl">Unleash your creative juice.</h2>
-		<PromptForm section={'body'} />
+		<PromptForm section={"body"} />
 	</div>
 	<div class="h-full lg:h-[79%]">
 		<Tabs.Root value="all" class="h-full w-full">
 			<div class="fixed top-0 z-50 flex h-12 w-full justify-between bg-stone-50 lg:relative">
 				<div
-					class={` ${showInput ? 'block' : 'hidden'} absolute left-0 top-0 z-20 h-full w-full max-w-[1000px] rounded-2xl border bg-stone-50`}
+					class={` ${showInput ? "block" : "hidden"} absolute left-0 top-0 z-20 h-full w-full max-w-[1000px] rounded-2xl border bg-stone-50`}
 				>
 					<div class="absolute right-0 top-0 flex h-full w-10 items-center justify-center">
 						<Button variant="ghost" class="h-full hover:bg-transparent">
@@ -95,7 +100,7 @@
 
 					<div class="flex h-full items-center lg:hidden">
 						<DropdownMenu.Root>
-							<DropdownMenu.Trigger class={buttonVariants({ variant: 'ghost' })}>
+							<DropdownMenu.Trigger class={buttonVariants({ variant: "ghost" })}>
 								<ListFilter size={20} /></DropdownMenu.Trigger
 							>
 							<DropdownMenu.Content class="w-56">
