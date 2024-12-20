@@ -21,7 +21,7 @@
 		store.updateLoader(true);
 		const dto: JobSpec = {
 			module: 'isdxl',
-			version: 'v1.2.0',
+			version: 'v1.3.0',
 			inputs: {
 				Prompt: text,
 				cpu: 30,
@@ -31,18 +31,15 @@
 		const data: Output | undefined = await generateImage(dto);
 		//store the post
 		const post: Post = {
-			id: uuidv4(),
 			author: $store.user?.id as string,
 			isPrivate: false,
 			prompt: text,
 			isPinned: false,
 			category: 'GENERATION',
-			likes: 0,
-			images: [],
 			ipfsImages: data?.uploadResponse as UploadResponse[],
 			cpu: dto.inputs?.cpu as number,
 			device: dto.inputs?.Device as string,
-			createdAt: new Date()
+		
 		};
 
 		if (!data) {
@@ -61,7 +58,7 @@
 		}
 	};
 
-	$inspect(showInput);
+	// $inspect(showInput);
 	// Toggle input visibility
 	const toggleInput = (): void => {
 		showInput = true;

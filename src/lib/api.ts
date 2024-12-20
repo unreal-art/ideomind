@@ -46,8 +46,27 @@ export const updateUserDetails = (user: Partial<User>) => {
 };
 
 // Function to create a new post
-export const createNewPost = (post: Post) => {
-	store.createPost(post);
+export const createNewPost = async (post: Post) => {
+	// store.createPost(post);
+	const { data, error } = await supabase.from("posts").insert([
+		{
+			author: post.author,
+			isPrivate: false,
+			prompt: post.prompt,
+			isPinned: post.isPinned,
+			category: post.category,
+			ipfsImages: post.ipfsImages,
+			cpu: post.cpu,
+			device: post.device
+		}
+	]);
+
+	if (error) {
+		console.error("Error inserting post:", error);
+	} else {
+		console.log("Post inserted successfully:", data);
+		data && store.createPost(data)
+	}
 };
 
 export const fetchPosts = async () => {
