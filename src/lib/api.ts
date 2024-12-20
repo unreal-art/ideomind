@@ -134,6 +134,64 @@ export const getUserOtherPosts = (
 	return allPosts.filter((post) => post.author === userId && post.id !== excludedPostId);
 };
 
+export const fetchAuthorOtherPosts = async (authorId: string, excludePostId: string) => {
+	if (!authorId || !excludePostId) return;
+	try {
+		// Fetch posts by the author, excluding the one with the specified ID
+		const { data: posts, error } = await supabase
+			.from("posts")
+			.select(
+				`
+            *,
+            likes (
+                *
+            )
+        `
+			) // Adjust columns as necessary
+			.eq("author", authorId) // Filter by author ID
+			.neq("id", excludePostId); // Exclude the post with this ID
+
+		if (error) {
+			console.error("Error fetching posts by author:", error);
+			return [];
+		}
+
+		store.initPosts(posts);
+	} catch (err) {
+		console.error("Unexpected error fetching posts by author:", err);
+		return [];
+	}
+};
+
+export const fetchSelectedPost = async (slug: string) => {
+	console.log(slug);
+	if (!slug) {
+		console.error("Slug is missing");
+		return { post: null };
+	}
+
+	// Fetch the post with the matching slug
+	const { data, error } = await supabase
+		.from("posts")
+		.select(
+			`
+                *,
+                likes (
+                    *
+                )
+            `
+		)
+		.eq("id", slug) // Assuming `slug` corresponds to the `id` column in the "posts" table
+		.single(); // Fetch only a single row
+
+	if (error) {
+		console.error("Error fetching post:", error);
+		return { data: null };
+	}
+
+	store.initPost(data);
+};
+
 /**
  * Retrieves posts liked by a specific user.
  *
@@ -253,7 +311,13 @@ export const postsByFollowed = async (userId: string) => {
 // Function to like a post
 // Like a post for the given user by postId.
 
-export async function likePost(postId: string, userId: string, isProfilePage = false) {
+export async function likePost(
+	postId: string,
+	userId: string,
+	page = "general",
+	authorId = "",
+	excludedPost = ""
+) {
 	try {
 		// Check if a like already exists
 		const { data: existingLike, error: fetchError } = await supabase
@@ -300,7 +364,15 @@ export async function likePost(postId: string, userId: string, isProfilePage = f
 		}
 
 		// Refresh posts after toggling like
-		isProfilePage ? await fetchProfilePosts() : await fetchPosts();
+		if (page === "general") {
+			await fetchPosts();
+		} else if (page === "details") {
+			await fetchAuthorOtherPosts(authorId, excludedPost);
+			await fetchSelectedPost(postId);
+		} else {
+			await fetchPosts();
+		}
+
 		return { message: "Operation successful" };
 	} catch (err) {
 		console.error("An unexpected error occurred:", err);

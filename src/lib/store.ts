@@ -8,6 +8,7 @@ import CircularJSON from "circular-json";
 const initialState: {
 	user: User | null;
 	posts: Post[];
+	post: Post;
 	likes: Like[];
 	isAuthenticated: boolean;
 	users: User[];
@@ -15,6 +16,7 @@ const initialState: {
 } = {
 	user: null,
 	posts: [],
+	post: {} as Post,
 	likes: [],
 	users: [],
 	isAuthenticated: false,
@@ -88,6 +90,12 @@ const createStore = () => {
 			update((state) => ({
 				...state,
 				posts
+			}));
+		},
+		initPost: (post: Post) => {
+			update((state) => ({
+				...state,
+				post
 			}));
 		},
 		createPost: (post: Post) => {

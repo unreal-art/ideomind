@@ -4,7 +4,6 @@
 	import PostList from "@/components/explore/PostList.svelte";
 	import { store } from "$lib/store";
 	import PromptForm from "@/components/PromptForm.svelte";
-	import { supabase } from "../../supabaseClient";
 	import type { PageData } from "./$types";
 	import { goto } from "$app/navigation";
 	import type { Post } from "@/types";
