@@ -37,10 +37,22 @@ Content-Type: application/json
 
 {
   "module": "github.com/darts2024/dart-isdxl",
-  "version": "v0.3.0",
+  "version": "v1.3.0",
   "inputs": {
     "Prompt": "Beautiful girl",
     "Device": "xpu"
+  }
+}
+### Cowsay
+
+POST http://localhost:5173/darts
+Content-Type: application/json
+
+{
+  "module": "cowsay",
+  "version": "v0.1.3",
+  "inputs": {
+    "Message": "Hi from vite dev "
   }
 }
 ###

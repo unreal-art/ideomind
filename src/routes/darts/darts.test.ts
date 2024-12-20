@@ -1,6 +1,6 @@
-import { extractLocationURL } from './darts';
+import { extractLocationURL } from "./darts";
 
-extractLocationURL(`
+let oldLocUrl = extractLocationURL(`
   
 >====>                           >=>           
 >=>   >=>                        >=>           
@@ -284,11 +284,14 @@ Deal QmWijvfuCbnPQP5MRmqHJTArPTEhdeUX7aj483fTwZyq3x is matched
     https://ipfs.io/ipfs/
 `);
 
-extractLocationURL(`
-🍂 Darts job completed in 12.689718167s, try 👇
-    open /Users/hiro/.darts/torus/jc/downloaded-files/QmWijvfuCbnPQP5MRmqHJTArPTEhdeUX7aj483fTwZyq3x
-    cat /Users/hiro/.darts/torus/jc/downloaded-files/QmWijvfuCbnPQP5MRmqHJTArPTEhdeUX7aj483fTwZyq3x/stdout
-    cat /Users/hiro/.darts/torus/jc/downloaded-files/QmWijvfuCbnPQP5MRmqHJTArPTEhdeUX7aj483fTwZyq3x/stderr
-    https://ipfs.io/ipfs/    
+let locUrl = extractLocationURL(`
+🍂 Darts job completed in 13.164975667s by 0x72Ae2c817CE0D813DD8f5D5527dd463Fe97e8065, try 👇
+    open /Users/hiro/.darts/torus/jc/downloaded-files/Qmdx4GDC1fb7J6McAxEVLwL3aDqj83Co785W8J1RVK6HNy
+    cat /Users/hiro/.darts/torus/jc/downloaded-files/Qmdx4GDC1fb7J6McAxEVLwL3aDqj83Co785W8J1RVK6HNy/exitCode
+    cat /Users/hiro/.darts/torus/jc/downloaded-files/Qmdx4GDC1fb7J6McAxEVLwL3aDqj83Co785W8J1RVK6HNy/stdout
+    cat /Users/hiro/.darts/torus/jc/downloaded-files/Qmdx4GDC1fb7J6McAxEVLwL3aDqj83Co785W8J1RVK6HNy/stderr 
 
 `);
+
+console.log(oldLocUrl);
+console.log(locUrl);
