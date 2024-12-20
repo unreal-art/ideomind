@@ -83,6 +83,13 @@ const createStore = () => {
 				user: { ...state.user, ...user }
 			}));
 		},
+
+		initPosts: (posts: Post[]) => {
+			update((state) => ({
+				...state,
+				posts
+			}));
+		},
 		createPost: (post: Post) => {
 			update((state) => ({
 				...state,

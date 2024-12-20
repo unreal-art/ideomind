@@ -1,14 +1,16 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Ellipsis, Heart } from 'lucide-svelte';
-	import type { Post } from '@/types';
-	import { formatDistanceToNow } from 'date-fns';
-	import { getPostUserImage, getPostUserName, likePost, getUserLikedPosts } from '@/api';
-	import { store } from '$lib/store';
-	import Image from '../Image.svelte';
-	import More from '../More.svelte';
+	import { Button } from "$lib/components/ui/button/index.js";
+	import { Heart } from "lucide-svelte";
+	import type { Post } from "@/types";
+	import { formatDistanceToNow } from "date-fns";
+	import { likePost, getUserLikedPosts } from "@/api";
+	import { store } from "$lib/store";
+	import Image from "../Image.svelte";
+	import More from "../More.svelte";
+	import PostImage from "../PostImage.svelte";
+	import PostAuthor from "../PostAuthor.svelte";
 
-	let likedPosts = $derived(getUserLikedPosts($store.user?.id));
+	// let likedPosts = $derived(getUserLikedPosts($store.user?.id));
 	let { data }: { data: Post[] } = $props();
 
 	const like = (item: Post) => {
@@ -16,8 +18,8 @@
 		likePost(item.id, $store.user?.id);
 	};
 
-	const isInLikedPosts = (id: string): boolean => {
-		return likedPosts.filter((item) => item.id == id).length > 0;
+	const isInLikedPosts = (likes: any[]): boolean => {
+		return likes.filter((item) => item.author === $store.user?.id).length > 0;
 	};
 </script>
 
@@ -27,9 +29,9 @@
 			<Image {item} />
 			<div class="mt-3 flex h-10 w-full items-center justify-between">
 				<div class="flex h-full space-x-2">
-					<img src={getPostUserImage(item.author)} alt="user profile" class="h-full rounded-full" />
+					<PostImage authorId={item.author} />
 					<div class="flex flex-col">
-						<p class="text-sm">{getPostUserName(item.author)}</p>
+						<PostAuthor authorId={item.author} />
 						<p class="text-light text-sm text-gray-400">
 							{formatDistanceToNow(item.createdAt)} ago
 						</p>
@@ -42,10 +44,10 @@
 						onclick={() => like(item)}
 						class="flex space-x-2 hover:bg-black/50 hover:text-white"
 					>
-						<span>{item.likes}</span>
+						<span>{item.likes.length}</span>
 						<Heart
 							size={20}
-							class={`${isInLikedPosts(item.id) ? 'fill-pink-500 text-pink-500' : ''}`}
+							class={`${isInLikedPosts(item.likes) ? "fill-pink-500 text-pink-500" : ""}`}
 						></Heart></Button
 					>
 				</div>

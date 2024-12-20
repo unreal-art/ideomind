@@ -7,12 +7,21 @@
 	import { supabase } from "../../supabaseClient";
 	import type { PageData } from "./$types";
 	import { goto } from "$app/navigation";
+	import type { Post } from "@/types";
 
-	let postFromFollowedUsers = $derived(postsByFollowed($store.user?.id || "0"));
+	let postFromFollowedUsers = $state<Post[]>([]);
 	let { data }: { data: PageData } = $props();
 
 	$effect(() => {
 		if (!data.user || !$store.isAuthenticated) goto("/");
+	});
+
+	$effect(() => {
+		async function getPostOfFollowee() {
+			postFromFollowedUsers = await postsByFollowed($store.user?.id || "0");
+		}
+
+		getPostOfFollowee();
 	});
 
 	// $effect(() => {

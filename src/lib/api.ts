@@ -1,10 +1,11 @@
-import axios from 'axios';
-import type { DartsJobData, JobSpec, Like, Post, User } from './types';
-import { store } from '$lib/store';
+import axios from "axios";
+import type { DartsJobData, FollowStats, JobSpec, Like, Post, User } from "./types";
+import { store } from "$lib/store";
 // import { uploadImage } from '../routes/darts/pinata';
-import { PinataSDK } from 'pinata';
+import { PinataSDK } from "pinata";
 
-import { PUBLIC_API_URL } from '$env/static/public';
+import { PUBLIC_API_URL } from "$env/static/public";
+import { supabase } from "../supabaseClient";
 
 const pinata = new PinataSDK({
 	pinataJwt: import.meta.env.VITE_PINATA_JWT!,
@@ -26,11 +27,11 @@ export const getImageUrl = async (cid: string) => {
 
 export async function generateImage(dto: JobSpec) {
 	try {
-		const { data }: DartsJobData = await axios.post(PUBLIC_API_URL || '' + '/darts', dto);
+		const { data }: DartsJobData = await axios.post(PUBLIC_API_URL || "" + "/darts", dto);
 
 		return data;
 	} catch (error) {
-		console.error('Error:', error);
+		console.error("Error:", error);
 	}
 }
 
@@ -47,6 +48,55 @@ export const updateUserDetails = (user: Partial<User>) => {
 // Function to create a new post
 export const createNewPost = (post: Post) => {
 	store.createPost(post);
+};
+
+export const fetchPosts = async () => {
+	//fetch post data
+	try {
+		// Fetch posts with likes
+		const { data: posts, error } = await supabase.from("posts").select(`
+        *,
+        likes (
+          *
+        )
+      `);
+
+		if (error) {
+			console.error("Error fetching posts with likes:", error);
+			return { posts: [] };
+		}
+
+		store.initPosts(posts);
+	} catch (err) {
+		console.error("Unexpected error:", err);
+		return { posts: [] };
+	}
+};
+export const fetchProfilePosts = async () => {
+	try {
+		// Fetch posts with likes where author matches the specified value
+		const { data: posts, error } = await supabase
+			.from("posts")
+			.select(
+				`
+            *,
+            likes (
+                *
+            )
+        `
+			)
+			.eq("author", store.getState().user?.id); // Filter posts by author
+
+		if (error) {
+			console.error("Error fetching posts with likes:", error);
+			return { posts: [] };
+		}
+
+		store.initPosts(posts);
+	} catch (err) {
+		console.error("Unexpected error:", err);
+		return { posts: [] };
+	}
 };
 
 /**
@@ -90,19 +140,16 @@ export const getUserOtherPosts = (
  * @param userId - The ID of the user whose liked posts are to be retrieved. If undefined, an empty array is returned.
  * @returns An array of posts liked by the specified user.
  */
-export const getUserLikedPosts = (userId: string | undefined): Post[] => {
-	// If no userId is provided, return an empty array.
-	if (!userId) return [];
+export const getUserLikedPosts = (): Post[] => {
+	// Return an empty array if no userId is provided.
+	const userId = store.getState().user?.id;
 
-	// Safely access the state and retrieve the list of liked posts for the user.
-	return (
-		store
-			.getState()
-			.likes // Filter by user ID.
-			.filter((like) => like.user.id === userId)
-			// Map the likes to their corresponding posts.
-			.map((like) => like.post) || []
-	);
+	const posts = store.getState().posts;
+
+	// Filter posts where the user has liked them.
+	const likedPosts = posts.filter((post) => post.likes.some((like: any) => like.author === userId));
+
+	return likedPosts;
 };
 
 // Get the like count for a specific post by its ID.
@@ -123,37 +170,143 @@ export const getUser = (id: string): User | null => {
 };
 
 // Retrieve a user's username by their ID, or return an empty string if not found.
-export const getPostUserName = (authorId: string): string => {
-	if (!authorId) return ''; // Return an empty string if no authorId is provided.
-	const user = store.getState().users.find((user) => user.id === authorId); // Find user by ID.
-	return user?.username || ''; // Return username or an empty string if not found.
+export const getPostUserName = async (authorId: string): Promise<string | null> => {
+	if (!authorId) {
+		console.warn("Author ID is not provided.");
+		return null;
+	}
+
+	try {
+		// Fetch profile data for the matching ID
+		const { data: profile, error } = await supabase
+			.from("profiles")
+			.select("full_name") // Select only the necessary field
+			.eq("id", authorId)
+			.single();
+
+		if (error) {
+			console.error(`Error fetching profile for author ID ${authorId}:`, error.message);
+			return null;
+		}
+
+		return profile?.full_name || null; // Ensure safe access to the field
+	} catch (err) {
+		console.error(`Unexpected error fetching profile for author ID ${authorId}:`, err);
+		return null;
+	}
 };
 
 // Retrieve a user's profile image by their ID, or return an empty string if not found.
-export const getPostUserImage = (authorId: string): string => {
-	if (!authorId) return ''; // Return an empty string if no authorId is provided.
-	const user = store.getState().users.find((user) => user.id === authorId); // Find user by ID.
-	return user?.image || ''; // Return the image URL or an empty string if not found.
+export const getPostUserImage = async (authorId: string): Promise<string | null> => {
+	if (!authorId) {
+		console.warn("Author ID is not provided.");
+		return null;
+	}
+
+	try {
+		// Fetch profile data for the matching ID
+		const { data: profile, error } = await supabase
+			.from("profiles")
+			.select("avatar_url") // Select only the necessary field
+			.eq("id", authorId)
+			.single();
+
+		if (error) {
+			console.error(`Error fetching profile for author ID ${authorId}:`, error.message);
+			return null;
+		}
+
+		return profile?.avatar_url || null; // Ensure safe access to the field
+	} catch (err) {
+		console.error(`Unexpected error fetching profile for author ID ${authorId}:`, err);
+		return null;
+	}
 };
 
 // Filter posts by category, returning all posts if 'everything' is selected.
 export const filterPostByCat = (posts: Post[], category: string): Post[] => {
-	if (category.toLowerCase() === 'everything') return posts; // Handle 'everything' category.
+	if (category.toLowerCase() === "everything") return posts; // Handle 'everything' category.
 	return posts.filter((post) => post.category === category.toUpperCase()); // Filter by category.
 };
 
-export const postsByFollowed = (userId: string): Post[] => {
-	const followedUsers = store.getState().users.filter((user) => user.id === userId);
-	// Combine all posts from followed users
-	return followedUsers.flatMap((user) => getUserPosts(user.id, store.getState().posts));
+//get list of people  a person is following
+async function getFollowsByFollowerId(followerId: string) {
+	const { data, error } = await supabase
+		.from("follows")
+		.select("*") // You can specify columns if needed
+		.eq("follower_id", followerId);
+
+	if (error) {
+		console.error("Error fetching follows:", error);
+		return [];
+	}
+	return data;
+}
+
+export const postsByFollowed = async (userId: string) => {
+	const userFollows = await getFollowsByFollowerId(userId);
+	// const followedUsers = store.getState().users.filter((user) => user.id === userId);
+	// // Combine all posts from followed users
+	return userFollows.flatMap((follow) => getUserPosts(follow.followee_id, store.getState().posts));
 };
 
 // Function to like a post
 // Like a post for the given user by postId.
-export const likePost = (postId: string, userId: string): void => {
-	if (!postId || !userId) return; // Ensure both postId and userId are provided.
-	store.likePost(postId, userId); // Call the store's likePost method.
-};
+
+export async function likePost(postId: string, userId: string, isProfilePage = false) {
+	try {
+		// Check if a like already exists
+		const { data: existingLike, error: fetchError } = await supabase
+			.from("likes")
+			.select("*")
+			.eq("author", userId)
+			.eq("post_id", postId)
+			.single(); // Fetch only one record
+
+		if (fetchError && fetchError.code !== "PGRST116") {
+			// Ignore 'not found' errors (code PGRST116 indicates no rows found)
+			console.error("Error fetching like:", fetchError);
+			return null;
+		}
+
+		if (existingLike) {
+			// Like exists, delete it
+			const { error: deleteError } = await supabase
+				.from("likes")
+				.delete()
+				.eq("id", existingLike.id); // Delete by primary key
+
+			if (deleteError) {
+				console.error("Error deleting like:", deleteError);
+				return null;
+			}
+
+			console.log("Like removed");
+		} else {
+			// Like does not exist, add it
+			const { data, error: insertError } = await supabase.from("likes").insert([
+				{
+					author: userId,
+					post_id: postId
+				}
+			]);
+
+			if (insertError) {
+				console.error("Error adding like:", insertError);
+				return null;
+			}
+
+			console.log("Like added");
+		}
+
+		// Refresh posts after toggling like
+		isProfilePage ? await fetchProfilePosts() : await fetchPosts();
+		return { message: "Operation successful" };
+	} catch (err) {
+		console.error("An unexpected error occurred:", err);
+		return null;
+	}
+}
 
 // Function to reset the store (e.g., logout)
 export const resetStore = () => {
@@ -164,3 +317,88 @@ export const resetStore = () => {
 export const initializeStore = () => {
 	store.initialize();
 };
+
+export const getLikesReceivedByUser = async (userId: string | undefined): Promise<number> => {
+	if (!userId) return 0;
+	try {
+		// Fetch posts with likes where author matches the specified value
+		const { data: posts, error } = await supabase
+			.from("posts")
+			.select(
+				`
+            *,
+            likes (
+                *
+            )
+        `
+			)
+			.eq("author", userId); // Filter posts by author
+
+		if (error) {
+			console.error("Error fetching posts with likes:", error);
+			return 0;
+		}
+
+		return posts.filter((post) => post.likes.length > 0).length || 0;
+	} catch (err) {
+		console.error("Unexpected error:", err);
+		return 0;
+	}
+};
+
+export const getFollowStats = async (userId: string | undefined): Promise<FollowStats> => {
+	if (!userId)
+		return {
+			followeeCount: 0,
+			followerCount: 0
+		};
+
+	try {
+		// Fetch follower count
+		const { count: followerCount, error: followerError } = await supabase
+			.from("follows")
+			.select("*", { count: "exact", head: true }) // Only count rows
+			.eq("follower_id", userId);
+
+		if (followerError) {
+			throw new Error(`Error fetching follower count: ${followerError.message}`);
+		}
+
+		// Fetch followee count
+		const { count: followeeCount, error: followeeError } = await supabase
+			.from("follows")
+			.select("*", { count: "exact", head: true }) // Only count rows
+			.eq("followee_id", userId);
+
+		if (followeeError) {
+			throw new Error(`Error fetching followee count: ${followeeError.message}`);
+		}
+
+		// Return counts as a typed object
+		return {
+			followerCount: followerCount || 0,
+			followeeCount: followeeCount || 0
+		};
+	} catch (error) {
+		console.error("Error fetching follow stats:", error);
+		throw error;
+	}
+};
+
+// const fetchLikedPosts = async (userId) => {
+// 	const { data, error } = await supabase
+// 		.from("likes") // Start from the "likes" table
+// 		.select(
+// 			`
+//             posts(*) // Fetch all columns from the "posts" table
+//         `
+// 		)
+// 		.eq("author", userId); // Filter by the user ID
+
+// 	if (error) {
+// 		console.error("Error fetching liked posts:", error);
+// 		return [];
+// 	}
+
+// 	return data;
+// };

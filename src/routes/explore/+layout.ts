@@ -4,6 +4,7 @@ import { supabase } from "../../supabaseClient";
 import { authenticate } from "@/api";
 import { goto } from "$app/navigation";
 import type { LayoutLoad } from "./$types";
+import { store } from "$lib/store";
 
 export const load: LayoutLoad = async ({ url }) => {
 	// Get the full URL to pass to `exchangeCodeForSession`
@@ -50,5 +51,27 @@ export const load: LayoutLoad = async ({ url }) => {
 	};
 
 	authenticate(user);
+
+	//fetch post data
+	try {
+		// Fetch posts with likes
+		const { data: posts, error } = await supabase.from("posts").select(`
+        *,
+        likes (
+          *
+        )
+      `);
+
+		if (error) {
+			console.error("Error fetching posts with likes:", error);
+			return { posts: [] };
+		}
+
+		store.initPosts(posts);
+	} catch (err) {
+		console.error("Unexpected error:", err);
+		return { posts: [] };
+	}
+
 	return { user: userData || null };
 };
