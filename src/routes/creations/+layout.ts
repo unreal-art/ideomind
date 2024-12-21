@@ -7,6 +7,7 @@ import type { LayoutLoad } from "./$types";
 import { store } from "$lib/store";
 
 export const load: LayoutLoad = async ({ url }) => {
+	
 	//fetch post data
 	try {
 		// Fetch posts with likes

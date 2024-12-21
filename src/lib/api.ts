@@ -6,6 +6,7 @@ import { PinataSDK } from "pinata";
 
 import { PUBLIC_API_URL } from "$env/static/public";
 import { supabase } from "../supabaseClient";
+import { goto } from "$app/navigation";
 
 const pinata = new PinataSDK({
 	pinataJwt: import.meta.env.VITE_PINATA_JWT!,
@@ -60,7 +61,7 @@ export const updateUserDetails = async (user: Partial<User>, id: string) => {
     if (error) {
         console.error('Error updating profile:', error);
     } else {
-        console.log('Profile updated:', data);
+        
 		store.updateUser(user);
 		
     }
@@ -87,6 +88,8 @@ export const createNewPost = async (post: Post) => {
 		console.error("Error inserting post:", error);
 	} else {
 		console.log("Post inserted successfully:", data);
+		//fetch post for profile page
+			fetchProfilePosts()
 		data && store.createPost(data);
 	}
 };
@@ -515,3 +518,94 @@ export const getFollowStats = async (userId: string | undefined): Promise<Follow
 
 // 	return data;
 // };
+
+
+export const toggleFollow = async (followerId:string, followeeId: string) => {
+    try {
+        // Check if the follower already follows the followee
+        const { data, error } = await supabase
+            .from('follows')
+            .select('*')
+            .eq('follower_id', followerId)
+            .eq('followee_id', followeeId)
+            .single();
+
+        if (error && error.code !== 'PGRST116') {
+            console.error('Error fetching follow relationship:', error.message);
+            return;
+        }
+
+        if (data) {
+            // If a follow relationship exists, delete it
+            const { error: deleteError } = await supabase
+                .from('follows')
+                .delete()
+                .eq('follower_id', followerId)
+                .eq('followee_id', followeeId);
+
+            if (deleteError) {
+                console.error('Error deleting follow relationship:', deleteError.message);
+            } else {
+                console.log(`Unfollowed successfully: Follower ${followerId}, Followee ${followeeId}`);
+            }
+        } else {
+            // If no follow relationship exists, insert it
+            const { error: insertError } = await supabase
+                .from('follows')
+                .insert([{ follower_id: followerId, followee_id: followeeId }]);
+
+            if (insertError) {
+                console.error('Error adding follow relationship:', insertError.message);
+            } else {
+                console.log(`Followed successfully: Follower ${followerId}, Followee ${followeeId}`);
+            }
+        }
+    } catch (err) {
+        console.error('Unexpected error:', err);
+    }
+};
+
+
+
+
+export const doesUserFollow = async (followerId:string, followeeId: string) => {
+    try {
+        // Query the `follows` table to check if a follow relationship exists
+        const { data, error } = await supabase
+            .from('follows')
+            .select('*')
+            .eq('follower_id', followerId)
+            .eq('followee_id', followeeId)
+            .single(); // Retrieve a single record
+
+        if (error) {
+            if (error.code === 'PGRST116') {
+                // No follow relationship found
+                return false;
+            }
+            console.error('Error checking follow relationship:', error.message);
+            return false;
+        }
+
+        // If data exists, the follower follows the followee
+        return !!data;
+    } catch (err) {
+        console.error('Unexpected error:', err);
+        return false;
+    }
+};
+
+export const logoutUser = async () => {
+    try {
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+            console.error('Error logging out:', error.message);
+        } else {
+            console.log('User logged out successfully.');
+			store.reset()
+			goto("/")
+        }
+    } catch (err) {
+        console.error('Unexpected error during logout:', err);
+    }
+};

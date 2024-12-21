@@ -45,7 +45,7 @@
 	let publicPosts = $state<Post[]>([]);
 	let likesReceived = $state(0);
 	let followStats = $state<FollowStats>({} as FollowStats);
-let updating = $state(false)
+	let updating = $state(false)
 	
 	$effect(() => {
 		if (!$store.isAuthenticated) goto("/");
@@ -137,6 +137,7 @@ let updating = $state(false)
 		privatePosts = $store.posts.filter((item) => item.isPrivate);
 		publicPosts = $store.posts.filter((item) => !item.isPrivate);
 	});
+
 
 	$effect(() => {
 		const fetchLikesReceived = async () => {

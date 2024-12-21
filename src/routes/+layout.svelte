@@ -12,10 +12,17 @@
 	import { store } from '$lib/store';
 
 	import { Toaster } from '$lib/components/ui/sonner/index.js';
+	import { goto } from '$app/navigation';
 
 	function goBack() {
 		window.history.back();
 	}
+
+
+	$effect(() => {
+		if (!$store.isAuthenticated) goto("/");
+	});
+
 </script>
 
 <Toaster />
