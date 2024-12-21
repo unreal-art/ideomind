@@ -16,18 +16,18 @@ export interface UploadResponse {
 }
 
 export interface Post {
-	id?: string;
+	id: string;
 	author: string;
 	isPrivate: boolean;
 	prompt: string;
 	isPinned: boolean;
 	category: Category;
-	likes?: any;
+	likes: any;
 
 	ipfsImages: UploadResponse[];
 	cpu: number;
 	device: string;
-	createdAt?: Date;
+	createdAt: Date;
 }
 
 export interface Like {

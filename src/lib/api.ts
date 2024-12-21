@@ -27,9 +27,14 @@ export const getImageUrl = async (cid: string) => {
 
 export async function generateImage(dto: JobSpec) {
 	try {
-		const { data }: DartsJobData = await axios.post(PUBLIC_API_URL || "" + "/darts", dto);
+		// const { data }: DartsJobData = await axios.post(PUBLIC_API_URL || "" + "/darts", dto);
+		const response = await axios.post("/api", dto, {
+			headers: {
+				"Content-Type": "application/json" // Explicitly set Content-Type
+			}
+		});
 
-		return data;
+		return response.data;
 	} catch (error) {
 		console.error("Error:", error);
 	}
@@ -65,7 +70,7 @@ export const createNewPost = async (post: Post) => {
 		console.error("Error inserting post:", error);
 	} else {
 		console.log("Post inserted successfully:", data);
-		data && store.createPost(data)
+		data && store.createPost(data);
 	}
 };
 

@@ -254,7 +254,7 @@
 		</div>
 	</div>
 	<div class=" relative min-h-[60vh]">
-		<Tabs.Root value="pinned" class="relative h-full w-full">
+		<Tabs.Root value="public" class="relative h-full w-full">
 			<div
 				bind:this={targetElement}
 				class={`${isFixed ? "fixed left-0 lg:top-16 " : " lg:relative"} top-0 z-20 flex h-12 w-full justify-center bg-stone-50 `}

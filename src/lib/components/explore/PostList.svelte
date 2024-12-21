@@ -15,7 +15,7 @@
 
 	const like = (item: Post) => {
 		if (!$store.user?.id) return;
-		likePost(item.id, $store.user?.id);
+		likePost(item.id as string, $store.user?.id);
 	};
 
 	const isInLikedPosts = (likes: any[]): boolean => {
@@ -33,7 +33,7 @@
 					<div class="flex flex-col">
 						<PostAuthor authorId={item.author} />
 						<p class="text-light text-sm text-gray-400">
-							{formatDistanceToNow(item.createdAt)} ago
+							{item.createdAt && formatDistanceToNow(item.createdAt)} ago
 						</p>
 					</div>
 				</div>

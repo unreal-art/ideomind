@@ -54,12 +54,12 @@
 		post = $store.post;
 	});
 	$effect(() => {
-		fetchAuthorOtherPosts(post?.author, post?.id);
+		fetchAuthorOtherPosts(post?.author, post?.id as string);
 	});
 
 	const like = (item: Post) => {
 		if (!$store.user?.id) return;
-		likePost(item.id, $store.user?.id, "details", post.author, post.id);
+		likePost(item.id as string, $store.user?.id, "details", post.author, post.id);
 	};
 
 	const isInLikedPosts = (likes: any[]): boolean => {
@@ -118,7 +118,7 @@
 <section class="relative h-full w-full overflow-y-auto px-2">
 	<section class="min-h-[92vh] w-full lg:flex">
 		<div class="flex h-full items-center justify-center lg:w-[75%]">
-			<img src={imageUrls[0]} alt="view" class=" max-h-[92vh]" />
+			<img src={imageUrls[0]}  alt="view" class=" max-h-[92vh]" />
 		</div>
 		<div
 			class="flex h-full flex-col gap-5 overflow-y-scroll rounded-md border bg-white px-2 py-4 shadow lg:w-[25%]"

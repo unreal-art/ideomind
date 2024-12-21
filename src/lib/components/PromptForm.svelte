@@ -9,6 +9,7 @@
 	import { toast } from 'svelte-sonner';
 	import { page } from '$app/stores';
 	import Textarea from './ui/textarea/textarea.svelte';
+	import { goto } from '$app/navigation';
 
 	let { section } = $props();
 	let text = $state('');
@@ -18,19 +19,20 @@
 	let minorInputRef: HTMLInputElement | null = $state(null);
 
 	const onclick = async () => {
+		showInput=false
 		store.updateLoader(true);
 		const dto: JobSpec = {
 			module: 'isdxl',
 			version: 'v1.3.0',
 			inputs: {
 				Prompt: text,
-				cpu: 30,
+				cpu: 26,
 				Device: 'xpu'
 			}
 		};
-		const data: Output | undefined = await generateImage(dto);
+		const {data}: {data:Output | undefined} = await generateImage(dto);
 		//store the post
-		const post: Post = {
+		const post: Partial<Post> = {
 			author: $store.user?.id as string,
 			isPrivate: false,
 			prompt: text,
@@ -41,6 +43,7 @@
 			device: dto.inputs?.Device as string,
 		
 		};
+		console.log(data)
 
 		if (!data) {
 			toast.error('Error', {
@@ -52,9 +55,10 @@
 			});
 			store.updateLoader(false);
 		} else {
-			createNewPost(post);
+			createNewPost(post as Post);
 			store.updateLoader(false);
 			text = '';
+			goto(`/profile/${$store.user?.id}`)
 		}
 	};
 
@@ -95,6 +99,7 @@
 			<div class="flex  justify-end mt-10 h-12">
 				<Button
 			type="button"
+			disabled={$store.isGeneratingFiles}
 			{onclick}
 			class="h-full text-white  w-full">Generate</Button
 		>
@@ -111,6 +116,7 @@
 		/>
 		<Button
 			type="button"
+			disabled={$store.isGeneratingFiles}
 			{onclick}
 			class="h-full w-[40%] rounded-none rounded-r-2xl text-white md:w-[20%]">Generate</Button
 		>
@@ -145,6 +151,7 @@
 		<Button
 			type="button"
 			{onclick}
+			disabled={$store.isGeneratingFiles}
 			class="h-full w-[40%] rounded-none rounded-r-2xl text-white md:w-[20%]">Generate</Button
 		>
 	</form>

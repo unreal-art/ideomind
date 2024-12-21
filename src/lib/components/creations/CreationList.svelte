@@ -13,7 +13,7 @@
 
 	const like = (item: Post) => {
 		if (!$store.user?.id) return;
-		likePost(item.id, $store.user?.id);
+		likePost(item.id as string, $store.user?.id);
 	};
 
 	const isInLikedPosts = (likes: any[]): boolean => {

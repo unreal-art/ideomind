@@ -19,6 +19,14 @@
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
 	import { store } from '$lib/store';
 	import { page } from '$app/stores';
+
+
+	// $effect(() => {
+	// 	async function getData() {
+	// 		imageUrl = await getPostUserImage($store.user.id);
+	// 	}
+	// 	getData();
+	// });
 </script>
 
 <aside class="z-50 hidden h-full w-[5%] min-w-[100px] border-r px-2 py-2 lg:block">
@@ -65,7 +73,7 @@
 
 		<a href={`/profile/${$store.user?.id}`}>
 			<Button variant="ghost" class=" w-full hover:bg-transparent">
-				<img src={profileImage} alt="user profile" class="h-12 w-12 rounded-full" />
+				<img src={$store.user?.image}  alt="user profile" class="h-12 w-12 rounded-full" />
 			</Button></a
 		>
 		<DropdownMenu.Root>
@@ -81,7 +89,7 @@
 					<DropdownMenu.GroupHeading class="mb-3 h-14 ">
 						<div class="mt-3 flex h-full w-full items-center justify-between">
 							<div class="flex h-full space-x-2">
-								<img src={profileImage} alt="user profile" class="h-full rounded-full" />
+								<img src={$store.user?.image}  alt="user profile" class="h-full rounded-full" />
 								<div class="flex flex-col">
 									<p class="text-sm">{$store.user?.name}</p>
 									<p class="text-sm font-extralight text-gray-400">{$store.user?.email}</p>
@@ -94,7 +102,7 @@
 						<p class=" font-semibold">Free</p>
 						<div class="flex space-x-2">
 							<div class="flex h-full items-center space-x-1 font-semibold">
-								<Zap size={15} /> <span>10 / 10</span>
+								<Zap size={15} /> <span>{$store.user?.creditBalance} / 10</span>
 							</div>
 							<span class="font-extralight"> credits left</span>
 						</div>
