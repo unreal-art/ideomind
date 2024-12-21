@@ -46,8 +46,25 @@ export const authenticate = (user: User) => {
 };
 
 // Function to update user details
-export const updateUserDetails = (user: Partial<User>) => {
-	store.updateUser(user);
+export const updateUserDetails = async (user: Partial<User>, id: string) => {
+	const updates = {
+		full_name: user.name,
+		bio: user.bio,
+		location: user.location
+	}
+	  const { data, error } = await supabase
+        .from('profiles')
+        .update(updates)
+        .eq('id', id);
+
+    if (error) {
+        console.error('Error updating profile:', error);
+    } else {
+        console.log('Profile updated:', data);
+		store.updateUser(user);
+		
+    }
+
 };
 
 // Function to create a new post

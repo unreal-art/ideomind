@@ -32,12 +32,12 @@
 	let scrollContainer: HTMLElement | null = $state(null);
 
 	let params = $state($page.params);
-	let user = $state(getUser(params.slug));
 
-	let name = $state(user?.name);
-	let username = $state(user?.username);
-	let bio = $state(user?.bio);
-	let location = $state(user?.location);
+
+	let name = $state($store.user?.name);
+	let username = $state($store.user?.name);
+	let bio = $state($store.user?.bio);
+	let location = $state($store.user?.location);
 	let open = $state(false);
 	let likedPosts = $state<Post[]>([]);
 	let pinnedPosts = $state<Post[]>([]);
@@ -45,7 +45,8 @@
 	let publicPosts = $state<Post[]>([]);
 	let likesReceived = $state(0);
 	let followStats = $state<FollowStats>({} as FollowStats);
-
+let updating = $state(false)
+	
 	$effect(() => {
 		if (!$store.isAuthenticated) goto("/");
 	});
@@ -89,16 +90,18 @@
 		return `${month} ${year}`;
 	};
 
-	const updateProfile = () => {
+	const updateProfile = async () => {
+		updating = true
 		const data = {
 			name,
-			username,
+			// username,
 			bio,
 			location
 		};
 		//update detail
-		updateUserDetails(data);
+		$store.user?.id && await  updateUserDetails(data, $store.user?.id);
 		open = false;
+		updating=false
 	};
 
 	// Attach and clean up event listeners
@@ -164,8 +167,8 @@
 			<img src={$store.user?.image} alt="user profile" class="h-32 w-32 rounded-full" />
 			<div class="flex flex-col gap-4 px-2 pt-4">
 				<div class="">
-					<p class="text-md font-semibold">{$store.user?.username}</p>
-					<p class="text-sm font-extralight text-gray-500">{$store.user?.name}</p>
+					<p class="text-md font-semibold">{$store.user?.name}</p>
+					<p class="text-sm font-extralight text-gray-500">{$store.user?.email}</p>
 				</div>
 				<div class="flex gap-6">
 					<div class="">
@@ -221,16 +224,16 @@
 					</Dialog.Header>
 					<form class="grid gap-4 py-4">
 						<div class="items-center gap-4">
-							<Label for="username" class="text-right">Username</Label>
-							<Input id="username" bind:value={username} class="col-span-3"></Input>
+							<Label for="username" class="text-right">Name</Label>
+							<Input id="username" bind:value={name} class="col-span-3"></Input>
 						</div>
-						<div class=" items-center gap-4">
+						<!-- <div class=" items-center gap-4">
 							<Label for="name" class="text-right"
 								>Name <span class="font-extralight">(Optional)</span></Label
 							>
 							<Input id="name" bind:value={name} class="col-span-3"></Input>
 							<p class="w-full text-right text-xs font-extralight">(0/30)</p>
-						</div>
+						</div> -->
 						<div class=" items-center gap-4">
 							<Label for="name" class="text-right"
 								>Location <span class="font-extralight">(Optional)</span></Label
@@ -246,7 +249,8 @@
 							<p class="w-full text-right text-xs font-extralight">(0/150)</p>
 						</div>
 						<Dialog.Footer>
-							<Button onclick={updateProfile} type="button">Save changes</Button>
+							<Button disabled={updating
+							} onclick={updateProfile} type="button">Save changes</Button>
 						</Dialog.Footer>
 					</form>
 				</Dialog.Content>
