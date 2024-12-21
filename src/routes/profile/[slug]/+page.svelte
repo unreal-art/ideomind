@@ -1,16 +1,26 @@
 <script lang="ts">
-	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import * as Tabs from '$lib/components/ui/tabs';
-	import image1 from '$lib/assets/ima1.jpg';
-	import { Search, X, CalendarRange, MapPinHouse } from 'lucide-svelte';
-	import * as Dialog from '$lib/components/ui/dialog/index.js';
-	import { Label } from '$lib/components/ui/label/index.js';
-	import Textarea from '@/components/ui/textarea/textarea.svelte';
-	import { store } from '$lib/store';
-	import { getUser, updateUserDetails, getUserLikedPosts, getUserPosts } from '@/api';
-	import UserPostList from '@/components/profile/UserPostList.svelte';
-	import { page } from '$app/stores';
+	import type { FollowStats } from "$lib/types";
+	import { Button, buttonVariants } from "$lib/components/ui/button/index.js";
+	import { Input } from "$lib/components/ui/input/index.js";
+	import * as Tabs from "$lib/components/ui/tabs";
+	import image1 from "$lib/assets/ima1.jpg";
+	import { Search, X, CalendarRange, MapPinHouse } from "lucide-svelte";
+	import * as Dialog from "$lib/components/ui/dialog/index.js";
+	import { Label } from "$lib/components/ui/label/index.js";
+	import Textarea from "@/components/ui/textarea/textarea.svelte";
+	import { store } from "$lib/store";
+	import {
+		getUser,
+		updateUserDetails,
+		getUserLikedPosts,
+		getUserPosts,
+		getLikesReceivedByUser,
+		getFollowStats
+	} from "@/api";
+	import UserPostList from "@/components/profile/UserPostList.svelte";
+	import { page } from "$app/stores";
+	import { goto } from "$app/navigation";
+	import type { Post } from "@/types";
 
 	let showInput: boolean = $state(false);
 	let inputRef: HTMLDivElement | null = $state(null);
@@ -29,12 +39,16 @@
 	let bio = $state(user?.bio);
 	let location = $state(user?.location);
 	let open = $state(false);
-	let posts = $state(getUserPosts(user?.id, $store.posts));
-	let likedPosts = $state(getUserLikedPosts(user?.id));
-	let pinnedPosts = $state(posts.filter((item) => item.isPinned));
-	let privatePosts = $state(posts.filter((item) => item.isPrivate));
-	let publicPosts = $state(posts.filter((item) => !item.isPrivate));
-	let refetch = $state(false);
+	let likedPosts = $state<Post[]>([]);
+	let pinnedPosts = $state<Post[]>([]);
+	let privatePosts = $state<Post[]>([]);
+	let publicPosts = $state<Post[]>([]);
+	let likesReceived = $state(0);
+	let followStats = $state<FollowStats>({} as FollowStats);
+
+	$effect(() => {
+		if (!$store.isAuthenticated) goto("/");
+	});
 
 	// Toggle input visibility
 	const toggleInput = (): void => {
@@ -62,56 +76,16 @@
 		isFixed = currentScroll >= targetPosition;
 	}
 
-	// Attach and clean up event listeners
-	$effect(() => {
-		document.addEventListener('click', handleClickOutside);
-
-		return () => {
-			document.removeEventListener('click', handleClickOutside);
-		};
-	});
-	$effect(() => {
-		if (targetElement && scrollContainer) {
-			// Get the position of the target element relative to the scroll container
-			const containerRect = scrollContainer.getBoundingClientRect();
-			const targetRect = targetElement.getBoundingClientRect();
-			targetPosition = targetRect.top - containerRect.top;
-		}
-
-		// Add a scroll listener to the container
-		if (scrollContainer) {
-			scrollContainer.addEventListener('scroll', handleScroll);
-		}
-		return () => {
-			if (scrollContainer) {
-				scrollContainer.removeEventListener('scroll', handleScroll);
-			}
-		};
-	});
-
-	function triggerRefetch() {
-		refetch = true;
-	}
-
-	$effect(() => {
-		if (refetch) {
-			posts = getUserPosts(user?.id, $store.posts);
-			likedPosts = getUserLikedPosts(user?.id);
-			pinnedPosts = posts.filter((item) => item.isPinned);
-			privatePosts = posts.filter((item) => item.isPrivate);
-			publicPosts = posts.filter((item) => !item.isPrivate);
-			refetch = false;
-		}
-	});
-
-	// $effect(() => {
-	// 	userPosts($store.user?.id);
-	// });
-
 	const getDate = (date: Date | undefined): string => {
-		if (!date) return '';
-		const month = date.toLocaleString('default', { month: 'long' }); // Get full month name (e.g., 'December')
-		const year = date.getFullYear();
+		if (!date) return ""; // Handle null or undefined dates
+
+		// Ensure `date` is a Date object
+		const validDate = date instanceof Date ? date : new Date(date);
+		// @ts-ignore
+		if (isNaN(validDate)) return ""; // Handle invalid dates
+
+		const month = validDate.toLocaleString("default", { month: "long" }); // Get full month name (e.g., 'December')
+		const year = validDate.getFullYear(); // Get the year
 		return `${month} ${year}`;
 	};
 
@@ -126,6 +100,59 @@
 		updateUserDetails(data);
 		open = false;
 	};
+
+	// Attach and clean up event listeners
+	$effect(() => {
+		document.addEventListener("click", handleClickOutside);
+
+		return () => {
+			document.removeEventListener("click", handleClickOutside);
+		};
+	});
+	$effect(() => {
+		if (targetElement && scrollContainer) {
+			// Get the position of the target element relative to the scroll container
+			const containerRect = scrollContainer.getBoundingClientRect();
+			const targetRect = targetElement.getBoundingClientRect();
+			targetPosition = targetRect.top - containerRect.top;
+		}
+
+		// Add a scroll listener to the container
+		if (scrollContainer) {
+			scrollContainer.addEventListener("scroll", handleScroll);
+		}
+		return () => {
+			if (scrollContainer) {
+				scrollContainer.removeEventListener("scroll", handleScroll);
+			}
+		};
+	});
+
+	$effect(() => {
+		likedPosts = getUserLikedPosts();
+		pinnedPosts = $store.posts.filter((item) => item.isPinned);
+		privatePosts = $store.posts.filter((item) => item.isPrivate);
+		publicPosts = $store.posts.filter((item) => !item.isPrivate);
+	});
+
+	$effect(() => {
+		const fetchLikesReceived = async () => {
+			try {
+				likesReceived = await getLikesReceivedByUser($store.user?.id);
+			} catch (error) {
+				console.error("Error fetching likes received:", error);
+			}
+		};
+		const fetchFollowStat = async () => {
+			try {
+				followStats = await getFollowStats($store.user?.id);
+			} catch (error) {
+				console.error("Error fetching likes received:", error);
+			}
+		};
+		fetchLikesReceived();
+		fetchFollowStat();
+	});
 </script>
 
 <section bind:this={scrollContainer} class="relative h-full w-full overflow-auto px-2">
@@ -142,16 +169,22 @@
 				</div>
 				<div class="flex gap-6">
 					<div class="">
-						<p class="text-lg font-semibold">{$store.user?.followerCount}</p>
-						<p class="text-md font-extralight text-gray-500">follower</p>
+						<p class="text-lg font-semibold">{followStats.followeeCount}</p>
+						<p class="text-md font-extralight text-gray-500">
+							follower{followStats.followeeCount > 1 ? "s" : ""}
+						</p>
 					</div>
 					<div class="">
-						<p class="text-lg font-semibold">{$store.user?.followingCount}</p>
-						<p class="text-md font-extralight text-gray-500">following</p>
+						<p class="text-lg font-semibold">{followStats.followerCount}</p>
+						<p class="text-md font-extralight text-gray-500">
+							following{followStats.followerCount > 1 ? "s" : ""}
+						</p>
 					</div>
 					<div class="">
-						<p class="text-lg font-semibold">{$store.user?.likesReceived}</p>
-						<p class="text-md font-extralight text-gray-500">like received</p>
+						<p class="text-lg font-semibold">{likesReceived}</p>
+						<p class="text-md font-extralight text-gray-500">
+							like{likesReceived > 1 ? "s" : ""} received
+						</p>
 					</div>
 				</div>
 				<div class="">
@@ -174,7 +207,7 @@
 		<div class="flex h-full items-start">
 			<Dialog.Root bind:open>
 				<Dialog.Trigger
-					class={buttonVariants({ variant: 'outline' }) +
+					class={buttonVariants({ variant: "outline" }) +
 						` absolute right-2 mt-3 h-10 rounded-md bg-stone-50 text-sm font-extralight lg:relative lg:top-10`}
 				>
 					Edit Profile
@@ -221,13 +254,13 @@
 		</div>
 	</div>
 	<div class=" relative min-h-[60vh]">
-		<Tabs.Root value="pinned" class="relative h-full w-full">
+		<Tabs.Root value="public" class="relative h-full w-full">
 			<div
 				bind:this={targetElement}
-				class={`${isFixed ? 'fixed left-0 lg:top-16 ' : ' lg:relative'} top-0 z-20 flex h-12 w-full justify-center bg-stone-50 `}
+				class={`${isFixed ? "fixed left-0 lg:top-16 " : " lg:relative"} top-0 z-20 flex h-12 w-full justify-center bg-stone-50 `}
 			>
 				<div
-					class={`${showInput ? 'block' : 'hidden'} absolute left-0 top-0 z-20 h-full w-full max-w-[1000px] rounded-2xl border bg-stone-50`}
+					class={`${showInput ? "block" : "hidden"} absolute left-0 top-0 z-20 h-full w-full max-w-[1000px] rounded-2xl border bg-stone-50`}
 				>
 					<div class="absolute right-0 top-0 flex h-full w-10 items-center justify-center">
 						<Button variant="ghost" class="h-full hover:bg-transparent">
@@ -246,7 +279,7 @@
 					<img
 						src={image1}
 						alt="user profile"
-						class={`${isFixed ? 'block' : 'hidden'} absolute left-2 top-2 h-8 w-8 rounded-full lg:left-28`}
+						class={`${isFixed ? "block" : "hidden"} absolute left-2 top-2 h-8 w-8 rounded-full lg:left-28`}
 					/>
 					<div class="flex h-full items-center" bind:this={buttonRef}>
 						<Button onclick={toggleInput} variant="ghost" class="hidden h-full lg:block">
@@ -263,17 +296,17 @@
 			</div>
 
 			<Tabs.Content value="pinned">
-				<UserPostList data={pinnedPosts} {triggerRefetch} />
+				<UserPostList data={pinnedPosts} />
 			</Tabs.Content>
 			<Tabs.Content value="public">
-				<UserPostList data={publicPosts} {triggerRefetch} />
+				<UserPostList data={publicPosts} />
 			</Tabs.Content>
 			<Tabs.Content value="private">
-				<UserPostList data={privatePosts} {triggerRefetch} />
+				<UserPostList data={privatePosts} />
 			</Tabs.Content>
 
 			<Tabs.Content value="liked" class="h-[95%] w-full  ">
-				<UserPostList data={likedPosts} isLikes={true} {triggerRefetch} />
+				<UserPostList data={likedPosts} isLikes={true} />
 			</Tabs.Content>
 		</Tabs.Root>
 	</div>

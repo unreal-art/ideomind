@@ -1,23 +1,23 @@
 <script lang="ts">
-	import { Button } from '$lib/components/ui/button/index.js';
-	import { Ellipsis, Heart } from 'lucide-svelte';
-	import type { Post } from '@/types';
-	import { filterPostByCat, likePost, getUserLikedPosts } from '@/api';
-	import { store } from '$lib/store';
-	import Image from '../Image.svelte';
-	import More from '../More.svelte';
+	import { Button } from "$lib/components/ui/button/index.js";
+	import { Ellipsis, Heart } from "lucide-svelte";
+	import type { Post } from "@/types";
+	import { filterPostByCat, likePost, getUserLikedPosts } from "@/api";
+	import { store } from "$lib/store";
+	import Image from "../Image.svelte";
+	import More from "../More.svelte";
 
-	let likedPosts = $derived(getUserLikedPosts($store.user?.id));
+	// let likedPosts = $derived(getUserLikedPosts($store.user?.id));
 	let { data, choice }: { data: Post[]; choice: string } = $props();
 	let posts = $derived(filterPostByCat(data, choice));
 
 	const like = (item: Post) => {
 		if (!$store.user?.id) return;
-		likePost(item.id, $store.user?.id);
+		likePost(item.id as string, $store.user?.id);
 	};
 
-	const isInLikedPosts = (id: string): boolean => {
-		return likedPosts.filter((item) => item.id == id).length > 0;
+	const isInLikedPosts = (likes: any[]): boolean => {
+		return likes.filter((item) => item.author === $store.user?.id).length > 0;
 	};
 </script>
 
@@ -32,8 +32,10 @@
 					onclick={() => like(item)}
 					class="flex space-x-2 hover:bg-black/50 hover:text-white"
 				>
-					<span>{item.likes}</span>
-					<Heart size={20} class={`${isInLikedPosts(item.id) ? 'fill-pink-500 text-pink-500' : ''}`}
+					<span>{item.likes.length}</span>
+					<Heart
+						size={20}
+						class={`${isInLikedPosts(item.likes) ? "fill-pink-500 text-pink-500" : ""}`}
 					></Heart></Button
 				>
 			</div>

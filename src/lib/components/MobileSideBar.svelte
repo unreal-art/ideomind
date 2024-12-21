@@ -27,38 +27,37 @@
 	import { v4 as uuidv4 } from 'uuid';
 	import type { UploadResponse } from 'pinata';
 	import { toast } from 'svelte-sonner';
+	import { goto } from '$app/navigation';
 
 	let text = $state('');
 	let open = $state(false);
 
 	const onclick = async () => {
-		open = false;
+		
 		store.updateLoader(true);
 		const dto: JobSpec = {
 			module: 'isdxl',
-			version: 'v1.2.0',
+			version: 'v1.3.0',
 			inputs: {
 				Prompt: text,
-				cpu: 30,
+				cpu: 26,
 				Device: 'xpu'
 			}
 		};
-		const data: Output | undefined = await generateImage(dto);
+		const {data}: {data:Output | undefined} = await generateImage(dto);
 		//store the post
-		const post: Post = {
-			id: uuidv4(),
+		const post: Partial<Post> = {
 			author: $store.user?.id as string,
 			isPrivate: false,
 			prompt: text,
 			isPinned: false,
 			category: 'GENERATION',
-			likes: 0,
-			images: [],
 			ipfsImages: data?.uploadResponse as UploadResponse[],
 			cpu: dto.inputs?.cpu as number,
 			device: dto.inputs?.Device as string,
-			createdAt: new Date()
+		
 		};
+		console.log(data)
 
 		if (!data) {
 			toast.error('Error', {
@@ -70,11 +69,13 @@
 			});
 			store.updateLoader(false);
 		} else {
-			createNewPost(post);
+			createNewPost(post as Post);
 			store.updateLoader(false);
 			text = '';
+			goto(`/profile/${$store.user?.id}`)
 		}
 	};
+
 </script>
 
 <section class="fixed bottom-0 h-20 w-full bg-stone-50 lg:hidden">
@@ -109,12 +110,13 @@
 					<Textarea
 						placeholder="Describe what you want to see"
 						rows={10}
+						
 						class="ring-0"
 						bind:value={text}
 					/>
 
 					<Drawer.Footer>
-						<Button {onclick}>Generate</Button>
+						<Button disabled={$store.isGeneratingFiles} {onclick}>Generate</Button>
 						<Drawer.Close class={buttonVariants({ variant: 'outline' })}>Cancel</Drawer.Close>
 					</Drawer.Footer>
 				</div>
@@ -157,7 +159,7 @@
 						<DropdownMenu.GroupHeading class="mb-3 h-14">
 							<div class="mt-3 flex h-full w-full items-center justify-between">
 								<div class="flex h-full space-x-2">
-									<img src={profileImage} alt="user profile" class="h-full rounded-full" />
+									<img src={$store.user?.image}  alt="user profile" class="h-full rounded-full" />
 									<div class="flex flex-col">
 										<p class="text-sm">{$store.user?.name}</p>
 										<p class="text-sm font-extralight text-gray-400">{$store.user?.email}</p>
@@ -170,7 +172,7 @@
 							<p class=" font-semibold">Free</p>
 							<div class="flex space-x-2">
 								<div class="flex h-full items-center space-x-1 font-semibold">
-									<Zap size={15} /> <span>0 / 10</span>
+									<Zap size={15} /> <span>{$store.user?.creditBalance} / 10</span>
 								</div>
 								<span class="font-extralight"> credits left</span>
 							</div>

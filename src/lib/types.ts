@@ -1,8 +1,8 @@
-import type { JobSpec as IJobSpec } from '../routes/darts/+server';
+import type { JobSpec as IJobSpec } from "../routes/darts/+server";
 
 export type JobSpec = IJobSpec;
 
-export type Category = 'EDIT' | 'UPSCALE' | 'GENERATION' | 'UPLOAD';
+export type Category = "EDIT" | "UPSCALE" | "GENERATION" | "UPLOAD";
 
 export interface UploadResponse {
 	id: string;
@@ -22,8 +22,8 @@ export interface Post {
 	prompt: string;
 	isPinned: boolean;
 	category: Category;
-	likes: number;
-	images: string[];
+	likes: any;
+
 	ipfsImages: UploadResponse[];
 	cpu: number;
 	device: string;
@@ -68,3 +68,8 @@ export type Output = {
 	stdout: string;
 	uploadResponse: UploadResponse[];
 };
+
+export interface FollowStats {
+	followerCount: number;
+	followeeCount: number;
+}
