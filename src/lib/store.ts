@@ -82,6 +82,7 @@ const createStore = () => {
 		updateUser: (user: Partial<User>) => {
 			update((state) => ({
 				...state,
+				//@ts-ignore
 				user: { ...state.user, ...user }
 			}));
 		},
@@ -150,6 +151,7 @@ const createStore = () => {
 			subscribe(($store) => {
 				state = $store;
 			})();
+			//@ts-ignore
 			return state;
 		},
 		reset: () => set(initialState)

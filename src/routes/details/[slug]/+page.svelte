@@ -11,7 +11,13 @@
 		likePost,
 		getUserLikedPosts,
 		getUserOtherPosts,
-		fetchAuthorOtherPosts
+		fetchAuthorOtherPosts,
+
+		toggleFollow,
+
+		doesUserFollow
+
+
 	} from "@/api";
 	import type { Post, UploadResponse } from "@/types";
 	import { store } from "$lib/store";
@@ -36,6 +42,7 @@
 	let fullMagicPrompt = $state(false);
 	let post = $state<Post>(data.data as Post);
 	let text = $state("");
+	let activeFollow = $state<boolean | null>(null)
 
 	$effect(() => {
 		if (!$store.isAuthenticated) goto("/");
@@ -56,6 +63,15 @@
 	$effect(() => {
 		fetchAuthorOtherPosts(post?.author, post?.id as string);
 	});
+	$effect(() => {
+		if($store.user?.id) check()
+	});
+
+
+	async function check() {
+			 if(!$store.user?.id) return
+			activeFollow = await doesUserFollow($store.user?.id,post.author);
+		} 
 
 	const like = (item: Post) => {
 		if (!$store.user?.id) return;
@@ -99,7 +115,18 @@
 		toast("Copied", {
 			description: ""
 		});
+
+		
 	}
+
+	const handleFollow = async () => {
+		if(!$store.user?.id) return
+		//hide button
+		activeFollow = null
+		await toggleFollow($store.user?.id,post.author)
+		check()
+	}
+
 	$effect(() => {
 		const fetchResolution = async () => {
 			const result: { width: string; height: string } = (await getImageResolution(
@@ -136,7 +163,13 @@
 						{/if}
 					</div>
 				</div>
-				<Button class="h-fit w-fit rounded-full bg-red-500 p-1   px-2 text-xs">follow</Button>
+			{#if activeFollow != null && !activeFollow}
+				<Button onclick={handleFollow} class="h-fit w-fit rounded-full bg-red-500 p-1   px-2 text-xs">follow</Button>
+			{/if}
+			{#if activeFollow != null && activeFollow}
+				<Button onclick={handleFollow} class="h-fit w-fit rounded-full  p-1   px-2 text-xs">unfollow</Button>
+			{/if}
+			
 				<div class="flex items-center">
 					<Button variant="ghost"><Ellipsis size={20} /></Button>
 					<p class="text-light text-sm">{post?.likes.length}</p>
@@ -166,9 +199,9 @@
 				<div class="flex h-12 w-full items-center justify-between">
 					<p class="font-semibold">Prompt</p>
 					<div class="flex h-full items-center gap-3">
-						<button class="rounded border p-2 text-gray-500 hover:bg-secondary">
+						<!-- <button class="rounded border p-2 text-gray-500 hover:bg-secondary">
 							<Plus size={20} />
-						</button>
+						</button> -->
 						<button
 							class="rounded-sm border p-2 text-gray-500 hover:bg-secondary"
 							bind:this={trigger}

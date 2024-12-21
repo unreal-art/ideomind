@@ -21,7 +21,7 @@
 	import { BsBell } from 'svelte-icons-pack/bs';
 
 	import Textarea from './ui/textarea/textarea.svelte';
-	import { createNewPost, generateImage, postsByFollowed } from '@/api';
+	import { createNewPost, fetchProfilePosts, generateImage, logoutUser, postsByFollowed } from '@/api';
 	import { store } from '$lib/store';
 	import type { DartsJobData, JobSpec, Output, Post } from '@/types';
 	import { v4 as uuidv4 } from 'uuid';
@@ -75,6 +75,10 @@
 			goto(`/profile/${$store.user?.id}`)
 		}
 	};
+
+	const handleLogOut = () => {
+		logoutUser()
+	}
 
 </script>
 
@@ -215,7 +219,7 @@
 							<span>Terms & Privacy</span>
 						</DropdownMenu.Item>
 						<DropdownMenu.Separator></DropdownMenu.Separator>
-						<DropdownMenu.Item>
+						<DropdownMenu.Item  onclick={handleLogOut}>
 							<LogOut class="mr-2 size-4"></LogOut>
 							<span>Log out</span>
 						</DropdownMenu.Item>

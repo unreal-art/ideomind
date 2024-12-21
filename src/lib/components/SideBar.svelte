@@ -19,6 +19,7 @@
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
 	import { store } from '$lib/store';
 	import { page } from '$app/stores';
+	import { logoutUser } from '@/api';
 
 
 	// $effect(() => {
@@ -27,6 +28,10 @@
 	// 	}
 	// 	getData();
 	// });
+
+	const handleLogOut = () => {
+		logoutUser()
+	}
 </script>
 
 <aside class="z-50 hidden h-full w-[5%] min-w-[100px] border-r px-2 py-2 lg:block">
@@ -146,7 +151,7 @@
 						<span>Terms & Privacy</span>
 					</DropdownMenu.Item>
 					<DropdownMenu.Separator></DropdownMenu.Separator>
-					<DropdownMenu.Item>
+					<DropdownMenu.Item onclick={handleLogOut}>
 						<LogOut class="mr-2 size-4"></LogOut>
 						<span>Log out</span>
 					</DropdownMenu.Item>

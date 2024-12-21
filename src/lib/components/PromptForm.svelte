@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
-	import { createNewPost, generateImage, postsByFollowed } from '@/api';
+	import { createNewPost, fetchProfilePosts, generateImage, postsByFollowed } from '@/api';
 	import { store } from '$lib/store';
 	import type { DartsJobData, JobSpec, Output, Post } from '@/types';
 	import { v4 as uuidv4 } from 'uuid';
@@ -17,9 +17,11 @@
 	let showInput: boolean = $state(false);
 	let inputRef: HTMLDivElement | null = $state(null);
 	let minorInputRef: HTMLInputElement | null = $state(null);
+	let buttonInputRef: HTMLButtonElement | null = $state(null);
 
 	const onclick = async () => {
 		showInput=false
+		
 		store.updateLoader(true);
 		const dto: JobSpec = {
 			module: 'isdxl',
@@ -43,7 +45,7 @@
 			device: dto.inputs?.Device as string,
 		
 		};
-		console.log(data)
+	
 
 		if (!data) {
 			toast.error('Error', {
@@ -58,6 +60,7 @@
 			createNewPost(post as Post);
 			store.updateLoader(false);
 			text = '';
+			
 			goto(`/profile/${$store.user?.id}`)
 		}
 	};
@@ -72,9 +75,10 @@
 	const handleClickOutside = (event: MouseEvent): void => {
 		const target = event.target as Node;
 
-		if (inputRef && minorInputRef) {
+		if (inputRef && minorInputRef && buttonInputRef) {
 			// Check if the click was outside both the button and the input field
-			if (!inputRef.contains(target) && !minorInputRef.contains(target)) {
+			if (!inputRef.contains(target) && !minorInputRef.contains(target) && !buttonInputRef.contains(target)) {
+	
 				showInput = false;
 			}
 		}
@@ -108,17 +112,17 @@
 		</div>
 		<input
 			type="text"
-			bind:value={text}
+			value=""
 			bind:this={minorInputRef}
 			onclick={toggleInput}
 			placeholder="Describe what you want to see"
 			class="h-full w-[60%] rounded-none rounded-l-2xl border bg-transparent px-5 outline-none focus:ring-0 md:w-[80%]"
 		/>
-		<Button
+		<button
 			type="button"
-			disabled={$store.isGeneratingFiles}
-			{onclick}
-			class="h-full w-[40%] rounded-none rounded-r-2xl text-white md:w-[20%]">Generate</Button
+			bind:this={buttonInputRef}
+			onclick={toggleInput}
+			class="h-full w-[40%] rounded-none rounded-r-2xl text-white md:w-[20%] bg-primary">Generate</button
 		>
 	</form>
 {:else}
@@ -126,7 +130,7 @@
 		class={`${$page.url.pathname.startsWith('/details') || $page.url.pathname.startsWith('/profile') ? 'flex' : 'hidden'} relative h-12 w-full max-w-6xl items-center`}
 	>
 		<div
-			class={` ${showInput ? 'block' : 'hidden'} absolute top-0  w-full bg-white  z-20 py-4 px-3`}
+			class={` ${showInput ? 'block' : 'hidden'} absolute top-0  w-full bg-white  z-50 py-4 px-3`}
 			bind:this={inputRef}
 		>
 			<Textarea bind:value={text} placeholder="Desribe what you want to see in detail" class="resize-none border-none shadow-none" rows={15}/>
@@ -142,17 +146,17 @@
 		</div>
 		<input
 			type="text"
-			bind:value={text}
+			value=""
 			bind:this={minorInputRef}
 			onclick={toggleInput}
 			placeholder="Describe what you want to see"
 			class="h-full w-[60%] rounded-none rounded-l-2xl border bg-transparent px-5 outline-none focus:ring-0 md:w-[80%]"
 		/>
-		<Button
+		<button
 			type="button"
-			{onclick}
-			disabled={$store.isGeneratingFiles}
-			class="h-full w-[40%] rounded-none rounded-r-2xl text-white md:w-[20%]">Generate</Button
+			onclick={toggleInput}
+			bind:this={buttonInputRef}
+			class="h-full w-[40%] rounded-none rounded-r-2xl text-white md:w-[20%] bg-primary">Generate</button
 		>
 	</form>
 {/if}

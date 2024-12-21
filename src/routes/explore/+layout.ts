@@ -32,7 +32,7 @@ export const load: LayoutLoad = async ({ url }) => {
 
 	const user = {
 		id: profileData[0].id,
-		name: userData?.user_metadata.full_name,
+		name: profileData[0].full_name,
 		username: userData?.user_metadata.name,
 		email: userData?.email,
 		image: userData?.user_metadata.picture,
