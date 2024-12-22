@@ -88,7 +88,7 @@
 			>
 				<p class="text-md text-center font-semibold">Get started</p>
 				<Button onclick={signInWithDiscord} class="text-md h-12 w-full">Discord</Button>
-				<Button onclick={signInWithGithub} class="text-md h-12 w-full">Github</Button>
+				<!-- <Button onclick={signInWithGithub} class="text-md h-12 w-full">Github</Button> -->
 			</div>
 		</div>
 	</div>
