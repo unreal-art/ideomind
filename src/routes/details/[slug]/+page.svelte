@@ -12,12 +12,8 @@
 		getUserLikedPosts,
 		getUserOtherPosts,
 		fetchAuthorOtherPosts,
-
 		toggleFollow,
-
 		doesUserFollow
-
-
 	} from "@/api";
 	import type { Post, UploadResponse } from "@/types";
 	import { store } from "$lib/store";
@@ -29,7 +25,7 @@
 	import { toast } from "svelte-sonner";
 	import { goto } from "$app/navigation";
 	import type { PageData } from "./$types";
-	import PostImage from "@/components/PostImage.svelte";
+	import PosterImage from "@/components/PosterImage.svelte";
 	import PostAuthor from "@/components/PostAuthor.svelte";
 
 	let imageUrls = $state([""]);
@@ -42,7 +38,7 @@
 	let fullMagicPrompt = $state(false);
 	let post = $state<Post>(data.data as Post);
 	let text = $state("");
-	let activeFollow = $state<boolean | null>(null)
+	let activeFollow = $state<boolean | null>(null);
 
 	$effect(() => {
 		if (!$store.isAuthenticated) goto("/");
@@ -64,14 +60,13 @@
 		fetchAuthorOtherPosts(post?.author, post?.id as string);
 	});
 	$effect(() => {
-		if($store.user?.id) check()
+		if ($store.user?.id) check();
 	});
 
-
 	async function check() {
-			 if(!$store.user?.id) return
-			activeFollow = await doesUserFollow($store.user?.id,post.author);
-		} 
+		if (!$store.user?.id) return;
+		activeFollow = await doesUserFollow($store.user?.id, post.author);
+	}
 
 	const like = (item: Post) => {
 		if (!$store.user?.id) return;
@@ -115,16 +110,20 @@
 		toast("Copied", {
 			description: ""
 		});
-
-		
 	}
 
 	const handleFollow = async () => {
-		if(!$store.user?.id) return
+		if (!$store.user?.id) return;
 		//hide button
-		activeFollow = null
-		await toggleFollow($store.user?.id,post.author)
-		check()
+		activeFollow = null;
+		await toggleFollow($store.user?.id, post.author);
+		check();
+	};
+
+	function handleImageError(event: Event) {
+		const target = event.target as HTMLImageElement;
+		target.src = "";
+		// Stop loading indicator
 	}
 
 	$effect(() => {
@@ -145,7 +144,18 @@
 <section class="relative h-full w-full overflow-y-auto px-2">
 	<section class="min-h-[92vh] w-full lg:flex">
 		<div class="flex h-full items-center justify-center lg:w-[75%]">
-			<img src={imageUrls[0]}  alt="view" class=" max-h-[92vh]" />
+			{#if !imageUrls[0]}
+				<div class="flex h-[90vh] w-full items-center justify-center bg-gray-100">
+					<div class="flex items-center space-x-2">
+						<div
+							class="h-4 w-4 animate-spin rounded-full border-b-2 border-t-2 border-primary"
+						></div>
+						<span class="font-medium text-gray-600">Loading...</span>
+					</div>
+				</div>
+			{:else}
+				<img src={imageUrls[0]} alt="view" onerror={handleImageError} class=" max-h-[92vh]" />
+			{/if}
 		</div>
 		<div
 			class="flex h-full flex-col gap-5 overflow-y-scroll rounded-md border bg-white px-2 py-4 shadow lg:w-[25%]"
@@ -153,7 +163,7 @@
 			<!-- user details -->
 			<div class="mt-3 flex h-10 w-full justify-between">
 				<div class="relative flex h-full space-x-2">
-					<PostImage authorId={post?.author} />
+					<PosterImage authorId={post?.author} />
 					<div class=" flex flex-col">
 						<PostAuthor authorId={post?.author} />
 						{#if post?.createdAt}
@@ -163,13 +173,18 @@
 						{/if}
 					</div>
 				</div>
-			{#if activeFollow != null && !activeFollow}
-				<Button onclick={handleFollow} class="h-fit w-fit rounded-full bg-red-500 p-1   px-2 text-xs">follow</Button>
-			{/if}
-			{#if activeFollow != null && activeFollow}
-				<Button onclick={handleFollow} class="h-fit w-fit rounded-full  p-1   px-2 text-xs">unfollow</Button>
-			{/if}
-			
+				{#if activeFollow != null && !activeFollow}
+					<Button
+						onclick={handleFollow}
+						class="h-fit w-fit rounded-full bg-red-500 p-1   px-2 text-xs">follow</Button
+					>
+				{/if}
+				{#if activeFollow != null && activeFollow}
+					<Button onclick={handleFollow} class="h-fit w-fit rounded-full  p-1   px-2 text-xs"
+						>unfollow</Button
+					>
+				{/if}
+
 				<div class="flex items-center">
 					<Button variant="ghost"><Ellipsis size={20} /></Button>
 					<p class="text-light text-sm">{post?.likes.length}</p>
@@ -185,9 +200,25 @@
 			<!-- image list -->
 			<div class="flex h-28 gap-3 overflow-x-auto">
 				{#each imageUrls as img}
-					<div class="h-full w-[25%] opacity-40">
-						<img src={img} alt="view" class=" h-full w-full rounded-md" />
+					{#if !img}
+				<div class="flex h-full w-[25%]  items-center justify-center bg-gray-100">
+					<div class="flex items-center space-x-2">
+						<div
+							class="h-4 w-4 animate-spin rounded-full border-b-2 border-t-2 border-primary"
+						></div>
+						<span class="font-medium text-gray-600"></span>
 					</div>
+				</div>
+			{:else}
+					<div class="h-full w-[25%] opacity-40">
+						<img
+							src={img}
+							alt="view"
+							onerror={handleImageError}
+							class=" h-full w-full rounded-md"
+						/>
+					</div>
+					{/if}
 				{/each}
 			</div>
 
@@ -316,7 +347,9 @@
 	<div class="my-10 flex h-12 w-full items-center justify-center space-x-3">
 		<p>More from</p>
 
-		<PostImage authorId={post?.author} />
+		<div class="h-10 w-10">
+			<PosterImage authorId={post?.author} />
+		</div>
 		<PostAuthor authorId={post?.author} />
 	</div>
 

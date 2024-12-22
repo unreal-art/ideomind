@@ -12,7 +12,15 @@
 	import type { Post } from "@/types";
 	import { supabase } from "../supabaseClient";
 
-	let imageUrl = $state("/assets/ima1.jpg");
+let imageCache = $state(new Map<string, string>()); // Cache for storing image URLs
+let imageUrl = $state(""); // State for the current image URL
+let fadeClass = $state("opacity-100"); // State for fade effect
+let currentIndex = $state(0); // Tracks the current index of the image
+let imageSources: Post[] = $derived($store.posts.slice(0, 10));// Array of image sources
+let intervalId: number | null = null; // Store interval ID to manage the loop
+
+
+
 	// async function connect() {
 	// 	// account = await wallet.connect({
 	// 	// 	client,
@@ -23,24 +31,38 @@
 	// }
 
 	// Array of image sources to cycle through
-	let imageSources: Post[] = $derived($store.posts.slice(0, 10));
+	
+// Function to fetch the image or get it from cache
+const getImage = async (cid: string) => {
+	if (imageCache.has(cid)) {
+		// Retrieve the cached URL if it exists
+		imageUrl = imageCache.get(cid) as string;
+	} else {
+		// Fetch the URL and store it in the cache
+		const url = (await getImageUrl(cid)) as string;
+		imageCache.set(cid, url);
+		imageUrl = url;
+	}
+};
 
-	let currentIndex = $state(0); // Track the current image index
-	let fadeClass = $state("opacity-100"); // Initial opacity for fade effect
 
-	const getImage = async (cid: any) => {
-		imageUrl = (await getImageUrl(cid)) as string;
-	};
 
-	// Function to change the image source every 4 seconds
-	const changeImageSource = () => {
-		fadeClass = "opacity-0"; // Start fading out
+// Function to start the image rotation
+const startImageRotation = () => {
+	if (intervalId) return; // Prevent multiple intervals
+
+	intervalId = window.setInterval(() => {
+		 // Start fading out
 		setTimeout(() => {
-			currentIndex = (currentIndex + 1) % imageSources.length; // Change the image index
-			getImage(imageSources[currentIndex].ipfsImages[0].cid);
-			fadeClass = "opacity-100"; // Fade in the new image
-		}, 3000); // Wait for 300ms before changing the image to create a smooth transition
-	};
+			currentIndex = (currentIndex + 1) % imageSources.length;
+			const nextCid = imageSources[currentIndex].ipfsImages[0].cid;
+			getImage(nextCid); // Fetch the new image
+			 // Fade in the new image
+		}, 300); // 300ms delay for smooth transition
+	}, 4000); // Change image every 4 seconds
+};
+
+
 
 	async function signInWithGithub() {
 		const { data, error } = await supabase.auth.signInWithOAuth({
@@ -67,13 +89,30 @@ async function signInWithDiscord() {
     }
 }
 
-	// Set interval to change the image every 4 seconds
-	$effect(() => {
-		const intervalId = setInterval(changeImageSource, 4000);
+function handleImageError(event: Event) {
+		const target = event.target as HTMLImageElement;
+		target.src = "";
+	 // Stop loading indicator
+	}
 
-		// Cleanup the interval when the component is destroyed
-		return () => clearInterval(intervalId);
-	});
+	// Function to stop image rotation
+const stopImageRotation = () => {
+	if (intervalId) {
+		clearInterval(intervalId);
+		intervalId = null;
+	}
+};
+
+	// Initialize and start image rotation when `imageSources` are available
+$effect(() => {
+	if (imageSources.length > 0) {
+		getImage(imageSources[currentIndex]?.ipfsImages[0]?.cid); // Load the first image
+		startImageRotation(); // Start rotating images
+	}
+
+	return stopImageRotation; // Cleanup on component unmount
+});
+
 </script>
 
 <main class="flex h-screen w-screen flex-col items-center justify-center">
@@ -83,11 +122,22 @@ async function signInWithDiscord() {
 		<!-- <enhanced:img src={img} alt="landing page image  " /> -->
 		<div class="flex h-[90%] w-full flex-col gap-2 lg:flex-row">
 			<div class="flex h-full w-full items-center lg:w-[50%]">
+
+				{#if  !imageUrl}
+	<div class="flex h-full w-full items-center justify-center bg-gray-100">
+		<div class="flex items-center space-x-2">
+			<div class="h-4 w-4 animate-spin rounded-full border-b-2 border-t-2 border-primary"></div>
+			<span class="font-medium text-gray-600">Loading...</span>
+		</div>
+	</div>
+{:else}
 				<img
-					src={"/assets/ima1.jpg"}
+					src={imageUrl ? imageUrl :"/assets/ima1.jpg"}
 					alt="home page"
-					class={`transition-opacity duration-300 ease-in-out ${fadeClass} h-full w-full rounded-md object-cover`}
+					onerror={handleImageError}
+					class={`transition-opacity duration-300 ease-in-out  h-full w-full rounded-md object-cover`}
 				/>
+				{/if}
 			</div>
 
 			<div

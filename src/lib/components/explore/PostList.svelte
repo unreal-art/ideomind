@@ -7,7 +7,7 @@
 	import { store } from "$lib/store";
 	import Image from "../Image.svelte";
 	import More from "../More.svelte";
-	import PostImage from "../PostImage.svelte";
+	import PosterImage from "../PosterImage.svelte";
 	import PostAuthor from "../PostAuthor.svelte";
 
 	// let likedPosts = $derived(getUserLikedPosts($store.user?.id));
@@ -29,7 +29,7 @@
 			<Image {item} />
 			<div class="mt-3 flex h-10 w-full items-center justify-between">
 				<div class="flex h-full space-x-2">
-					<PostImage authorId={item.author} />
+					<PosterImage authorId={item.author} />
 					<div class="flex flex-col">
 						<PostAuthor authorId={item.author} />
 						<p class="text-light text-sm text-gray-400">
