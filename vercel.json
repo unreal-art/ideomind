@@ -1,14 +1,14 @@
 {
 	"version": 2,
 	"framework": "sveltekit",
-	"buildCommand": "bun run build",
+	"buildCommand": "export PATH=$CUSTOM_CLI_PATH:$PATH && bun run build",
 	"installCommand": "bun install",
 	"devCommand": "bun run dev",
 	"public": true,
 	"outputDirectory": ".vercel/output",
 	"build": {
 		"env": {
-			"PATH": "./static/cli:$PATH"
+			"CUSTOM_CLI_PATH": "./static/cli"
 		}
 	}
 }
