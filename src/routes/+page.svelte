@@ -46,19 +46,25 @@
 		const { data, error } = await supabase.auth.signInWithOAuth({
 			provider: "github",
 			options: {
-				redirectTo: `https://unreal.art/explore`
+				redirectTo: `http://localhost:5173/explore`
 			}
 		});
 	}
+async function signInWithDiscord() {
+	
+    const redirectToUrl = import.meta.env.DEV ? import.meta.env.VITE_DEV_BASE_URL : import.meta.env.VITE_PROD_BASE_URL;
 
-	async function signInWithDiscord() {
-		const { data, error } = await supabase.auth.signInWithOAuth({
-			provider: "discord",
-			options: {
-				redirectTo: `https://unreal.art/explore`
-			}
-		});
-	}
+    const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'discord',
+        options: {
+            redirectTo: redirectToUrl + "/explore", 
+        },
+    });
+
+    if (error) {
+        console.error('Error signing in with Discord:', error.message);
+    }
+}
 
 	// Set interval to change the image every 4 seconds
 	$effect(() => {
