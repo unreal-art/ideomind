@@ -57,6 +57,7 @@ async function signInWithDiscord() {
     const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'discord',
         options: {
+			//redirect url
             redirectTo: redirectToUrl + "/explore", 
         },
     });
