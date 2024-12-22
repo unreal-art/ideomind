@@ -55,7 +55,7 @@
 		const { data, error } = await supabase.auth.signInWithOAuth({
 			provider: "discord",
 			options: {
-				redirectTo: `http://localhost:5173/explore`
+				redirectTo: `https://unreal.art/explore`
 			}
 		});
 	}
