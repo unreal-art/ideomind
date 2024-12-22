@@ -77,7 +77,7 @@
 		<div class="flex h-[90%] w-full flex-col gap-2 lg:flex-row">
 			<div class="flex h-full w-full items-center lg:w-[50%]">
 				<img
-					src={imageUrl}
+					src={"/assets/ima1.jpg"}
 					alt="home page"
 					class={`transition-opacity duration-300 ease-in-out ${fadeClass} h-full w-full rounded-md object-cover`}
 				/>
