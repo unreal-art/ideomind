@@ -1,30 +1,30 @@
-import { exec } from 'child_process';
-import path from 'path';
-import { promisify } from 'util';
-import { json, type RequestHandler } from '@sveltejs/kit';
-import { extractLocationURL } from './darts';
-import { DEBUG } from '$env/static/private';
-import { dev } from '$app/environment';
+import { exec } from "child_process";
+import path from "path";
+import { promisify } from "util";
+import { json, type RequestHandler } from "@sveltejs/kit";
+import { extractLocationURL } from "./darts";
+import { DEBUG } from "$env/static/private";
+import { dev } from "$app/environment";
 
-import { DARTS_PRIVATE_KEY, DARTS_CLI } from '$env/static/private';
-import { uploadFilesInOutputs } from './pinata';
+import { DARTS_PRIVATE_KEY, DARTS_CLI } from "$env/static/private";
+import { uploadFilesInOutputs } from "./pinata";
 
 const execAsync = promisify(exec);
 
 async function installDarts() {
 	try {
 		// Check if 'darts' binary exists
-		await execAsync('command -v darts');
-		console.log('Darts binary already installed.');
-		return 'Darts binary is already installed.';
+		await execAsync("command -v darts");
+		console.log("Darts binary already installed.");
+		return "Darts binary is already installed.";
 	} catch {
 		// If not found and not in dev mode, install it
-		console.log('Installing darts binary...');
-		await execAsync('curl -sSL https://bit.ly/install-darts | DARTS_LOC=darts bash -s -- darts');
+		console.log("Installing darts binary...");
+		await execAsync("curl -sSL https://bit.ly/install-darts | DARTS_LOC=darts bash -s -- darts");
 
-		console.log('Darts installation successful.');
-		return 'Darts binary installed successfully.';
-		return 'Skipping installation in development mode.';
+		console.log("Darts installation successful.");
+		return "Darts binary installed successfully.";
+		return "Skipping installation in development mode.";
 	}
 }
 
@@ -51,35 +51,35 @@ export const POST: RequestHandler = async ({ request }) => {
 	const jobDto: JobSpec = await request.json();
 
 	if (!jobDto) {
-		return json({ error: 'Missing inputs in request body' }, { status: 400 });
+		return json({ error: "Missing inputs in request body" }, { status: 400 });
 	}
 
 	if (!jobDto.module) {
-		jobDto.module ??= 'cowsay';
-		jobDto.version ??= 'v0.1.3';
+		jobDto.module ??= "cowsay";
+		jobDto.version ??= "v0.1.3";
 		jobDto.inputs = {
-			Message: 'ideomind says hi'
+			Message: "ideomind says hi"
 		};
 	} else {
-		jobDto.version ??= 'HEAD';
+		jobDto.version ??= "HEAD";
 	}
 
 	// Construct CLI input flags
 	const inputFlags = Object.entries(jobDto.inputs || {})
 		.map(([key, value]) => `-i ${key}="${value}"`)
-		.join(' ');
+		.join(" ");
 
-	console.log('inputFlags', inputFlags);
+	console.log("inputFlags", inputFlags);
 
 	// Set environment variables
 	const pKey = DARTS_PRIVATE_KEY;
-	const debug = DEBUG == '1' || DEBUG == 'true';
+	const debug = DEBUG == "1" || DEBUG == "true";
 
 	const platform = process.platform;
-	const dartsBin = platform === 'linux' ? 'darts-linux' : 'darts-mac';
+	const dartsBin = platform === "linux" ? "darts-linux" : "darts-mac";
 
-	let dartsCli = DARTS_CLI || 'darts';
-	dartsCli = 'darts';
+	let dartsCli = DARTS_CLI || "darts";
+	dartsCli = "darts";
 
 	const envVars = {
 		DARTS_PRIVATE_KEY: pKey,
@@ -88,7 +88,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	const envVarsString = Object.entries(envVars)
 		.map(([key, value]) => `${key}="${value}"`)
-		.join(' ');
+		.join(" ");
 
 	const command = `${dartsCli} run ${jobDto.module}:${jobDto.version} ${inputFlags} `;
 	// TODO: module
@@ -101,35 +101,35 @@ export const POST: RequestHandler = async ({ request }) => {
 		const childProcess = exec(`${envVarsString} ${command}`);
 
 		let outputFolder: string | null = null;
-		let stderr: string = '';
-		let stdout: string = '';
+		let stderr: string = "";
+		let stdout: string = "";
 
-		childProcess.stdout?.on('data', (out) => {
+		childProcess.stdout?.on("data", (out) => {
 			console.log(`stdout: ${out}`);
 			stdout = out.toString();
 			outputFolder = extractLocationURL(stdout);
 		});
 
-		childProcess.stderr?.on('data', (_stderr) => {
+		childProcess.stderr?.on("data", (_stderr) => {
 			console.error(`stderr: ${_stderr}`);
 			stderr = _stderr.toString();
 		});
 
-		childProcess.on('close', async (code) => {
+		childProcess.on("close", async (code) => {
 			console.log(`child process exited with code ${code}`);
 			if (code === 0 && outputFolder) {
 				//upload image + `/outputs/${formatText(jobDto.inputs?.Prompt as string)}`
 				try {
 					const uploadResponse = await uploadFilesInOutputs(outputFolder);
-					console.log('Image upload successful:', uploadResponse);
+					console.log("Image upload successful:", uploadResponse);
 					resolve(json({ outputFolder, stdout, command, uploadResponse }));
 				} catch (uploadError) {
-					console.error('Error uploading image:', uploadError);
+					console.error("Error uploading image:", uploadError);
 					resolve(
 						json(
 							{
-								error: 'Image upload failed.',
-								details: uploadError instanceof Error ? uploadError.message : 'Unknown error',
+								error: "Image upload failed.",
+								details: uploadError instanceof Error ? uploadError.message : "Unknown error",
 								outputFolder,
 								stdout,
 								command
@@ -149,3 +149,13 @@ export const POST: RequestHandler = async ({ request }) => {
 		});
 	});
 };
+
+export async function OPTIONS() {
+	return new Response(null, {
+		headers: {
+			"Access-Control-Allow-Origin": "*", // Specify the url you wish to permit
+			"Access-Control-Allow-Methods": "POST, OPTIONS",
+			"Access-Control-Allow-Headers": "Content-Type"
+		}
+	});
+}
