@@ -105,38 +105,6 @@ const createStore = () => {
 				posts: [...state.posts, post]
 			}));
 		},
-		likePost: (postId: string, userId: string) => {
-			update((state) => {
-				const post = state.posts.find((p) => p.id === postId);
-				const user = state.user;
-
-				if (!post || !user || user.id !== userId) return state;
-
-				const likeIndex = state.likes.findIndex(
-					(like) => like.post.id === postId && like.user.id === userId
-				);
-
-				if (likeIndex !== -1) {
-					return {
-						...state,
-						likes: state.likes.filter((_, index) => index !== likeIndex),
-						posts: state.posts.map((p) => (p.id === postId ? { ...p, likes: p.likes - 1 } : p))
-					};
-				} else {
-					const newLike: Like = {
-						id: `${userId}-${postId}`,
-						post,
-						user
-					};
-
-					return {
-						...state,
-						likes: [...state.likes, newLike],
-						posts: state.posts.map((p) => (p.id === postId ? { ...p, likes: p.likes + 1 } : p))
-					};
-				}
-			});
-		},
 
 		updateLoader: (status: boolean) => {
 			update((state) => ({

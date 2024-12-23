@@ -7,9 +7,12 @@
 	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 	import CreationList from "@/components/creations/CreationList.svelte";
 	import { store } from "$lib/store";
-	import { getUserPosts } from "@/api";
+	import { fetchCreationsPost, getUserPosts } from "@/api";
 	import PromptForm from "@/components/PromptForm.svelte";
-	import { goto } from "$app/navigation";
+	import { goto, invalidate } from "$app/navigation";
+	import type { PageData } from "../$types";
+	import type { Post } from "@/types";
+	import { page } from "$app/stores";
 
 	const choices = [
 		{ value: "everything", label: "Everything" },
@@ -24,14 +27,15 @@
 		choices.find((f) => f.value === selectedChoice)?.label ?? "Filter"
 	);
 
+	let { data }: { data: PageData } = $props();
 	let showInput: boolean = $state(false);
 	let inputRef: HTMLDivElement | null = $state(null);
 	let buttonRef: HTMLDivElement | null = $state(null);
-
-	let posts = $derived(getUserPosts($store.user?.id, $store.posts));
-	let pinnedPosts = $derived(posts.filter((item) => item.isPinned));
-	let privatePosts = $derived(posts.filter((item) => item.isPrivate));
-	let publicPosts = $derived(posts.filter((item) => !item.isPrivate));
+	let pinnedPosts = $state<Post[]>([]);
+	let privatePosts = $state<Post[]>([]);
+	let publicPosts = $state<Post[]>([]);
+	let loading = $state(true);
+	let posts = $state<Post[]>(data.posts as Post[]);
 
 	$effect(() => {
 		if (!$store.isAuthenticated) goto("/");
@@ -54,6 +58,26 @@
 		}
 	};
 
+	const reloadData = async () => {
+		loading = true;
+		// console.log($page.url.pathname);
+		// // Re-run the load function for the current route
+		// const currentPath = $page.url.pathname;
+		// await invalidate(currentPath);
+		const data = await fetchCreationsPost();
+		posts = data.posts;
+		loading = false;
+	};
+
+	//fill posts
+	$effect(() => {
+		if (!data.posts) return;
+		pinnedPosts = posts.filter((item: Post) => item.isPinned);
+		privatePosts = posts.filter((item: Post) => item.isPrivate);
+		publicPosts = posts.filter((item: Post) => !item.isPrivate);
+		loading = false;
+	});
+
 	// Attach and clean up event listeners
 	$effect(() => {
 		document.addEventListener("click", handleClickOutside);
@@ -67,7 +91,7 @@
 		<PromptForm section={"body"} />
 	</div>
 	<div class="h-full lg:h-[79%]">
-		<Tabs.Root value="all" class="h-full w-full">
+		<Tabs.Root onValueChange={() => reloadData()} value="all" class="h-full w-full">
 			<div class="fixed top-0 z-50 flex h-12 w-full justify-between bg-stone-50 lg:relative">
 				<div
 					class={` ${showInput ? "block" : "hidden"} absolute left-0 top-0 z-20 h-full w-full max-w-[1000px] rounded-2xl border bg-stone-50`}
@@ -137,16 +161,16 @@
 				</div>
 			</div>
 			<Tabs.Content value="all" class="h-[95%] w-full  ">
-				<CreationList data={posts} choice={selectedChoice} />
+				<CreationList data={posts} choice={selectedChoice} {loading} />
 			</Tabs.Content>
 			<Tabs.Content value="pinned">
-				<CreationList data={pinnedPosts} choice={selectedChoice} />
+				<CreationList data={pinnedPosts} choice={selectedChoice} {loading} />
 			</Tabs.Content>
 			<Tabs.Content value="public">
-				<CreationList data={publicPosts} choice={selectedChoice} />
+				<CreationList data={publicPosts} choice={selectedChoice} {loading} />
 			</Tabs.Content>
 			<Tabs.Content value="private">
-				<CreationList data={privatePosts} choice={selectedChoice} />
+				<CreationList data={privatePosts} choice={selectedChoice} {loading} />
 			</Tabs.Content>
 		</Tabs.Root>
 	</div>

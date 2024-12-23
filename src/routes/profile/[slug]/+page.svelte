@@ -9,18 +9,22 @@
 	import { Label } from "$lib/components/ui/label/index.js";
 	import Textarea from "@/components/ui/textarea/textarea.svelte";
 	import { store } from "$lib/store";
+	import type { PageData } from "./$types";
 	import {
 		getUser,
 		updateUserDetails,
 		getUserLikedPosts,
 		getUserPosts,
 		getLikesReceivedByUser,
-		getFollowStats
+		getFollowStats,
+		fetchProfilePosts
 	} from "@/api";
 	import UserPostList from "@/components/profile/UserPostList.svelte";
 	import { page } from "$app/stores";
 	import { goto } from "$app/navigation";
 	import type { Post } from "@/types";
+
+	let { data }: { data: PageData } = $props();
 
 	let showInput: boolean = $state(false);
 	let inputRef: HTMLDivElement | null = $state(null);
@@ -30,9 +34,6 @@
 	let targetPosition: number = $state(0);
 	let targetElement: HTMLElement | null = $state(null);
 	let scrollContainer: HTMLElement | null = $state(null);
-
-	let params = $state($page.params);
-
 
 	let name = $state($store.user?.name);
 	let username = $state($store.user?.name);
@@ -45,8 +46,10 @@
 	let publicPosts = $state<Post[]>([]);
 	let likesReceived = $state(0);
 	let followStats = $state<FollowStats>({} as FollowStats);
-	let updating = $state(false)
-	
+	let updating = $state(false);
+	let loading = $state(true);
+	let posts = $state<Post[]>(data.posts as Post[]);
+
 	$effect(() => {
 		if (!$store.isAuthenticated) goto("/");
 	});
@@ -91,7 +94,7 @@
 	};
 
 	const updateProfile = async () => {
-		updating = true
+		updating = true;
 		const data = {
 			name,
 			// username,
@@ -99,9 +102,24 @@
 			location
 		};
 		//update detail
-		$store.user?.id && await  updateUserDetails(data, $store.user?.id);
+		$store.user?.id && (await updateUserDetails(data, $store.user?.id));
 		open = false;
-		updating=false
+		updating = false;
+	};
+
+	const reloadData = async () => {
+		loading = true;
+		// console.log($page.url.pathname);
+		// // Re-run the load function for the current route
+		// const currentPath = $page.url.pathname;
+		// await invalidate(currentPath);
+		const data = await fetchProfilePosts();
+		posts = data.posts;
+		loading = false;
+	};
+
+	const getLikedPosts = async () => {
+		likedPosts = await getUserLikedPosts($store.user?.id);
 	};
 
 	// Attach and clean up event listeners
@@ -132,12 +150,13 @@
 	});
 
 	$effect(() => {
-		likedPosts = getUserLikedPosts();
-		pinnedPosts = $store.posts.filter((item) => item.isPinned);
-		privatePosts = $store.posts.filter((item) => item.isPrivate);
-		publicPosts = $store.posts.filter((item) => !item.isPrivate);
+		if (!data.posts) return;
+		getLikedPosts();
+		pinnedPosts = posts.filter((item) => item.isPinned);
+		privatePosts = posts.filter((item) => item.isPrivate);
+		publicPosts = posts.filter((item) => !item.isPrivate);
+		loading = false;
 	});
-
 
 	$effect(() => {
 		const fetchLikesReceived = async () => {
@@ -250,8 +269,8 @@
 							<p class="w-full text-right text-xs font-extralight">(0/150)</p>
 						</div>
 						<Dialog.Footer>
-							<Button disabled={updating
-							} onclick={updateProfile} type="button">Save changes</Button>
+							<Button disabled={updating} onclick={updateProfile} type="button">Save changes</Button
+							>
 						</Dialog.Footer>
 					</form>
 				</Dialog.Content>
@@ -259,7 +278,7 @@
 		</div>
 	</div>
 	<div class=" relative min-h-[60vh]">
-		<Tabs.Root value="public" class="relative h-full w-full">
+		<Tabs.Root onValueChange={() => reloadData()} value="public" class="relative h-full w-full">
 			<div
 				bind:this={targetElement}
 				class={`${isFixed ? "fixed left-0 lg:top-16 " : " lg:relative"} top-0 z-20 flex h-12 w-full justify-center bg-stone-50 `}
@@ -301,17 +320,17 @@
 			</div>
 
 			<Tabs.Content value="pinned">
-				<UserPostList data={pinnedPosts} />
+				<UserPostList data={pinnedPosts} {loading} />
 			</Tabs.Content>
 			<Tabs.Content value="public">
-				<UserPostList data={publicPosts} />
+				<UserPostList data={publicPosts} {loading} />
 			</Tabs.Content>
 			<Tabs.Content value="private">
-				<UserPostList data={privatePosts} />
+				<UserPostList data={privatePosts} {loading} />
 			</Tabs.Content>
 
 			<Tabs.Content value="liked" class="h-[95%] w-full  ">
-				<UserPostList data={likedPosts} isLikes={true} />
+				<UserPostList data={likedPosts} isLikes={true} {loading} />
 			</Tabs.Content>
 		</Tabs.Root>
 	</div>

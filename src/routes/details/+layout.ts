@@ -16,14 +16,7 @@ export const load: LayoutLoad = async ({ params }) => {
 		// Fetch the post with the matching slug
 		const { data, error } = await supabase
 			.from("posts")
-			.select(
-				`
-                *,
-                likes (
-                    *
-                )
-            `
-			)
+			.select(`*`)
 			.eq("id", slug) // Assuming `slug` corresponds to the `id` column in the "posts" table
 			.single(); // Fetch only a single row
 

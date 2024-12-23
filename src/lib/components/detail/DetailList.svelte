@@ -14,23 +14,12 @@
 </script>
 
 <div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
-	{#each data as item}
+	{#each data as post}
 		<div class="mb-6 break-inside-avoid">
-			<Image {item} />
-			<div class="mt-3 flex h-10 w-full items-center justify-between">
-				<div class="flex h-full space-x-2">
-					<PosterImage authorId={item.author} />
-					<div class="flex flex-col">
-						<PostAuthor authorId={item.author} />
-						<p class="text-light text-sm text-gray-400">
-							{item.createdAt && formatDistanceToNow(item.createdAt)} ago
-						</p>
-					</div>
-				</div>
-				<div class="flex items-center">
-					<More />
-					<Likes id={item.id} post={item} />
-				</div>
+			<Image item={post} />
+			<div class="mt-3 flex h-10 w-full items-center justify-end">
+				<More />
+				<Likes id={post.id} {post} />
 			</div>
 		</div>
 	{/each}

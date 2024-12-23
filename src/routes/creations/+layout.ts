@@ -7,23 +7,19 @@ import type { LayoutLoad } from "./$types";
 import { store } from "$lib/store";
 
 export const load: LayoutLoad = async ({ url }) => {
-	
-	//fetch post data
 	try {
 		// Fetch posts with likes
-		const { data: posts, error } = await supabase.from("posts").select(`
-        *,
-        likes (
-          *
-        )
-      `);
+		const { data: posts, error } = await supabase
+			.from("posts")
+			.select(`*`)
+			.order("createdAt", { ascending: false });
 
 		if (error) {
 			console.error("Error fetching posts with likes:", error);
 			return { posts: [] };
 		}
 
-		store.initPosts(posts);
+		return { posts: posts || null };
 	} catch (err) {
 		console.error("Unexpected error:", err);
 		return { posts: [] };
