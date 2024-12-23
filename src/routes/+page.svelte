@@ -11,6 +11,8 @@
 	import { store } from "$lib/store";
 	import type { Post } from "@/types";
 	import { supabase } from "../supabaseClient";
+import { AiOutlineDiscord , AiOutlineGooglePlus, AiOutlineNodeExpand} from 'svelte-icons-pack/ai';
+import { Icon } from 'svelte-icons-pack';
 
 let imageCache = $state(new Map<string, string>()); // Cache for storing image URLs
 let imageUrl = $state(""); // State for the current image URL
@@ -64,13 +66,20 @@ const startImageRotation = () => {
 
 
 
-	async function signInWithGithub() {
-		const { data, error } = await supabase.auth.signInWithOAuth({
-			provider: "github",
-			options: {
-				redirectTo: `http://localhost:5173/explore`
-			}
-		});
+	async function signInWithGoogle() {
+	const redirectToUrl = import.meta.env.DEV ? import.meta.env.VITE_DEV_BASE_URL : import.meta.env.VITE_PROD_BASE_URL;
+
+    const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+			//redirect url
+            redirectTo: redirectToUrl + "/explore", 
+        },
+    });
+
+    if (error) {
+        console.error('Error signing in with Discord:', error.message);
+    }
 	}
 async function signInWithDiscord() {
 	
@@ -143,9 +152,12 @@ $effect(() => {
 			<div
 				class="flex h-full w-full flex-col items-center justify-center gap-3 text-center lg:w-[50%]"
 			>
+			
+
 				<p class="text-md text-center font-semibold">Get started</p>
-				<Button onclick={signInWithDiscord} class="text-md h-12 w-full">Discord</Button>
-				<!-- <Button onclick={signInWithGithub} class="text-md h-12 w-full">Github</Button> -->
+				<button onclick={signInWithDiscord} class=" h- w-full flex items-center justify-center gap-3 bg-primary rounded-md text-white fonr-semibold  text-center h-12  "> <Icon src={AiOutlineDiscord} size="28" viewBox="0 0 1024 1024" className="custom-icon" title="Custom icon params" />Discord</button>
+				<button onclick={signInWithGoogle} class=" h- w-full flex items-center justify-center gap-3 bg-primary rounded-md text-white fonr-semibold  text-center h-12  "> <Icon src={AiOutlineGooglePlus} size="28" viewBox="0 0 1024 1024" className="custom-icon" title="Custom icon params" />Google</button>
+				
 			</div>
 		</div>
 	</div>
