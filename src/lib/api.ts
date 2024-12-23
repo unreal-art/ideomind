@@ -28,12 +28,12 @@ export const getImageUrl = async (cid: string) => {
 
 export async function generateImage(dto: JobSpec) {
 	try {
-		// const { data }: DartsJobData = await axios.post(PUBLIC_API_URL || "" + "/darts", dto);
-		const response = await axios.post("/api", dto, {
-			headers: {
-				"Content-Type": "application/json" // Explicitly set Content-Type
-			}
-		});
+		const response: DartsJobData = await axios.post(PUBLIC_API_URL || "" + "/darts", dto);
+		// const response = await axios.post("/api", dto, {
+		// 	headers: {
+		// 		"Content-Type": "application/json" // Explicitly set Content-Type
+		// 	}
+		// });
 
 		return response.data;
 	} catch (error) {
@@ -52,20 +52,14 @@ export const updateUserDetails = async (user: Partial<User>, id: string) => {
 		full_name: user.name,
 		bio: user.bio,
 		location: user.location
-	}
-	  const { data, error } = await supabase
-        .from('profiles')
-        .update(updates)
-        .eq('id', id);
+	};
+	const { data, error } = await supabase.from("profiles").update(updates).eq("id", id);
 
-    if (error) {
-        console.error('Error updating profile:', error);
-    } else {
-        
+	if (error) {
+		console.error("Error updating profile:", error);
+	} else {
 		store.updateUser(user);
-		
-    }
-
+	}
 };
 
 // Function to create a new post
@@ -89,7 +83,7 @@ export const createNewPost = async (post: Post) => {
 	} else {
 		console.log("Post inserted successfully:", data);
 		//fetch post for profile page
-			fetchProfilePosts()
+		fetchProfilePosts();
 		data && store.createPost(data);
 	}
 };
@@ -519,93 +513,89 @@ export const getFollowStats = async (userId: string | undefined): Promise<Follow
 // 	return data;
 // };
 
+export const toggleFollow = async (followerId: string, followeeId: string) => {
+	try {
+		// Check if the follower already follows the followee
+		const { data, error } = await supabase
+			.from("follows")
+			.select("*")
+			.eq("follower_id", followerId)
+			.eq("followee_id", followeeId)
+			.single();
 
-export const toggleFollow = async (followerId:string, followeeId: string) => {
-    try {
-        // Check if the follower already follows the followee
-        const { data, error } = await supabase
-            .from('follows')
-            .select('*')
-            .eq('follower_id', followerId)
-            .eq('followee_id', followeeId)
-            .single();
+		if (error && error.code !== "PGRST116") {
+			console.error("Error fetching follow relationship:", error.message);
+			return;
+		}
 
-        if (error && error.code !== 'PGRST116') {
-            console.error('Error fetching follow relationship:', error.message);
-            return;
-        }
+		if (data) {
+			// If a follow relationship exists, delete it
+			const { error: deleteError } = await supabase
+				.from("follows")
+				.delete()
+				.eq("follower_id", followerId)
+				.eq("followee_id", followeeId);
 
-        if (data) {
-            // If a follow relationship exists, delete it
-            const { error: deleteError } = await supabase
-                .from('follows')
-                .delete()
-                .eq('follower_id', followerId)
-                .eq('followee_id', followeeId);
+			if (deleteError) {
+				console.error("Error deleting follow relationship:", deleteError.message);
+			} else {
+				console.log(`Unfollowed successfully: Follower ${followerId}, Followee ${followeeId}`);
+			}
+		} else {
+			// If no follow relationship exists, insert it
+			const { error: insertError } = await supabase
+				.from("follows")
+				.insert([{ follower_id: followerId, followee_id: followeeId }]);
 
-            if (deleteError) {
-                console.error('Error deleting follow relationship:', deleteError.message);
-            } else {
-                console.log(`Unfollowed successfully: Follower ${followerId}, Followee ${followeeId}`);
-            }
-        } else {
-            // If no follow relationship exists, insert it
-            const { error: insertError } = await supabase
-                .from('follows')
-                .insert([{ follower_id: followerId, followee_id: followeeId }]);
-
-            if (insertError) {
-                console.error('Error adding follow relationship:', insertError.message);
-            } else {
-                console.log(`Followed successfully: Follower ${followerId}, Followee ${followeeId}`);
-            }
-        }
-    } catch (err) {
-        console.error('Unexpected error:', err);
-    }
+			if (insertError) {
+				console.error("Error adding follow relationship:", insertError.message);
+			} else {
+				console.log(`Followed successfully: Follower ${followerId}, Followee ${followeeId}`);
+			}
+		}
+	} catch (err) {
+		console.error("Unexpected error:", err);
+	}
 };
 
+export const doesUserFollow = async (followerId: string, followeeId: string) => {
+	try {
+		// Query the `follows` table to check if a follow relationship exists
+		const { data, error } = await supabase
+			.from("follows")
+			.select("*")
+			.eq("follower_id", followerId)
+			.eq("followee_id", followeeId)
+			.single(); // Retrieve a single record
 
+		if (error) {
+			if (error.code === "PGRST116") {
+				// No follow relationship found
+				return false;
+			}
+			console.error("Error checking follow relationship:", error.message);
+			return false;
+		}
 
-
-export const doesUserFollow = async (followerId:string, followeeId: string) => {
-    try {
-        // Query the `follows` table to check if a follow relationship exists
-        const { data, error } = await supabase
-            .from('follows')
-            .select('*')
-            .eq('follower_id', followerId)
-            .eq('followee_id', followeeId)
-            .single(); // Retrieve a single record
-
-        if (error) {
-            if (error.code === 'PGRST116') {
-                // No follow relationship found
-                return false;
-            }
-            console.error('Error checking follow relationship:', error.message);
-            return false;
-        }
-
-        // If data exists, the follower follows the followee
-        return !!data;
-    } catch (err) {
-        console.error('Unexpected error:', err);
-        return false;
-    }
+		// If data exists, the follower follows the followee
+		return !!data;
+	} catch (err) {
+		console.error("Unexpected error:", err);
+		return false;
+	}
 };
 
 export const logoutUser = async () => {
-    try {
-        const { error } = await supabase.auth.signOut();
-        if (error) {
-            console.error('Error logging out:', error.message);
-        } else {
-            console.log('User logged out successfully.');
-			store.reset()
-			goto("/")
-        }
-    } catch (err) {
-        console.error('Unexpected error during logout:', err);
-    }
+	try {
+		const { error } = await supabase.auth.signOut();
+		if (error) {
+			console.error("Error logging out:", error.message);
+		} else {
+			console.log("User logged out successfully.");
+			store.reset();
+			goto("/");
+		}
+	} catch (err) {
+		console.error("Unexpected error during logout:", err);
+	}
 };
