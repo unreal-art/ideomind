@@ -10,6 +10,7 @@
 	import { page } from '$app/stores';
 	import Textarea from './ui/textarea/textarea.svelte';
 	import { goto } from '$app/navigation';
+	import random from "random"
 
 	let { section } = $props();
 	let text = $state('');
@@ -21,7 +22,7 @@
     let val = ''
 	const onclick = async () => {
 		showInput=false
-		
+
 		store.updateLoader(true);
 		const dto: JobSpec = {
 			module: 'isdxl',
@@ -29,9 +30,11 @@
 			inputs: {
 				Prompt: text,
 				cpu: 26,
-				Device: 'xpu'
+				Device: 'xpu',
+				Seed: random.int(100000)
 			}
 		};
+		console.log(dto)
 		const data: Output | undefined = await generateImage(dto);
 		//store the post
 		const post: Partial<Post> = {
@@ -43,9 +46,9 @@
 			ipfsImages: data?.uploadResponse as UploadResponse[],
 			cpu: dto.inputs?.cpu as number,
 			device: dto.inputs?.Device as string,
-		
+
 		};
-	
+
 
 		if (!data) {
 			toast.error('Error', {
@@ -60,7 +63,7 @@
 			createNewPost(post as Post);
 			store.updateLoader(false);
 			text = '';
-			
+
 			goto(`/profile/${$store.user?.id}`)
 		}
 	};
@@ -78,7 +81,7 @@
 		if (inputRef && minorInputRef && buttonInputRef) {
 			// Check if the click was outside both the button and the input field
 			if (!inputRef.contains(target) && !minorInputRef.contains(target) && !buttonInputRef.contains(target)) {
-	
+
 				showInput = false;
 			}
 		}
