@@ -28,12 +28,13 @@
 	import type { UploadResponse } from 'pinata';
 	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
+	import random from 'random';
 
 	let text = $state('');
 	let open = $state(false);
 
 	const onclick = async () => {
-		
+
 		store.updateLoader(true);
 		const dto: JobSpec = {
 			module: 'isdxl',
@@ -41,7 +42,8 @@
 			inputs: {
 				Prompt: text,
 				cpu: 26,
-				Device: 'xpu'
+				Device: 'xpu',
+				Seed: random.int(100000)
 			}
 		};
 		const {data}: {data:Output | undefined} = await generateImage(dto);
@@ -55,7 +57,7 @@
 			ipfsImages: data?.uploadResponse as UploadResponse[],
 			cpu: dto.inputs?.cpu as number,
 			device: dto.inputs?.Device as string,
-		
+
 		};
 		console.log(data)
 
@@ -114,7 +116,7 @@
 					<Textarea
 						placeholder="Describe what you want to see"
 						rows={10}
-						
+
 						class="ring-0"
 						bind:value={text}
 					/>
