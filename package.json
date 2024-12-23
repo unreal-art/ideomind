@@ -84,6 +84,7 @@
     "mime-types": "^2.1.35",
     "mode-watcher": "^0.5.0",
     "pinata": "^1.9.1",
+    "random": "^5.1.1",
     "stream-browserify": "^3.0.0",
     "svelte-bricks": "^0.2.1",
     "svelte-icons-pack": "^3.1.3",
