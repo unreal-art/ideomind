@@ -11,22 +11,16 @@ export const load: LayoutLoad = async ({ url }) => {
 		// Fetch posts with likes where author matches the specified value
 		const { data: posts, error } = await supabase
 			.from("posts")
-			.select(
-				`
-            *,
-            likes (
-                *
-            )
-        `
-			)
-			.eq("author", store.getState().user?.id); // Filter posts by author
+			.select(`*`)
+			.eq("author", store.getState().user?.id)
+			.order("createdAt", { ascending: false }); // Filter posts by author
 
 		if (error) {
 			console.error("Error fetching posts with likes:", error);
 			return { posts: [] };
 		}
 
-		store.initPosts(posts);
+		return { posts: posts || null };
 	} catch (err) {
 		console.error("Unexpected error:", err);
 		return { posts: [] };

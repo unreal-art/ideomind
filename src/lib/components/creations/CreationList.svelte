@@ -6,9 +6,10 @@
 	import { store } from "$lib/store";
 	import Image from "../Image.svelte";
 	import More from "../More.svelte";
+	import Likes from "@/Likes.svelte";
 
 	// let likedPosts = $derived(getUserLikedPosts($store.user?.id));
-	let { data, choice }: { data: Post[]; choice: string } = $props();
+	let { data, choice, loading }: { data: Post[]; choice: string; loading: boolean } = $props();
 	let posts = $derived(filterPostByCat(data, choice));
 
 	const like = (item: Post) => {
@@ -21,27 +22,26 @@
 	};
 </script>
 
-<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
-	{#each posts as item: Post}
-		<div class="relative mb-6 break-inside-avoid">
-			<div class="absolute bottom-1 right-0 flex items-center text-white">
-				<More />
-
-				<Button
-					variant="ghost"
-					onclick={() => like(item)}
-					class="flex space-x-2 hover:bg-black/50 hover:text-white"
-				>
-					<span>{item.likes.length}</span>
-					<Heart
-						size={20}
-						class={`${isInLikedPosts(item.likes) ? "fill-pink-500 text-pink-500" : ""}`}
-					></Heart></Button
-				>
-			</div>
-			<a href={`/details/${item.id}`}>
-				<Image {item} />
-			</a>
+{#if loading}
+	<div class="flex h-[100vh] items-center justify-center bg-gray-100">
+		<div class="flex items-center space-x-2">
+			<!-- <div class="h-4 w-4 animate-spin rounded-full border-b-2 border-t-2 border-primary"></div> -->
+			<span class="font-medium text-gray-600">Please wait...</span>
 		</div>
-	{/each}
-</div>
+	</div>
+{:else}
+	<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
+		{#each posts as item: Post}
+			<div class="relative mb-6 break-inside-avoid">
+				<div class="absolute bottom-1 right-0 flex items-center text-white">
+					<More />
+
+					<Likes id={item.id} post={item} />
+				</div>
+				<a href={`/details/${item.id}`}>
+					<Image {item} />
+				</a>
+			</div>
+		{/each}
+	</div>
+{/if}

@@ -119,22 +119,16 @@ export const fetchProfilePosts = async () => {
 		// Fetch posts with likes where author matches the specified value
 		const { data: posts, error } = await supabase
 			.from("posts")
-			.select(
-				`
-            *,
-            likes (
-                *
-            )
-        `
-			)
-			.eq("author", store.getState().user?.id); // Filter posts by author
+			.select(`*`)
+			.eq("author", store.getState().user?.id)
+			.order("createdAt", { ascending: false }); // Filter posts by author
 
 		if (error) {
 			console.error("Error fetching posts with likes:", error);
 			return { posts: [] };
 		}
 
-		store.initPosts(posts);
+		return { posts: posts || null };
 	} catch (err) {
 		console.error("Unexpected error:", err);
 		return { posts: [] };
@@ -205,6 +199,26 @@ export const fetchAuthorOtherPosts = async (authorId: string, excludePostId: str
 	}
 };
 
+export const fetchCreationsPost = async () => {
+	try {
+		// Fetch posts with likes
+		const { data: posts, error } = await supabase
+			.from("posts")
+			.select(`*`)
+			.order("createdAt", { ascending: false });
+
+		if (error) {
+			console.error("Error fetching posts with likes:", error);
+			return { posts: [] };
+		}
+
+		return { posts: posts || null };
+	} catch (err) {
+		console.error("Unexpected error:", err);
+		return { posts: [] };
+	}
+};
+
 export const fetchSelectedPost = async (slug: string) => {
 	console.log(slug);
 	if (!slug) {
@@ -240,16 +254,34 @@ export const fetchSelectedPost = async (slug: string) => {
  * @param userId - The ID of the user whose liked posts are to be retrieved. If undefined, an empty array is returned.
  * @returns An array of posts liked by the specified user.
  */
-export const getUserLikedPosts = (): Post[] => {
-	// Return an empty array if no userId is provided.
-	const userId = store.getState().user?.id;
+export const getUserLikedPosts = async (userId: string | undefined): Promise<Post[]> => {
+	if (!userId) {
+		console.error("Error: userId is undefined");
+		return [];
+	}
 
-	const posts = store.getState().posts;
+	try {
+		const { data, error } = await supabase
+			.from("likes") // Query the "likes" table
+			.select(
+				`
+        posts(*)  // Fetch all columns from the "posts" table
+      `
+			)
+			.eq("author", userId); // Filter by the user ID
 
-	// Filter posts where the user has liked them.
-	const likedPosts = posts.filter((post) => post.likes.some((like: any) => like.author === userId));
+		if (error) {
+			console.error("Error fetching liked posts:", error);
+			return [];
+		}
 
-	return likedPosts;
+		// Extract the `posts` array from the response structure
+		//@ts-ignore
+		return (data?.map((like) => like.posts) || []) as Post[];
+	} catch (err) {
+		console.error("Unexpected error fetching liked posts:", err);
+		return [];
+	}
 };
 
 // Get the like count for a specific post by its ID.
@@ -372,7 +404,7 @@ export async function likePost(
 		if (fetchError && fetchError.code !== "PGRST116") {
 			// Ignore 'not found' errors (code PGRST116 indicates no rows found)
 			console.error("Error fetching like:", fetchError);
-			return null;
+			return false;
 		}
 
 		if (existingLike) {
@@ -384,7 +416,7 @@ export async function likePost(
 
 			if (deleteError) {
 				console.error("Error deleting like:", deleteError);
-				return null;
+				return false;
 			}
 
 			console.log("Like removed");
@@ -399,26 +431,26 @@ export async function likePost(
 
 			if (insertError) {
 				console.error("Error adding like:", insertError);
-				return null;
+				return false;
 			}
 
 			console.log("Like added");
 		}
 
-		// Refresh posts after toggling like
-		if (page === "general") {
-			await fetchPosts();
-		} else if (page === "details") {
-			await fetchAuthorOtherPosts(authorId, excludedPost);
-			await fetchSelectedPost(postId);
-		} else {
-			await fetchPosts();
-		}
+		// // Refresh posts after toggling like
+		// if (page === "general") {
+		// 	await fetchPosts();
+		// } else if (page === "details") {
+		// 	await fetchAuthorOtherPosts(authorId, excludedPost);
+		// 	await fetchSelectedPost(postId);
+		// } else {
+		// 	await fetchPosts();
+		// }
 
-		return { message: "Operation successful" };
+		return true;
 	} catch (err) {
 		console.error("An unexpected error occurred:", err);
-		return null;
+		return false;
 	}
 }
 
@@ -458,6 +490,17 @@ export const getLikesReceivedByUser = async (userId: string | undefined): Promis
 		console.error("Unexpected error:", err);
 		return 0;
 	}
+};
+
+export const getPostLikes = async (postId: string): Promise<Like[] | null> => {
+	const { data, error } = await supabase.from("likes").select("*").eq("post_id", postId);
+
+	if (error) {
+		console.error("Error fetching likes:", error);
+		return null;
+	}
+
+	return data;
 };
 
 export const getFollowStats = async (userId: string | undefined): Promise<FollowStats> => {

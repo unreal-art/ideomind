@@ -32,8 +32,8 @@ export interface Post {
 
 export interface Like {
 	id: string;
-	post: Post;
-	user: User;
+	post_id: string;
+	author: string;
 }
 
 export interface User {

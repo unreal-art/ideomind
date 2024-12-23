@@ -12,7 +12,7 @@
 	let { data }: { data: PageData } = $props();
 
 	$effect(() => {
-		if (!data.user || !$store.isAuthenticated) goto("/");
+		if (!$store.isAuthenticated) goto("/");
 	});
 
 	$effect(() => {

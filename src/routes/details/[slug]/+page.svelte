@@ -1,32 +1,22 @@
 <script lang="ts">
 	import { Button } from "$lib/components/ui/button/index.js";
 
-	import { Ellipsis, Heart, Files, Plus } from "lucide-svelte";
+	import { Ellipsis, Files } from "lucide-svelte";
 	import Separator from "@/components/ui/separator/separator.svelte";
-	import { page } from "$app/stores";
-	import {
-		getPost,
-		getPostUserImage,
-		getPostUserName,
-		likePost,
-		getUserLikedPosts,
-		getUserOtherPosts,
-		fetchAuthorOtherPosts,
-		toggleFollow,
-		doesUserFollow
-	} from "@/api";
-	import type { Post, UploadResponse } from "@/types";
+	import { likePost, fetchAuthorOtherPosts, toggleFollow, doesUserFollow } from "@/api";
+	import type { Like, Post, UploadResponse } from "@/types";
 	import { store } from "$lib/store";
 
 	import { getImageUrl } from "@/api";
 	import { formatDistanceToNow } from "date-fns";
-	import ImageComponent from "@/components/Image.svelte";
 	import { copy, type CopyDetail } from "@svelte-put/copy";
 	import { toast } from "svelte-sonner";
 	import { goto } from "$app/navigation";
 	import type { PageData } from "./$types";
 	import PosterImage from "@/components/PosterImage.svelte";
 	import PostAuthor from "@/components/PostAuthor.svelte";
+	import Likes from "@/Likes.svelte";
+	import DetailList from "@/components/detail/DetailList.svelte";
 
 	let imageUrls = $state([""]);
 	let { data }: { data: PageData } = $props();
@@ -187,13 +177,7 @@
 
 				<div class="flex items-center">
 					<Button variant="ghost"><Ellipsis size={20} /></Button>
-					<p class="text-light text-sm">{post?.likes.length}</p>
-					<Button variant="ghost" onclick={() => like(post)}
-						><Heart
-							size={20}
-							class={`${isInLikedPosts(post?.likes) ? "fill-pink-500 text-pink-500" : ""}`}
-						/></Button
-					>
+					<Likes id={post.id} {post} />
 				</div>
 			</div>
 
@@ -201,23 +185,23 @@
 			<div class="flex h-28 gap-3 overflow-x-auto">
 				{#each imageUrls as img}
 					{#if !img}
-				<div class="flex h-full w-[25%]  items-center justify-center bg-gray-100">
-					<div class="flex items-center space-x-2">
-						<div
-							class="h-4 w-4 animate-spin rounded-full border-b-2 border-t-2 border-primary"
-						></div>
-						<span class="font-medium text-gray-600"></span>
-					</div>
-				</div>
-			{:else}
-					<div class="h-full w-[25%] opacity-40">
-						<img
-							src={img}
-							alt="view"
-							onerror={handleImageError}
-							class=" h-full w-full rounded-md"
-						/>
-					</div>
+						<div class="flex h-full w-[25%] items-center justify-center bg-gray-100">
+							<div class="flex items-center space-x-2">
+								<div
+									class="h-4 w-4 animate-spin rounded-full border-b-2 border-t-2 border-primary"
+								></div>
+								<span class="font-medium text-gray-600"></span>
+							</div>
+						</div>
+					{:else}
+						<div class="h-full w-[25%] opacity-40">
+							<img
+								src={img}
+								alt="view"
+								onerror={handleImageError}
+								class=" h-full w-full rounded-md"
+							/>
+						</div>
 					{/if}
 				{/each}
 			</div>
@@ -355,21 +339,5 @@
 
 	<!-- image list -->
 
-	<div class="  columns-1 justify-center gap-4 sm:columns-2 lg:columns-4">
-		{#each otherPosts as post}
-			<div class="mb-6 break-inside-avoid">
-				<ImageComponent item={post} />
-				<div class="mt-3 flex h-10 w-full items-center justify-end">
-					<Button variant="ghost"><Ellipsis size={20} /></Button>
-					<p class="text-light text-sm">{post?.likes.length}</p>
-					<Button variant="ghost" onclick={() => like(post)}
-						><Heart
-							size={20}
-							class={`${isInLikedPosts(post?.likes) ? "fill-pink-500 text-pink-500" : ""}`}
-						/></Button
-					>
-				</div>
-			</div>
-		{/each}
-	</div>
+	<DetailList data={otherPosts} />
 </section>

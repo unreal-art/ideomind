@@ -18,7 +18,7 @@
 	let inputRef: HTMLDivElement | null = $state(null);
 	let minorInputRef: HTMLInputElement | null = $state(null);
 	let buttonInputRef: HTMLButtonElement | null = $state(null);
-
+    let val = ''
 	const onclick = async () => {
 		showInput=false
 		
@@ -32,7 +32,7 @@
 				Device: 'xpu'
 			}
 		};
-		const {data}: {data:Output | undefined} = await generateImage(dto);
+		const data: Output | undefined = await generateImage(dto);
 		//store the post
 		const post: Partial<Post> = {
 			author: $store.user?.id as string,
@@ -112,7 +112,7 @@
 		</div>
 		<input
 			type="text"
-			value=""
+			bind:value={val}
 			bind:this={minorInputRef}
 			onclick={toggleInput}
 			placeholder="Describe what you want to see"
@@ -146,7 +146,7 @@
 		</div>
 		<input
 			type="text"
-			value=""
+			bind:value={val}
 			bind:this={minorInputRef}
 			onclick={toggleInput}
 			placeholder="Describe what you want to see"
