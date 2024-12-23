@@ -27,8 +27,12 @@ export const getImageUrl = async (cid: string) => {
 };
 
 export async function generateImage(dto: JobSpec) {
+	const API_BACKEND = PUBLIC_API_URL || "";
+
+	console.log("API backend", API_BACKEND);
+
 	try {
-		const response: DartsJobData = await axios.post(PUBLIC_API_URL || "" + "/darts", dto);
+		const response: DartsJobData = await axios.post(`${API_BACKEND}/darts`, dto);
 		// const response = await axios.post("/api", dto, {
 		// 	headers: {
 		// 		"Content-Type": "application/json" // Explicitly set Content-Type
