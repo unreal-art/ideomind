@@ -5,7 +5,7 @@ Content-Type: application/json
 {}
 ###
 
-POST https://ideomind-git-vercel-install-darts-decenter-ai.vercel.app/darts
+POST https://ideomind.vercel.app/darts
 Content-Type: application/json
 
 {
@@ -23,12 +23,12 @@ HTTP/1.1 500  - Internal Server Error
 cache-control: public, max-age=0, must-revalidate
 content-length: 265
 content-type: application/json
-date: Thu, 12 Dec 2024 17:28:24 GMT
+date: Sun, 22 Dec 2024 22:23:49 GMT
 server: Vercel
 strict-transport-security: max-age=63072000; includeSubDomains; preload
 x-robots-tag: noindex
 x-vercel-cache: MISS
-x-vercel-id: cdg1::iad1::ssk6g-1734024502886-7428411bff93
+x-vercel-id: bom1::iad1::lv549-1734906223982-4a730474168b
 connection: close
 ###
 
@@ -43,7 +43,7 @@ Content-Type: application/json
     "Device": "xpu"
   }
 }
-### Cowsay
+###
 
 POST http://localhost:5173/darts
 Content-Type: application/json
@@ -56,15 +56,24 @@ Content-Type: application/json
   }
 }
 ###
-
-POST http://darts.decenterai.com:8080/darts
+POST https://darts.decenterai.com:8080/darts
 Content-Type: application/json
 
 {
   "module": "github.com/darts2024/dart-isdxl",
-  "version": "v0.3.0",
+  "version": "v1.3.0",
   "inputs": {
     "Prompt": "Beautiful girl",
     "Device": "xpu"
   }
 }
+###
+OPTIONS http://localhost:5175
+
+HTTP/1.1 204  - No Content
+access-control-allow-origin: *
+access-control-allow-methods: GET,HEAD,PUT,PATCH,POST,DELETE
+vary: Access-Control-Request-Headers
+allow: GET, HEAD, OPTIONS
+date: Mon, 23 Dec 2024 03:14:34 GMT
+connection: close
