@@ -1,8 +1,10 @@
 <script lang="ts">
+	
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { createNewPost, fetchProfilePosts, generateImage, postsByFollowed } from '@/api';
 	import { store } from '$lib/store';
+	import { quickStore } from '$lib/quickStore';
 	import type { DartsJobData, JobSpec, Output, Post } from '@/types';
 	import { v4 as uuidv4 } from 'uuid';
 	import type { UploadResponse } from 'pinata';
@@ -19,11 +21,12 @@
 	let inputRef: HTMLDivElement | null = $state(null);
 	let minorInputRef: HTMLInputElement | null = $state(null);
 	let buttonInputRef: HTMLButtonElement | null = $state(null);
-    let val = ''
+   	let val = $state('')
+	
 	const onclick = async () => {
 		showInput=false
 
-		store.updateLoader(true);
+		quickStore.updateLoader(true);
 		const dto: JobSpec = {
 			module: 'isdxl',
 			version: 'v1.3.0',
@@ -58,10 +61,10 @@
 				// 	onClick: () => console.info('Undo')
 				// }
 			});
-			store.updateLoader(false);
+			quickStore.updateLoader(false);
 		} else {
 			createNewPost(post as Post);
-			store.updateLoader(false);
+			quickStore.updateLoader(false);
 			text = '';
 
 			goto(`/profile/${$store.user?.id}`)
@@ -106,7 +109,7 @@
 			<div class="flex  justify-end mt-10 h-12">
 				<Button
 			type="button"
-			disabled={$store.isGeneratingFiles}
+			disabled={$quickStore.isGeneratingFiles}
 			{onclick}
 			class="h-full text-white  w-full">Generate</Button
 		>
@@ -141,6 +144,7 @@
 			<div class="flex justify-end mt-10 h-12">
 				<Button
 			type="button"
+				disabled={$quickStore.isGeneratingFiles}
 			{onclick}
 			class="h-full   text-white  w-full">Generate</Button
 		>
