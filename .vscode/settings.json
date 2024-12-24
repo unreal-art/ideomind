@@ -1,7 +1,10 @@
 {
-  "httpyac.requestGotOptions": {
-    "https": {
-      "rejectUnauthorized": false
-    }
-  }
+	"httpyac.requestGotOptions": {
+		"https": {
+			"rejectUnauthorized": false
+		}
+	},
+	"[svelte]": {
+		"editor.formatOnSave": false
+	}
 }
