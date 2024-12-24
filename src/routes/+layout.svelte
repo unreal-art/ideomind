@@ -13,6 +13,7 @@
 
 	import { Toaster } from '$lib/components/ui/sonner/index.js';
 	import { goto } from '$app/navigation';
+	import { quickStore } from '@/quickStore';
 
 	function goBack() {
 		window.history.back();
@@ -43,7 +44,7 @@
 				</Button>
 				{@render children()}
 			</section>
-			{#if $store.isGeneratingFiles}
+			{#if $quickStore.isGeneratingFiles}
 				<div
 					class="fixed bottom-20 right-0 flex items-center justify-center bg-gray-100 p-2 lg:bottom-0"
 				>

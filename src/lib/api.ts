@@ -7,6 +7,7 @@ import { PinataSDK } from "pinata";
 import { PUBLIC_API_URL } from "$env/static/public";
 import { supabase } from "../supabaseClient";
 import { goto } from "$app/navigation";
+import { quickStore } from "./quickStore";
 
 const pinata = new PinataSDK({
 	pinataJwt: import.meta.env.VITE_PINATA_JWT!,
@@ -42,6 +43,7 @@ export async function generateImage(dto: JobSpec) {
 		return response.data;
 	} catch (error) {
 		console.error("Error:", error);
+		quickStore.updateLoader(false)
 	}
 }
 
