@@ -377,11 +377,12 @@ async function getFollowsByFollowerId(followerId: string) {
 	return data;
 }
 
-export const postsByFollowed = async (userId: string) => {
+export const postsByFollowed = async (userId: string, posts: Post[]) => {
 	const userFollows = await getFollowsByFollowerId(userId);
 	// const followedUsers = store.getState().users.filter((user) => user.id === userId);
 	// // Combine all posts from followed users
-	return userFollows.flatMap((follow) => getUserPosts(follow.followee_id, store.getState().posts));
+	
+	return userFollows.flatMap((follow) => getUserPosts(follow.followee_id, posts));
 };
 
 // Function to like a post

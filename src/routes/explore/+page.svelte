@@ -9,29 +9,25 @@
 	import type { Post } from "@/types";
 
 	let postFromFollowedUsers = $state<Post[]>([]);
+	let posts = $state<Post[]>([])
 	let { data }: { data: PageData } = $props();
-
+	
 	$effect(() => {
 		if (!$store.isAuthenticated) goto("/");
 	});
 
 	$effect(() => {
 		async function getPostOfFollowee() {
-			postFromFollowedUsers = await postsByFollowed($store.user?.id || "0");
+			postFromFollowedUsers = await postsByFollowed($store.user?.id || "0", posts);
 		}
 
 		getPostOfFollowee();
 	});
 
-	// $effect(() => {
-	// 	async function getUser() {
-	// 		const {
-	// 			data: { user }
-	// 		} = await supabase.auth.getUser();
-	// 		console.log(user);
-	// 	}
-	// 	getUser();
-	// });
+	$effect(() => {
+		if (!data.posts) return;
+		posts = data.posts
+	});
 </script>
 
 <section class="h-full w-full overflow-auto px-2">
@@ -49,13 +45,13 @@
 				</Tabs.List>
 			</div>
 			<Tabs.Content value="explore" class="h-[92%] w-full  ">
-				<PostList data={$store.posts} />
+				<PostList data={posts} />
 			</Tabs.Content>
 			<Tabs.Content value="following">
 				<PostList data={postFromFollowedUsers} />
 			</Tabs.Content>
 			<Tabs.Content value="top">
-				<PostList data={$store.posts} />
+				<PostList data={posts} />
 			</Tabs.Content>
 		</Tabs.Root>
 	</div>
