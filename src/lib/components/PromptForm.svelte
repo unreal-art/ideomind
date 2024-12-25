@@ -29,7 +29,7 @@
 		quickStore.updateLoader(true);
 		const dto: JobSpec = {
 			module: 'isdxl',
-			version: 'v1.3.0',
+			version: 'v1.5.0',
 			inputs: {
 				Prompt: text,
 				cpu: 26,
