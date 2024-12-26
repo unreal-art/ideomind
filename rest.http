@@ -67,6 +67,32 @@ Content-Type: application/json
     "Device": "xpu"
   }
 }
+
+HTTP/1.1 504  - Gateway Time-out
+server: nginx
+date: Thu, 26 Dec 2024 20:41:03 GMT
+content-type: text/html
+content-length: 160
+connection: close
+###
+POST http://localhost:5173/darts
+Content-Type: application/json
+
+{
+  "module": "github.com/darts2024/dart-isdxl",
+  "version": "v1.5.0",
+  "inputs": {
+    "Prompt": "Beautiful girl",
+    "Device": "xpu"
+  }
+}
+
+HTTP/1.1 200  - OK
+access-control-allow-origin: *
+content-length: 947
+content-type: application/json
+date: Thu, 26 Dec 2024 20:50:51 GMT
+connection: close
 ###
 OPTIONS http://localhost:5175
 

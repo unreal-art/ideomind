@@ -81,9 +81,8 @@
 	};
 
 	const getImages = async (imgs: UploadResponse[]) => {
-		imageUrls = (await Promise.all(
-			imgs.map(async (item) => await getImageUrl(item.cid))
-		)) as string[];
+		imageUrls = imgs.map(item => import.meta.env.VITE_LIGHTHOUSE_GATE_WAY +  item.hash)
+
 	};
 
 	const getImageResolution = async (url: string) => {

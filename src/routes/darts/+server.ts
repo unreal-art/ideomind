@@ -7,7 +7,7 @@ import { DEBUG } from "$env/static/private";
 import { dev } from "$app/environment";
 
 import { DARTS_PRIVATE_KEY, DARTS_CLI } from "$env/static/private";
-import { uploadFilesInOutputs } from "./pinata";
+import { uploadFilesInOutputs } from "./lighthouse";
 
 const execAsync = promisify(exec);
 
@@ -118,6 +118,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		childProcess.on("close", async (code) => {
 			console.log(`child process exited with code ${code}`);
+			console.log(outputFolder)
 			if (code === 0 && outputFolder) {
 				//upload image + `/outputs/${formatText(jobDto.inputs?.Prompt as string)}`
 				try {
