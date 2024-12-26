@@ -36,15 +36,7 @@ let intervalId: number | null = null; // Store interval ID to manage the loop
 	
 // Function to fetch the image or get it from cache
 const getImage = async (cid: string) => {
-	if (imageCache.has(cid)) {
-		// Retrieve the cached URL if it exists
-		imageUrl = imageCache.get(cid) as string;
-	} else {
-		// Fetch the URL and store it in the cache
-		const url = (await getImageUrl(cid)) as string;
-		imageCache.set(cid, url);
-		imageUrl = url;
-	}
+	imageUrl = import.meta.env.VITE_LIGHTHOUSE_GATE_WAY + cid
 };
 
 
@@ -57,7 +49,7 @@ const startImageRotation = () => {
 		 // Start fading out
 		setTimeout(() => {
 			currentIndex = (currentIndex + 1) % imageSources.length;
-			const nextCid = imageSources[currentIndex].ipfsImages[0].cid;
+			const nextCid = imageSources[currentIndex].ipfsImages[0].hash;
 			getImage(nextCid); // Fetch the new image
 			 // Fade in the new image
 		}, 300); // 300ms delay for smooth transition
@@ -115,7 +107,7 @@ const stopImageRotation = () => {
 	// Initialize and start image rotation when `imageSources` are available
 $effect(() => {
 	if (imageSources.length > 0) {
-		getImage(imageSources[currentIndex]?.ipfsImages[0]?.cid); // Load the first image
+		getImage(imageSources[currentIndex]?.ipfsImages[0]?.hash); // Load the first image
 		startImageRotation(); // Start rotating images
 	}
 

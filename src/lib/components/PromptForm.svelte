@@ -22,6 +22,7 @@
 	let minorInputRef: HTMLInputElement | null = $state(null);
 	let buttonInputRef: HTMLButtonElement | null = $state(null);
    	let val = $state('')
+
 	
 	const onclick = async () => {
 		showInput=false
@@ -32,9 +33,9 @@
 			version: 'v1.5.0',
 			inputs: {
 				Prompt: text,
-				cpu: 26,
+				// cpu: 26,
 				Device: 'xpu',
-				Seed: random.int(1e3, 1e9)
+				// Seed: random.int(1e3, 1e9)
 			}
 		};
 		
@@ -46,6 +47,7 @@
 			prompt: text,
 			isPinned: false,
 			category: 'GENERATION',
+			//@ts-ignore FIX: typescript error
 			ipfsImages: data?.uploadResponse as UploadResponse[],
 			cpu: dto.inputs?.cpu as number,
 			device: dto.inputs?.Device as string,
@@ -68,7 +70,7 @@
 			quickStore.updateLoader(false);
 			text = '';
 
-			goto(`/profile/${$store.user?.id}`)
+			window.location.href = `/profile/${$store.user?.id}`
 		}
 	};
 
@@ -119,8 +121,9 @@
 		</div>
 		<input
 			type="text"
-			bind:value={val}
+			bind:value={text}
 			bind:this={minorInputRef}
+			readonly={$quickStore.isGeneratingFiles}
 			onclick={toggleInput}
 			placeholder="Describe what you want to see"
 			class="h-full w-[60%] rounded-none rounded-l-2xl border bg-transparent px-5 outline-none focus:ring-0 md:w-[80%]"
@@ -154,8 +157,9 @@
 		</div>
 		<input
 			type="text"
-			bind:value={val}
+			bind:value={text}
 			bind:this={minorInputRef}
+			readonly={$quickStore.isGeneratingFiles}
 			onclick={toggleInput}
 			placeholder="Describe what you want to see"
 			class="h-full w-[60%] rounded-none rounded-l-2xl border bg-transparent px-5 outline-none focus:ring-0 md:w-[80%]"

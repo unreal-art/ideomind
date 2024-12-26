@@ -5,14 +5,11 @@ export type JobSpec = IJobSpec;
 export type Category = "EDIT" | "UPSCALE" | "GENERATION" | "UPLOAD";
 
 export interface UploadResponse {
-	id: string;
+
 	name: string;
-	cid: string;
-	created_at: string;
-	size: number;
-	number_of_files: number;
-	mime_type: string;
-	user_id: string;
+	hash:string;
+	size: string;
+	
 }
 
 export interface Post {

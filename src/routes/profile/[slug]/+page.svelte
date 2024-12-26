@@ -301,7 +301,7 @@
 				</div>
 				<div class=" relative flex h-full w-full items-center justify-center space-x-1">
 					<img
-						src={image1}
+						src={$store.user?.image} 
 						alt="user profile"
 						class={`${isFixed ? "block" : "hidden"} absolute left-2 top-2 h-8 w-8 rounded-full lg:left-28`}
 					/>
