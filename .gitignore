@@ -27,3 +27,5 @@ vite.config.ts.timestamp-*
 notepad.sh
 
 justfile
+
+wallet.json

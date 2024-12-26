@@ -14,7 +14,9 @@
     "test:e2e": "playwright test",
     "test": "npm run test:e2e",
     "shadx": "bun x shadcn-svelte@next add",
-    "installdarts": "cat install.sh | bash -s -- darts"
+    "installdarts": "cat install.sh | bash -s -- darts",
+    "lh": "lighthouse-web3",
+    "lh:wallet": "lighthouse-web3 create-wallet"
   },
   "devDependencies": {
     "@playwright/test": "^1.45.3",

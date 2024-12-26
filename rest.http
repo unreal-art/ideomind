@@ -55,6 +55,13 @@ Content-Type: application/json
     "Message": "Hi from vite dev "
   }
 }
+
+HTTP/1.1 200  - OK
+access-control-allow-origin: *
+content-length: 915
+content-type: application/json
+date: Thu, 26 Dec 2024 23:54:18 GMT
+connection: close
 ###
 POST https://darts.decenterai.com:8080/darts
 Content-Type: application/json
@@ -91,6 +98,13 @@ Content-Type: application/json
     "N":1
   }
 }
+
+HTTP/1.1 500  - Internal Server Error
+access-control-allow-origin: *
+content-length: 1065
+content-type: application/json
+date: Thu, 26 Dec 2024 23:42:06 GMT
+connection: close
 ###
 OPTIONS http://localhost:5175
 
