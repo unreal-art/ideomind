@@ -37,7 +37,7 @@
 				Seed: random.int(1e3, 1e9)
 			}
 		};
-		console.log(dto)
+		
 		const data: Output | undefined = await generateImage(dto);
 		//store the post
 		const post: Partial<Post> = {
@@ -49,6 +49,7 @@
 			ipfsImages: data?.uploadResponse as UploadResponse[],
 			cpu: dto.inputs?.cpu as number,
 			device: dto.inputs?.Device as string,
+			seed: dto.inputs?.Seed as number
 
 		};
 

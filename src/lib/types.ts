@@ -23,7 +23,7 @@ export interface Post {
 	isPinned: boolean;
 	category: Category;
 	likes: any;
-
+	seed?:number;
 	ipfsImages: UploadResponse[];
 	cpu: number;
 	device: string;

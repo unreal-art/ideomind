@@ -7,7 +7,7 @@ import { DEBUG } from "$env/static/private";
 import { dev } from "$app/environment";
 
 import { DARTS_PRIVATE_KEY, DARTS_CLI } from "$env/static/private";
-import { uploadFilesInOutputs } from "./pinata";
+import { uploadFilesInOutputs } from "./lighthouse";
 
 const execAsync = promisify(exec);
 
