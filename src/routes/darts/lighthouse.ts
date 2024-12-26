@@ -1,5 +1,4 @@
 import lighthouse from '@lighthouse-web3/sdk'
-import mime from 'mime-types';
 import path from 'path';
 import fs from 'fs/promises';
 import { LIGHTHOUSE_KEY } from "$env/static/private";
@@ -33,17 +32,9 @@ export async function uploadFilesInOutputs(directoryPath: string): Promise<Uploa
       // Check if it's a file
       const fileStats = await fs.stat(filePath);
       if (fileStats.isFile()) {
-        // Read the file
-        const buffer = await fs.readFile(filePath);
-
-        // Determine the MIME type
-        const mimeType = mime.lookup(filePath) || 'application/octet-stream';
-
-        // Generate a unique name for the file
-        const uniqueName = `${Date.now()}_${path.basename(fileName)}`;
 
         // Upload the file to Lighthouse
-        const {data} = await lighthouse.upload(uniqueName, LIGHTHOUSE_KEY);
+        const {data} = await lighthouse.upload(filePath, LIGHTHOUSE_KEY);
         console.log(`Upload response for ${fileName}:`, data);
 
         uploadResults.push({

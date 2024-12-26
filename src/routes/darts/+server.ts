@@ -118,6 +118,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		childProcess.on("close", async (code) => {
 			console.log(`child process exited with code ${code}`);
+			console.log(outputFolder)
 			if (code === 0 && outputFolder) {
 				//upload image + `/outputs/${formatText(jobDto.inputs?.Prompt as string)}`
 				try {

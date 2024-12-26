@@ -285,11 +285,11 @@ Deal QmWijvfuCbnPQP5MRmqHJTArPTEhdeUX7aj483fTwZyq3x is matched
 `);
 
 let locUrl = extractLocationURL(`
-🍂 Darts job completed in 13.164975667s by 0x72Ae2c817CE0D813DD8f5D5527dd463Fe97e8065, try 👇
-    open /Users/hiro/.darts/torus/jc/downloaded-files/Qmdx4GDC1fb7J6McAxEVLwL3aDqj83Co785W8J1RVK6HNy
-    cat /Users/hiro/.darts/torus/jc/downloaded-files/Qmdx4GDC1fb7J6McAxEVLwL3aDqj83Co785W8J1RVK6HNy/exitCode
-    cat /Users/hiro/.darts/torus/jc/downloaded-files/Qmdx4GDC1fb7J6McAxEVLwL3aDqj83Co785W8J1RVK6HNy/stdout
-    cat /Users/hiro/.darts/torus/jc/downloaded-files/Qmdx4GDC1fb7J6McAxEVLwL3aDqj83Co785W8J1RVK6HNy/stderr 
+🍂 Darts job completed in 1m3.456695221s by 0x72Ae2c817CE0D813DD8f5D5527dd463Fe97e8065, try 👇
+    open /Users/a0000/.darts/torus/jc/downloaded-files/Qmbk6SPhWhqU8y5xiXf6S18bV2VxHviXH4YQmXEf1k8D1k
+    cat /Users/a0000/.darts/torus/jc/downloaded-files/Qmbk6SPhWhqU8y5xiXf6S18bV2VxHviXH4YQmXEf1k8D1k/exitCode
+    cat /Users/a0000/.darts/torus/jc/downloaded-files/Qmbk6SPhWhqU8y5xiXf6S18bV2VxHviXH4YQmXEf1k8D1k/stdout
+    cat /Users/a0000/.darts/torus/jc/downloaded-files/Qmbk6SPhWhqU8y5xiXf6S18bV2VxHviXH4YQmXEf1k8D1k/stderr
 
 `);
 
