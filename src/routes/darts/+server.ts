@@ -32,7 +32,6 @@ export interface JobSpec {
 	module?: string;
 	version?: string; //version
 	inputs?: Record<string, string | number>;
-	seed?: number;
 }
 
 if (!dev) {
@@ -80,7 +79,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const dartsBin = platform === "linux" ? "darts-linux" : "darts-mac";
 
 	let dartsCli = DARTS_CLI || "darts";
-	dartsCli = "darts";
+	// dartsCli = "darts";
 
 	const envVars = {
 		DARTS_PRIVATE_KEY: pKey,
@@ -94,7 +93,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const command = `${dartsCli} run ${jobDto.module}:${jobDto.version} ${inputFlags} `;
 	// TODO: module
 
-	console.log(command);
+	console.log("command", JSON.stringify(command));
 
 	// Execute the command
 	return new Promise((resolve) => {
@@ -118,7 +117,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		childProcess.on("close", async (code) => {
 			console.log(`child process exited with code ${code}`);
-			console.log(outputFolder)
+			console.log(outputFolder);
 			if (code === 0 && outputFolder) {
 				//upload image + `/outputs/${formatText(jobDto.inputs?.Prompt as string)}`
 				try {

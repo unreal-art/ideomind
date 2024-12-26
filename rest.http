@@ -61,19 +61,20 @@ Content-Type: application/json
 
 {
   "module": "github.com/darts2024/dart-isdxl",
-  "version": "v1.3.0",
+  "version": "v1.5.0",
   "inputs": {
     "Prompt": "Beautiful girl",
     "Device": "xpu"
   }
 }
 
-HTTP/1.1 504  - Gateway Time-out
+HTTP/1.1 200  - OK
 server: nginx
-date: Thu, 26 Dec 2024 20:41:03 GMT
-content-type: text/html
-content-length: 160
+date: Thu, 26 Dec 2024 22:06:48 GMT
+content-type: application/json
+content-length: 935
 connection: close
+access-control-allow-origin: *
 ###
 POST http://localhost:5173/darts
 Content-Type: application/json
@@ -83,16 +84,13 @@ Content-Type: application/json
   "version": "v1.5.0",
   "inputs": {
     "Prompt": "Beautiful girl",
-    "Device": "xpu"
+    "Device": "xpu",
+    "cpu": "20",
+    "ram": "22gb",
+    "Seed":"10000",
+    "N":1
   }
 }
-
-HTTP/1.1 200  - OK
-access-control-allow-origin: *
-content-length: 947
-content-type: application/json
-date: Thu, 26 Dec 2024 20:50:51 GMT
-connection: close
 ###
 OPTIONS http://localhost:5175
 

@@ -43,7 +43,8 @@
 				Prompt: text,
 				cpu: 26,
 				Device: 'xpu',
-				Seed: random.int(1e3, 1e9)
+				Seed: random.int(1e3, 1e9),
+				N:1,
 			}
 		};
 		const {data}: {data:Output | undefined} = await generateImage(dto);

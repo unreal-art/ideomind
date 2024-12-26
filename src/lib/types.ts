@@ -5,11 +5,9 @@ export type JobSpec = IJobSpec;
 export type Category = "EDIT" | "UPSCALE" | "GENERATION" | "UPLOAD";
 
 export interface UploadResponse {
-
 	name: string;
-	hash:string;
+	hash: string;
 	size: string;
-	
 }
 
 export interface Post {
@@ -20,7 +18,7 @@ export interface Post {
 	isPinned: boolean;
 	category: Category;
 	likes: any;
-	seed?:number;
+	seed?: number;
 	ipfsImages: UploadResponse[];
 	cpu: number;
 	device: string;
