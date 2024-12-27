@@ -108,7 +108,7 @@
 			class={` ${showInput ? 'block' : 'hidden'} absolute top-0  w-full bg-white  z-20 py-4 px-3`}
 			bind:this={inputRef}
 		>
-			<Textarea bind:value={text} placeholder="Desribe what you want to see in detail" class="resize-none border-none shadow-none" rows={15}/>
+			<Textarea bind:value={text} placeholder="Provide a detailed description of what you want to see. The more specific and comprehensive your input, the better the resulting image will be." class="resize-none border-none shadow-none" rows={15}/>
 
 
 			<div class="flex  justify-end mt-10 h-12">
@@ -145,7 +145,7 @@
 			class={` ${showInput ? 'block' : 'hidden'} absolute top-0  w-full bg-white  z-50 py-4 px-3`}
 			bind:this={inputRef}
 		>
-			<Textarea bind:value={text} placeholder="Desribe what you want to see in detail" class="resize-none border-none shadow-none" rows={15}/>
+			<Textarea bind:value={text} placeholder="Provide a detailed description of what you want to see. The more specific and comprehensive your input, the better the resulting image will be." class="resize-none border-none shadow-none" rows={15}/>
 
 			<div class="flex justify-end mt-10 h-12">
 				<Button

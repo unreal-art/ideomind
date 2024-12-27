@@ -81,7 +81,7 @@
 	};
 
 	const getImages = async (imgs: UploadResponse[]) => {
-		imageUrls = imgs.map(item => import.meta.env.VITE_LIGHTHOUSE_GATE_WAY +  item.hash)
+		imageUrls = imgs.map(item => import.meta.env.VITE_LIGHTHOUSE_GATE_WAY +  item.hash +'/' + item.fileNames[0])
 
 	};
 

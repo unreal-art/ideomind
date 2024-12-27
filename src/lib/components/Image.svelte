@@ -8,7 +8,7 @@
 	// Function to fetch the image
 	const getImage = async (cid: string) => {
 		try {
-			imageUrl = import.meta.env.VITE_LIGHTHOUSE_GATE_WAY + item.ipfsImages[0].hash
+			imageUrl = import.meta.env.VITE_LIGHTHOUSE_GATE_WAY + item.ipfsImages[0].hash+'/' + item.ipfsImages[0].fileNames[0]
 		} catch (error) {
 			console.error("Error fetching image:", error);
 			imageUrl = ""; // Use fallback image on fetch error
@@ -21,6 +21,7 @@
 	$effect(() => {
 		getImage(item.ipfsImages[0].hash);
 	});
+
 
 	
 

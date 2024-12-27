@@ -4,78 +4,69 @@ import fs from "fs/promises";
 import { LIGHTHOUSE_KEY } from "$env/static/private";
 
 export interface UploadResponse {
-	name: string;
-	hash: string;
-	size: string;
+  name: string;
+  hash: string;
+  size: string;
+  fileNames: string[];
 }
 
-const progressCallback = (progressData) => {
-	let percentageDone = 100 - (progressData?.total / progressData?.uploaded)?.toFixed(2);
-	console.log(percentageDone);
+// Callback to track upload progress
+const progressCallback = (progressData: { total: number; uploaded: number }) => {
+  const percentageDone = (100 - (progressData.total / progressData.uploaded) * 100).toFixed(2);
+  console.log(`Upload Progress: ${percentageDone}%`);
 };
 
+/**
+ * Upload all files in the 'outputs' subdirectory to Lighthouse
+ * @param directoryPath - Path to the main directory containing the 'outputs' subdirectory
+ * @returns An array of upload results
+ */
 export async function uploadFilesInOutputs(directoryPath: string): Promise<UploadResponse[]> {
-	try {
-		// Path to the 'outputs' subdirectory
-		// const outputsPath = path.join(directoryPath, "outputs");
-		const outputsPath = path.join(directoryPath);
+  try {
+    // Resolve the 'outputs' directory path
+    const outputsPath = path.join(directoryPath, "outputs");
 
-		// Check if the 'outputs' directory exists
-		const stats = await fs.stat(outputsPath);
-		if (!stats.isDirectory()) {
-			throw new Error(`The 'outputs' directory does not exist in: ${directoryPath}`);
-		}
+    // Check if the 'outputs' directory exists
+    const stats = await fs.stat(outputsPath);
+    if (!stats.isDirectory()) {
+      throw new Error(`The 'outputs' directory does not exist at: ${outputsPath}`);
+    }
 
-		// Read the contents of the 'outputs' directory
-		const files = await fs.readdir(outputsPath);
+    // Read all files in the 'outputs' directory
+    const fileNames = await fs.readdir(outputsPath);
+    if (fileNames.length === 0) {
+      throw new Error(`No files found in the 'outputs' directory at: ${outputsPath}`);
+    }
 
-		// Array to store upload results
-		const uploadResults: UploadResponse[] = [];
+    // Upload the directory to Lighthouse
+    //@ts-ignore
+    const { data } = await lighthouse.upload(outputsPath, LIGHTHOUSE_KEY, true, progressCallback);
 
-		// for (const fileName of files) {
-		//   const filePath = path.join(outputsPath, fileName);
+    console.log(`Upload successful for ${outputsPath}:`, data);
 
-		//   // Check if it's a file
-		//   const fileStats = await fs.stat(filePath);
-		//   if (fileStats.isFile()) {
+    // Prepare the upload result
+    const uploadResults: UploadResponse[] = [
+      {
+        name: data.Name,
+        hash: data.Hash,
+        size: data.Size,
+        fileNames,
+      },
+    ];
 
-		//     // Upload the file to Lighthouse
-		//     const {data} = await lighthouse.upload(filePath, LIGHTHOUSE_KEY);
-		//     console.log(`Upload response for ${fileName}:`, data);
-
-		//     uploadResults.push({
-		//       name: data.Name,
-		//       hash: data.Hash,
-		//       size: data.Size
-		//     });
-		//   }
-		// }
-
-		const { data } = await lighthouse.upload(directoryPath, LIGHTHOUSE_KEY, true, progressCallback);
-		console.log(`Upload response for ${directoryPath}:`, data);
-
-		uploadResults.push({
-			name: data.Name,
-			hash: data.Hash,
-			size: data.Size
-		});
-
-		return uploadResults;
-	} catch (error) {
-		// Type narrowing for error object
-		if (error instanceof Error) {
-			console.error("Error uploading file:", {
-				message: error.message,
-				stack: error.stack,
-				directoryPath
-			});
-
-			throw new Error(
-				`Failed to upload file. Ensure the file at "${directoryPath}" exists and try again.`
-			);
-		} else {
-			console.error("Unexpected error uploading file:", error);
-			throw new Error("An unexpected error occurred during the upload process.");
-		}
-	}
+    return uploadResults;
+  } catch (error) {
+    // Handle and log errors
+    if (error instanceof Error) {
+      console.error("Error during upload:", {
+        message: error.message,
+        stack: error.stack,
+        directoryPath,
+      });
+      throw new Error(`Upload failed: ${error.message}`);
+    } else {
+      console.error("Unexpected error during upload:", error);
+      throw new Error("An unknown error occurred during the upload process.");
+    }
+  }
 }
