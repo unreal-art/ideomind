@@ -33,7 +33,7 @@
 			version: 'v1.5.0',
 			inputs: {
 				Prompt: text,
-				cpu: 26,
+				cpu: 22,
 				ram: "21gb",
 				Device: 'xpu',
 				Seed: random.int(1e3, 1e8),
