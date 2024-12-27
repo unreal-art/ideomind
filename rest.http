@@ -60,7 +60,7 @@ HTTP/1.1 200  - OK
 access-control-allow-origin: *
 content-length: 915
 content-type: application/json
-date: Thu, 26 Dec 2024 23:54:18 GMT
+date: Fri, 27 Dec 2024 18:01:02 GMT
 connection: close
 ###
 POST https://darts.decenterai.com:8080/darts
@@ -77,11 +77,15 @@ Content-Type: application/json
 
 HTTP/1.1 200  - OK
 server: nginx
-date: Thu, 26 Dec 2024 22:06:48 GMT
+date: Fri, 27 Dec 2024 21:50:59 GMT
 content-type: application/json
-content-length: 935
+content-length: 970
 connection: close
 access-control-allow-origin: *
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
 ###
 POST http://localhost:5173/darts
 Content-Type: application/json
@@ -98,13 +102,6 @@ Content-Type: application/json
     "N":1
   }
 }
-
-HTTP/1.1 500  - Internal Server Error
-access-control-allow-origin: *
-content-length: 1065
-content-type: application/json
-date: Thu, 26 Dec 2024 23:42:06 GMT
-connection: close
 ###
 OPTIONS http://localhost:5175
 

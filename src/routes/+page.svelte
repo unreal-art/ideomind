@@ -13,6 +13,7 @@
 	import { supabase } from "../supabaseClient";
 	import { AiOutlineDiscord, AiOutlineGooglePlus, AiOutlineNodeExpand } from "svelte-icons-pack/ai";
 	import { Icon } from "svelte-icons-pack";
+	import { getRedirectURL } from "./oauth";
 
 	let imageCache = $state(new Map<string, string>()); // Cache for storing image URLs
 	let imageUrl = $state(""); // State for the current image URL
@@ -53,10 +54,7 @@
 	};
 
 	async function signInWithGoogle() {
-		const redirectToUrl = import.meta.env.DEV
-			? import.meta.env.VITE_DEV_BASE_URL
-			: import.meta.env.VITE_PROD_BASE_URL;
-
+		const redirectToUrl = getRedirectURL()
 		const { data, error } = await supabase.auth.signInWithOAuth({
 			provider: "google",
 			options: {
@@ -70,9 +68,7 @@
 		}
 	}
 	async function signInWithDiscord() {
-		const redirectToUrl = import.meta.env.DEV
-			? import.meta.env.VITE_DEV_BASE_URL
-			: import.meta.env.VITE_PROD_BASE_URL;
+		const redirectToUrl = getRedirectURL()
 
 		const { data, error } = await supabase.auth.signInWithOAuth({
 			provider: "discord",
