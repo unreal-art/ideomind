@@ -7,7 +7,8 @@ export type Category = "EDIT" | "UPSCALE" | "GENERATION" | "UPLOAD";
 export interface UploadResponse {
 	name: string;
 	hash: string;
-	size: string;
+  	size: string;
+  	fileNames: string[];
 }
 
 export interface Post {
