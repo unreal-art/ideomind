@@ -60,7 +60,7 @@
 			options: {
 				//redirect url
 				redirectTo: redirectToUrl + "/explore",
-				skipBrowserRedirect: true,
+				// skipBrowserRedirect: true,
 			}
 		});
 

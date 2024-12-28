@@ -11,14 +11,14 @@ import bluebird from "bluebird";
 export const load: LayoutLoad = async ({ url }) => {
 	// Get the full URL to pass to `exchangeCodeForSession`
 	const fullUrl = url.href;
-	re;
 	console.log(`Loading ${fullUrl}`);
 
 	// Exchange the code for a session if the user is redirected back from Discord
 	if (url.searchParams.has("access_token") || url.searchParams.has("code")) {
 		const accessToken = url.searchParams.get("access_token") || url.searchParams.get("code");
 
-		const { data, error } = await supabase.auth.exchangeCodeForSession(accessToken as string);
+		// const { data, error } = await supabase.auth.exchangeCodeForSession(accessToken as string);
+		const { data, error } = await supabase.auth.exchangeCodeForSession(fullUrl);
 
 		if (error) {
 			console.error("Error during token exchange:", error.message);
