@@ -71,11 +71,15 @@ const createStore = () => {
 			// });
 		},
 		authenticateUser: (user: User) => {
-			update((state) => ({
-				...state,
-				user,
-				isAuthenticated: true
-			}));
+			update((state) => {
+				const curState = {
+					...state,
+					user
+					// isAuthenticated: true
+				};
+				curState.isAuthenticated = true;
+				return curState;
+			});
 		},
 		updateUser: (user: Partial<User>) => {
 			update((state) => ({
