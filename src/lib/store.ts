@@ -18,7 +18,7 @@ const initialState: {
 	post: {} as Post,
 	likes: [],
 	users: [],
-	isAuthenticated: false,
+	isAuthenticated: false
 };
 
 // Helper to persist and load state from localStorage
@@ -104,8 +104,6 @@ const createStore = () => {
 			}));
 		},
 
-	
-
 		getState: () => {
 			let state: typeof initialState;
 			subscribe(($store) => {
@@ -118,7 +116,4 @@ const createStore = () => {
 	};
 };
 
-
 export const store = createStore();
-
-

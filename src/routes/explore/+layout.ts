@@ -6,21 +6,27 @@ import { goto } from "$app/navigation";
 import type { LayoutLoad } from "./$types";
 import { store } from "$lib/store";
 
+import bluebird from "bluebird";
+
 export const load: LayoutLoad = async ({ url }) => {
 	// Get the full URL to pass to `exchangeCodeForSession`
 	const fullUrl = url.href;
-	
 
 	// Exchange the code for a session if the user is redirected back from Discord
 	if (url.searchParams.has("access_token") || url.searchParams.has("code")) {
-		const { data, error } = await supabase.auth.exchangeCodeForSession(fullUrl);
+		const accessToken = url.searchParams.get("access_token") || url.searchParams.get("code");
+
+		const { data, error } = await supabase.auth.exchangeCodeForSession(accessToken as string);
 
 		if (error) {
 			console.error("Error during token exchange:", error.message);
+
+			await bluebird.delay(5 * 1000);
 			// return { user: null, error: error.message };
+
 			goto("/");
 		}
-	
+
 		// Get the current user session after token exchange
 		const { data: sessionData } = await supabase.auth.getSession();
 		const userData = sessionData?.session?.user || null;
@@ -35,7 +41,7 @@ export const load: LayoutLoad = async ({ url }) => {
 			username: userData?.user_metadata.name,
 			email: userData?.email,
 			image: userData?.user_metadata.picture,
-	
+
 			bio: profileData[0].bio,
 			followerCount: profileData[0].follower_count,
 			followingCount: profileData[0].following_count,
@@ -48,17 +54,12 @@ export const load: LayoutLoad = async ({ url }) => {
 			//@ts-ignore
 			updatedAt: new Date(userData?.updated_at)
 		};
-	
-	
-	
+
 		authenticate(user);
 	}
 
-
-
 	//fetch post data
 	try {
-		
 		// Fetch posts with likes
 		const { data: posts, error } = await supabase
 			.from("posts")
@@ -71,7 +72,7 @@ export const load: LayoutLoad = async ({ url }) => {
 		}
 
 		store.initPosts(posts);
-		
+
 		return { posts: posts || null };
 	} catch (err) {
 		console.error("Unexpected error:", err);
