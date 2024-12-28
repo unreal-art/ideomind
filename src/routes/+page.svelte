@@ -59,7 +59,8 @@
 			provider: "google",
 			options: {
 				//redirect url
-				redirectTo: redirectToUrl + "/explore"
+				redirectTo: redirectToUrl + "/explore",
+				skipBrowserRedirect: true,
 			}
 		});
 

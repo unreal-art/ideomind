@@ -11,6 +11,8 @@ import bluebird from "bluebird";
 export const load: LayoutLoad = async ({ url }) => {
 	// Get the full URL to pass to `exchangeCodeForSession`
 	const fullUrl = url.href;
+	re;
+	console.log(`Loading ${fullUrl}`);
 
 	// Exchange the code for a session if the user is redirected back from Discord
 	if (url.searchParams.has("access_token") || url.searchParams.has("code")) {
