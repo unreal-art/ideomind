@@ -27,8 +27,8 @@ export const load: LayoutLoad = async ({ url }) => {
 
 			await bluebird.delay(5 * 1000);
 			// return { user: null, error: error.message };
-
-			// goto("/");
+			console.log("redirecting to /");
+			goto("/");
 		}
 
 		// Get the current user session after token exchange
