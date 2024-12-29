@@ -17,8 +17,10 @@ export const load: LayoutLoad = async ({ url }) => {
 	if (url.searchParams.has("access_token") || url.searchParams.has("code")) {
 		const accessToken = url.searchParams.get("access_token") || url.searchParams.get("code");
 
-		// const { data, error } = await supabase.auth.exchangeCodeForSession(accessToken as string);
-		const { data, error } = await supabase.auth.exchangeCodeForSession(fullUrl);
+		console.log("access token: " + accessToken);
+
+		const { data, error } = await supabase.auth.exchangeCodeForSession(accessToken as string);
+		// const { data, error } = await supabase.auth.exchangeCodeForSession(fullUrl);
 
 		if (error) {
 			console.error("Error during token exchange:", error.message);
