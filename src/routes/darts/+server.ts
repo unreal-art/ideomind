@@ -66,7 +66,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	// Construct CLI input flags
 	const inputFlags = Object.entries(jobDto.inputs || {})
-		.map(([key, value]) => `-i ${key}="${value}"`)
+		.map(([key, value]) => `-i ${key.trim()}="${value.toString().trim()}"`)
 		.join(" ");
 
 	console.log("inputFlags", inputFlags);
