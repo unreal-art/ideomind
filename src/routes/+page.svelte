@@ -61,6 +61,9 @@
 				//redirect url
 				redirectTo: redirectToUrl + "/explore",
 				// skipBrowserRedirect: true,
+					queryParams: {
+					redirect_uri: redirectToUrl,
+				},
 			}
 		});
 
@@ -69,13 +72,22 @@
 		}
 	}
 	async function signInWithDiscord() {
-		const redirectToUrl = getRedirectURL()
+		let redirectToUrl = getRedirectURL()
+		// redirectToUrl = new URL("/explore", redirectToUrl).toString()
+		console.log("redirect to:", redirectToUrl)
+		redirectToUrl = encodeURI(redirectToUrl)
 
 		const { data, error } = await supabase.auth.signInWithOAuth({
 			provider: "discord",
 			options: {
 				//redirect url
-				redirectTo: redirectToUrl + "/explore"
+				redirectTo: redirectToUrl ,
+				// skipBrowserRedirect: true, 
+				queryParams: {
+					// redirect_uri: redirectToUrl,
+					// redirect_uri: encodeURIComponent("/explore"),
+					// redirect_uri: encodeURI(redirectToUrl),
+				},
 			}
 		});
 
