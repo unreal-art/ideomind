@@ -31,6 +31,8 @@
 	import random from 'random';
 
 	let text = $state('');
+	let prompt = $derived(text.trim());
+
 	let open = $state(false);
 
 	const onclick = async () => {
@@ -40,7 +42,7 @@
 			module: 'isdxl',
 			version: 'v1.5.0',
 			inputs: {
-				Prompt: text,
+				Prompt: prompt,
 				cpu: 22,
 				Device: 'xpu',
 				Seed: random.int(1e3, 1e9),

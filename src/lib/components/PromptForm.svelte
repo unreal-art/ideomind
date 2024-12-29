@@ -16,6 +16,7 @@
 
 	let { section } = $props();
 	let text = $state('');
+	let prompt = $derived(text.trim());
 
 	let showInput: boolean = $state(false);
 	let inputRef: HTMLDivElement | null = $state(null);
@@ -32,7 +33,7 @@
 			module: 'isdxl',
 			version: 'v1.5.0',
 			inputs: {
-				Prompt: text,
+				Prompt: prompt,
 				cpu: 22,
 				ram: "21gb",
 				Device: 'xpu',
