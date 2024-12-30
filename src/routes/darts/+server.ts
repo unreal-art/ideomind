@@ -48,12 +48,14 @@ if (!dev) {
 // }
 
 export const POST: RequestHandler = async ({ request }) => {
+	let Ephemeral = false;
 	let pKey = DARTS_PRIVATE_KEY;
 
 	const authHeader = request.headers.get("Authorization");
 	if (!authHeader) {
 		console.log("Unauthorized");
 		// return new Response("Unauthorized", { status: 401 }); //TODO:
+		Ephemeral = true;
 	} else {
 		const token = authHeader.split(" ")[1]; //This is fine as we are using HTTPS , with HTTP vulnerable to MITM
 		if (token) {
@@ -88,7 +90,8 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	const envVars = {
 		DARTS_PRIVATE_KEY: pKey,
-		DEBUG: debug.toString()
+		DEBUG: debug.toString(),
+		Ephemeral
 	};
 
 	const envVarsString = Object.entries(envVars)
