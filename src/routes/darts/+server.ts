@@ -110,7 +110,8 @@ export const POST: RequestHandler = async ({ request }) => {
 		childProcess.stdout?.on("data", (out) => {
 			console.log(`stdout: ${out}`);
 			stdout = out.toString();
-			outputFolder = extractLocationURL(stdout);
+
+			outputFolder = outputFolder || extractLocationURL(stdout);
 		});
 
 		childProcess.stderr?.on("data", (_stderr) => {
