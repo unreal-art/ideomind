@@ -43,7 +43,7 @@ export async function generateImage(dto: JobSpec) {
 		return response.data;
 	} catch (error) {
 		console.error("Error:", error);
-		quickStore.updateLoader(false)
+		quickStore.updateLoader(false);
 	}
 }
 
@@ -207,6 +207,8 @@ export const fetchCreationsPost = async () => {
 		const { data: posts, error } = await supabase
 			.from("posts")
 			.select(`*`)
+			//@ts-ignore
+			.eq("author", store.getState().user.id)
 			.order("createdAt", { ascending: false });
 
 		if (error) {
@@ -381,7 +383,7 @@ export const postsByFollowed = async (userId: string, posts: Post[]) => {
 	const userFollows = await getFollowsByFollowerId(userId);
 	// const followedUsers = store.getState().users.filter((user) => user.id === userId);
 	// // Combine all posts from followed users
-	
+
 	return userFollows.flatMap((follow) => getUserPosts(follow.followee_id, posts));
 };
 

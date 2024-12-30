@@ -11,8 +11,10 @@ export const load: LayoutLoad = async ({ url }) => {
 		// Fetch posts with likes
 		const { data: posts, error } = await supabase
 			.from("posts")
-			.select(`*`)
-			.order("createdAt", { ascending: false });
+			.select("*")
+			//@ts-ignore
+			.eq("author", store.getState().user.id) // Filter posts by the author_id
+			.order("createdAt", { ascending: false }); // Order posts by creation date, descending
 
 		if (error) {
 			console.error("Error fetching posts with likes:", error);
