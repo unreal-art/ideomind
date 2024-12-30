@@ -60,7 +60,7 @@
 					</div>
 				</div>
 			{/if}
-			<MobileSideBar />
 		</div>
+		<MobileSideBar />
 	</main>
 {/if}

@@ -94,7 +94,7 @@
 	</div>
 	<div class="h-full lg:h-[79%]">
 		<Tabs.Root onValueChange={() => reloadData()} value="all" class="h-full w-full ">
-			<div class="fixed top-0 z-10 flex h-12 w-full justify-between bg-stone-50 dark:bg-secondary items-center lg:relative">
+			<div class="fixed left-0 top-0 z-10 flex h-12 w-full justify-between bg-stone-50 dark:bg-secondary items-center lg:relative">
 				<div
 					class={` ${showInput ? "block" : "hidden"} absolute left-0 top-0 z-20 h-full w-full max-w-[1000px] rounded-2xl border bg-stone-50`}
 				>

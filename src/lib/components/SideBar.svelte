@@ -39,8 +39,8 @@
 	<div class="flex h-[50%] w-full flex-col gap-4">
 		<a href="/explore" >
 			<div class="flex h-16 w-full items-center justify-center">
-				<img src="/vertical-black.png" alt="unreal-art logo" class="flex dark:hidden" />
-				<img src="/vertical-white.png" alt="unreal-art logo" class="hidden dark:flex" />
+				<img src="/Icon-Black.png" alt="unreal-art logo" class="flex dark:hidden size-11" />
+				<img src="/Icon-White.png" alt="unreal-art logo" class="hidden dark:flex size-11" />
 			</div>
 		</a>
 		<a href="/explore">

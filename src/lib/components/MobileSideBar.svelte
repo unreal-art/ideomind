@@ -94,26 +94,27 @@ const onclick = async () => {
 
 </script>
 
-<section class="fixed bottom-0 h-20 w-full bg-stone-50 lg:hidden">
-	<div
+<section class="fixed bottom-0 right-0 h-20 w-full bg-stone-50 lg:hidden dark:bg-black min-w-full">
+	<!-- <div
 		class="before:absolute before:left-0 before:top-0 before:h-2 before:w-full before:bg-transparent before:shadow-md"
-	></div>
+	></div> -->
 	<div class="flex h-full w-full items-center justify-between px-4 pt-2">
-		<a href="/explore">
-			<Button class="relative w-10 bg-transparent text-primary shadow-none hover:bg-transparent">
+		
+			<Button onclick={()=>goto("/explore")} class="relative w-10 bg-transparent text-primary shadow-none hover:bg-transparent">
 				<Telescope size={22} />
 			</Button>
-		</a>
+		
 
-		<a href="/creations">
-			<Button class="relative w-10 bg-transparent text-primary shadow-none hover:bg-transparent">
+		
+			<Button onclick={()=>goto("/creations")} class="relative w-10 bg-transparent text-primary shadow-none hover:bg-transparent">
 				<GalleryVertical size={20} class="" />
 			</Button>
-		</a>
+		
 
-		<Drawer.Root bind:open>
+		<div>
+			<Drawer.Root bind:open>
 			<Drawer.Trigger>
-				<Button class="h-12 w-12 rounded-full  p-0 ">
+				<Button class="h-12 w-12 rounded-full  p-0 dark:bg-secondary dark:text-white">
 					<Plus size={30} />
 				</Button></Drawer.Trigger
 			>
@@ -138,6 +139,7 @@ const onclick = async () => {
 				</div>
 			</Drawer.Content>
 		</Drawer.Root>
+		</div>
 
 		<Button
 			class="relative w-10 bg-transparent text-primary shadow-none ring-transparent hover:bg-transparent"
