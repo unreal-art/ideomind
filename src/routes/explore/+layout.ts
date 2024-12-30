@@ -21,7 +21,7 @@ export const load: LayoutLoad = async ({ url }) => {
 			.order("createdAt", { ascending: false });
 
 		if (error) {
-			console.error("Error fetching posts with likes:", error);
+			console.error("Error fetching posts :", error);
 			return { posts: [] };
 		}
 

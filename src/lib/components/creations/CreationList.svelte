@@ -30,7 +30,7 @@
 		</div>
 	</div>
 {:else}
-	<div class=" grid  grid-cols-1 justify-center gap-4 sm:grid-cols-2 lg:grid-cols-4 pb-6">
+	<div class=" grid  grid-cols-1 justify-center gap-4 sm:grid-cols-2 lg:grid-cols-4 pb-6 pt-14 lg:pt-4">
 		{#each posts as item: Post}
 			<div class="relative mb-6 break-inside-avoid">
 				<div class="absolute bottom-1 right-0 flex items-center text-white">
