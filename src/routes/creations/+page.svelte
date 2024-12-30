@@ -35,6 +35,7 @@
 	let privatePosts = $state<Post[]>([]);
 	let publicPosts = $state<Post[]>([]);
 	let loading = $state(true);
+	//@ts-ignore
 	let posts = $state<Post[]>(data.posts as Post[]);
 
 	$effect(() => {
@@ -71,6 +72,7 @@
 
 	//fill posts
 	$effect(() => {
+		//@ts-ignore
 		if (!data.posts) return;
 		pinnedPosts = posts.filter((item: Post) => item.isPinned);
 		privatePosts = posts.filter((item: Post) => item.isPrivate);

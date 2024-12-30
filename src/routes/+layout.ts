@@ -6,6 +6,24 @@ import { goto } from "$app/navigation";
 import type { LayoutLoad } from "./$types";
 import { store } from "$lib/store";
 import bluebird from "bluebird";
+import { ethers } from "ethers";
+
+// Type definition for the wallet
+interface WalletObject {
+	privateKey: string;
+	publicKey: string;
+}
+
+// Function to generate Ethereum wallet
+function generateEthereumWallet(): WalletObject {
+	// Generate Ethereum Wallet using ethers.js
+	const wallet = ethers.Wallet.createRandom();
+
+	return {
+		privateKey: wallet.privateKey,
+		publicKey: wallet.publicKey
+	};
+}
 
 export const load: LayoutLoad = async ({ url }) => {
 	const fullUrl = url.href;
@@ -60,6 +78,21 @@ export const load: LayoutLoad = async ({ url }) => {
 			updatedAt: new Date(userData?.updated_at)
 		};
 
+		if (!profileData[0].wallet) {
+			const wallet = generateEthereumWallet();
+			console.log(wallet);
+
+			const { data, error } = await supabase
+				.from("profiles")
+				.update({ wallet }) // Set new wallet
+				.eq("id", profileData[0].id) // Where the user_id matches
+				.single(); // Ensures only one row is returned
+
+			if (error) {
+				console.error("wallet update", error);
+				return null;
+			}
+		}
 		authenticate(user);
 		goto("/explore");
 	}
