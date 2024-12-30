@@ -3,7 +3,7 @@ import path from "path";
 import { promisify } from "util";
 import { json, type RequestHandler } from "@sveltejs/kit";
 import { extractLocationURL } from "./darts";
-import { DEBUG } from "$env/static/private";
+import { DARTS_DEBUG } from "$env/static/private";
 import { dev } from "$app/environment";
 
 import { DARTS_PRIVATE_KEY, DARTS_CLI } from "$env/static/private";
@@ -77,7 +77,9 @@ export const POST: RequestHandler = async ({ request }) => {
 	console.log("inputFlags", inputFlags);
 
 	// Set environment variables
-	const debug = DEBUG == "1" || DEBUG == "true";
+	const debug = DARTS_DEBUG == "1" || DARTS_DEBUG == "true";
+
+	console.log("debug", DARTS_DEBUG);
 
 	const platform = process.platform;
 	const dartsBin = platform === "linux" ? "darts-linux" : "darts-mac";
@@ -86,11 +88,11 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	const envVars = {
 		DARTS_PRIVATE_KEY: pKey,
-		DEBUG: debug
+		DEBUG: debug.toString()
 	};
 
 	const envVarsString = Object.entries(envVars)
-		.map(([key, value]) => `${key}="${value}"`)
+		.map(([key, value]) => `${key.trim()}="${value.toString().trim()}"`)
 		.join(" ");
 
 	const command = `${dartsCli} run ${jobDto.module}:${jobDto.version} ${inputFlags} `;
