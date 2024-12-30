@@ -88,13 +88,13 @@
 </script>
 
 <section class="h-full w-full overflow-auto px-2">
-	<div class="hidden h-[20%] flex-col items-center justify-center gap-3 lg:flex">
+	<div class="hidden h-[20%] flex-col items-center justify-center gap-3 z-20 lg:flex">
 		<h2 class="text-sm font-semibold md:text-2xl lg:text-4xl">Unleash your creative juice.</h2>
 		<PromptForm section={"body"} />
 	</div>
 	<div class="h-full lg:h-[79%]">
-		<Tabs.Root onValueChange={() => reloadData()} value="all" class="h-full w-full">
-			<div class="fixed top-0 z-50 flex h-12 w-full justify-between bg-stone-50 lg:relative">
+		<Tabs.Root onValueChange={() => reloadData()} value="all" class="h-full w-full ">
+			<div class="fixed top-0 z-10 flex h-12 w-full justify-between bg-stone-50 dark:bg-secondary items-center lg:relative">
 				<div
 					class={` ${showInput ? "block" : "hidden"} absolute left-0 top-0 z-20 h-full w-full max-w-[1000px] rounded-2xl border bg-stone-50`}
 				>
@@ -107,7 +107,7 @@
 						<Input
 							type="text"
 							placeholder="Search your creations"
-							class=" h-full w-full rounded-l-2xl  border-none bg-stone-50 pr-10 "
+							class=" h-full w-full rounded-l-2xl  border-none bg-stone-50 dark:bg-black pr-10 "
 						/>
 					</div>
 				</div>
@@ -117,11 +117,11 @@
 							<Search size={20} />
 						</Button>
 					</div>
-					<Tabs.List class="h-[5%] bg-transparent">
-						<Tabs.Trigger value="all">All</Tabs.Trigger>
-						<Tabs.Trigger value="pinned">Pinned</Tabs.Trigger>
-						<Tabs.Trigger value="public">Public</Tabs.Trigger>
-						<Tabs.Trigger value="private">Private</Tabs.Trigger>
+					<Tabs.List class="h-[5%] bg-transparent gap-2">
+						<Tabs.Trigger value="all" class="dark:bg-black/55">All</Tabs.Trigger>
+						<Tabs.Trigger value="pinned" class="dark:bg-black/55">Pinned</Tabs.Trigger>
+						<Tabs.Trigger value="public" class="dark:bg-black/55">Public</Tabs.Trigger>
+						<Tabs.Trigger value="private" class="dark:bg-black/55">Private</Tabs.Trigger>
 					</Tabs.List>
 
 					<div class="flex h-full items-center lg:hidden">
@@ -146,7 +146,7 @@
 					</div>
 				</div>
 				<div class="hidden h-full lg:block">
-					<Select.Root type="single" name="choice" bind:value={selectedChoice}>
+					<Select.Root type="single" name="choice"  bind:value={selectedChoice}>
 						<Select.Trigger class="w-[180px]">
 							{triggerContent}
 						</Select.Trigger>

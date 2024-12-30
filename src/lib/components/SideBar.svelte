@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Button from './ui/button/button.svelte';
-	import { GalleryVertical, House, Menu, Telescope } from 'lucide-svelte';
+	import { GalleryVertical, House, Menu, Moon, Sun, Telescope } from 'lucide-svelte';
 	import profileImage from '$lib/assets/ima1.jpg';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import CreditCard from 'lucide-svelte/icons/credit-card';
@@ -20,6 +20,7 @@
 	import { store } from '$lib/store';
 	import { page } from '$app/stores';
 	import { logoutUser } from '@/api';
+	import { toggleMode } from 'mode-watcher';
 
 
 	// $effect(() => {
@@ -36,7 +37,7 @@
 
 <aside class="z-50 hidden h-full w-[5%] min-w-[100px] border-r px-2 py-2 lg:block">
 	<div class="flex h-[50%] w-full flex-col gap-4">
-		<a href="/explore">
+		<a href="/explore" >
 			<div class="flex h-16 w-full items-center justify-center">
 				<img src="/vertical-black.png" alt="unreal-art logo" class="flex dark:hidden" />
 				<img src="/vertical-white.png" alt="unreal-art logo" class="hidden dark:flex" />
@@ -44,14 +45,16 @@
 		</a>
 		<a href="/explore">
 			<Button
-				class={`mt-6 flex h-16 w-full flex-col justify-center gap-2 bg-gray-200 text-gray-600 ${$page.url.pathname.startsWith('/explore') ? 'bg-gray-300 text-black' : ''} hover:bg-gray-300 hover:text-black`}
+			variant="secondary"
+				class={`mt-6 flex h-16 w-full flex-col justify-center gap-2 dark:text-gray-400 text-gray-600 ${$page.url.pathname.startsWith('/explore') ? 'bg-gray-300 dark:bg-gray-700 text-black' : ''} hover:bg-gray-300 hover:text-black hover:dark:bg-gray-700`}
 				><Telescope size={20} />
 				<span class="text-xs">Explore</span>
 			</Button>
 		</a>
 		<a href="/creations">
 			<Button
-				class={`flex h-16 w-full flex-col justify-center gap-2 bg-gray-200 text-gray-600 ${$page.url.pathname.startsWith('/creations') ? 'bg-gray-300 text-black' : ''} hover:bg-gray-300 hover:text-black`}
+			variant="secondary"
+				class={`flex h-16 w-full flex-col justify-center gap-2 dark:text-gray-400  text-gray-600 ${$page.url.pathname.startsWith('/creations') ? 'bg-gray-300 text-black dark:bg-gray-700' : ''} hover:bg-gray-300 hover:text-black hover:dark:bg-gray-700`}
 				><GalleryVertical size={20} />
 				<span class="text-xs">Creations</span>
 			</Button>
@@ -150,6 +153,19 @@
 						<Icon src={RiDocumentContractLine} className="mr-2 size-4" />
 						<span>Terms & Privacy</span>
 					</DropdownMenu.Item>
+					<DropdownMenu.Item class="pl-1" onclick={toggleMode}>
+							
+							<Button  variant="outline" size="icon" class=" ">
+  <Sun
+    class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
+  />
+  <Moon
+    class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+  />
+</Button>
+<span class="">Toggle theme</span>
+
+						</DropdownMenu.Item>
 					<DropdownMenu.Separator></DropdownMenu.Separator>
 					<DropdownMenu.Item onclick={handleLogOut}>
 						<LogOut class="mr-2 size-4"></LogOut>

@@ -37,11 +37,11 @@
 	</div>
 	<div class="h-full lg:h-[79%]">
 		<Tabs.Root value="explore" class="h-full w-full">
-			<div class="fixed top-0 h-[8%] w-full bg-stone-50 lg:relative">
+			<div class="fixed top-0 h-[8%] w-full bg-stone-50 dark:bg-secondary lg:relative">
 				<Tabs.List class="h-full bg-transparent">
-					<Tabs.Trigger value="explore">Explore</Tabs.Trigger>
-					<Tabs.Trigger value="following">Following</Tabs.Trigger>
-					<Tabs.Trigger value="top">Top</Tabs.Trigger>
+					<Tabs.Trigger value="explore" class="dark:bg-black/55">Explore</Tabs.Trigger>
+					<Tabs.Trigger value="following" class="dark:bg-black/55">Following</Tabs.Trigger>
+					<Tabs.Trigger value="top" class="dark:bg-black/55">Top</Tabs.Trigger>
 				</Tabs.List>
 			</div>
 			<Tabs.Content value="explore" class="h-[92%] w-full  ">

@@ -147,7 +147,7 @@
 			{/if}
 		</div>
 		<div
-			class="flex h-full flex-col gap-5 overflow-y-scroll rounded-md border bg-white px-2 py-4 shadow lg:w-[25%]"
+			class="flex h-full flex-col gap-5 overflow-y-scroll rounded-md border bg-white dark:bg-secondary px-2 py-4 shadow lg:w-[25%]"
 		>
 			<!-- user details -->
 			<div class="mt-3 flex h-10 w-full justify-between">
@@ -217,14 +217,14 @@
 							<Plus size={20} />
 						</button> -->
 						<button
-							class="rounded-sm border p-2 text-gray-500 hover:bg-secondary"
+							class="rounded-sm border p-2 text-gray-500  hover:bg-secondary"
 							bind:this={trigger}
 						>
 							<Files size={20} />
 						</button>
 					</div>
 				</div>
-				<p class="prose" use:copy={{ trigger }} oncopied={handleCopied}>
+				<p class="prose dark:text-gray-300" use:copy={{ trigger }} oncopied={handleCopied}>
 					{#if text.length > 200}
 						{#if !fullPrompt}
 							{text.substring(0, 200)}

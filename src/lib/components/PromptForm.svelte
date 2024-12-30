@@ -106,10 +106,10 @@
 {#if section == 'body'}
 	<form class="relative flex h-12 w-full max-w-6xl items-center">
 		<div
-			class={` ${showInput ? 'block' : 'hidden'} absolute top-0  w-full bg-white  z-20 py-4 px-3`}
+			class={` ${showInput ? 'block' : 'hidden'} absolute top-0  w-full bg-white dark:bg-black  z-20 py-4 px-3`}
 			bind:this={inputRef}
 		>
-			<Textarea bind:value={text} placeholder="Provide a detailed description of what you want to see. The more specific and comprehensive your input, the better the resulting image will be." class="resize-none border-none shadow-none" rows={15}/>
+			<Textarea bind:value={text} placeholder="Provide a detailed description of what you want to see. The more specific and comprehensive your input, the better the resulting image will be." class="resize-none border-none shadow-none dark:bg-secondary" rows={15}/>
 
 
 			<div class="flex  justify-end mt-10 h-12">
@@ -117,7 +117,7 @@
 			type="button"
 			disabled={$quickStore.isGeneratingFiles}
 			{onclick}
-			class="h-full text-white  w-full">Generate</Button
+			class="h-full text-white  w-full dark:bg-secondary">Generate</Button
 		>
 			</div>
 
@@ -135,7 +135,7 @@
 			type="button"
 			bind:this={buttonInputRef}
 			onclick={toggleInput}
-			class="h-full w-[40%] rounded-none rounded-r-2xl text-white md:w-[20%] bg-primary">Generate</button
+			class="h-full w-[40%] rounded-none rounded-r-2xl text-white md:w-[20%] bg-primary dark:bg-secondary">Generate</button
 		>
 	</form>
 {:else}
@@ -143,17 +143,17 @@
 		class={`${$page.url.pathname.startsWith('/details') || $page.url.pathname.startsWith('/profile') ? 'flex' : 'hidden'} relative h-12 w-full max-w-6xl items-center`}
 	>
 		<div
-			class={` ${showInput ? 'block' : 'hidden'} absolute top-0  w-full bg-white  z-50 py-4 px-3`}
+			class={` ${showInput ? 'block' : 'hidden'} absolute top-0  w-full bg-white dark:bg-black z-50 py-4 px-3`}
 			bind:this={inputRef}
 		>
-			<Textarea bind:value={text} placeholder="Provide a detailed description of what you want to see. The more specific and comprehensive your input, the better the resulting image will be." class="resize-none border-none shadow-none" rows={15}/>
+			<Textarea bind:value={text} placeholder="Provide a detailed description of what you want to see. The more specific and comprehensive your input, the better the resulting image will be." class="resize-none border-none shadow-none dark:bg-secondary" rows={15}/>
 
 			<div class="flex justify-end mt-10 h-12">
 				<Button
 			type="button"
 				disabled={$quickStore.isGeneratingFiles}
 			{onclick}
-			class="h-full   text-white  w-full">Generate</Button
+			class="h-full   text-white  w-full dark:bg-secondary">Generate</Button
 		>
 			</div>
 
@@ -171,7 +171,7 @@
 			type="button"
 			onclick={toggleInput}
 			bind:this={buttonInputRef}
-			class="h-full w-[40%] rounded-none rounded-r-2xl text-white md:w-[20%] bg-primary">Generate</button
+			class="h-full w-[40%] rounded-none rounded-r-2xl text-white md:w-[20%] bg-primary dark:bg-secondary">Generate</button
 		>
 	</form>
 {/if}

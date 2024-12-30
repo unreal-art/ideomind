@@ -231,7 +231,7 @@
 			<Dialog.Root bind:open>
 				<Dialog.Trigger
 					class={buttonVariants({ variant: "outline" }) +
-						` absolute right-2 mt-3 h-10 rounded-md bg-stone-50 text-sm font-extralight lg:relative lg:top-10`}
+						` absolute right-2 mt-3 h-10 rounded-md  text-sm font-extralight lg:relative lg:top-10`}
 				>
 					Edit Profile
 				</Dialog.Trigger>
@@ -281,7 +281,7 @@
 		<Tabs.Root onValueChange={() => reloadData()} value="public" class="relative h-full w-full">
 			<div
 				bind:this={targetElement}
-				class={`${isFixed ? "fixed left-0 lg:top-16 " : " lg:relative"} top-0 z-20 flex h-12 w-full justify-center bg-stone-50 `}
+				class={`${isFixed ? "fixed left-0 lg:top-16 " : " lg:relative"} top-0 z-20 flex h-12 w-full justify-center bg-stone-50 dark:bg-secondary`}
 			>
 				<div
 					class={`${showInput ? "block" : "hidden"} absolute left-0 top-0 z-20 h-full w-full max-w-[1000px] rounded-2xl border bg-stone-50`}
@@ -295,7 +295,7 @@
 						<Input
 							type="text"
 							placeholder="Search prompt"
-							class=" h-full w-full rounded-l-2xl  border-none bg-stone-50 pr-10 "
+							class=" h-full w-full rounded-l-2xl  border-none bg-stone-50 dark:bg-black pr-10 "
 						></Input>
 					</div>
 				</div>
@@ -310,11 +310,11 @@
 							<Search size={20}></Search>
 						</Button>
 					</div>
-					<Tabs.List class="h-[5%] bg-transparent">
-						<Tabs.Trigger value="pinned">Pinned</Tabs.Trigger>
-						<Tabs.Trigger value="public">Public</Tabs.Trigger>
-						<Tabs.Trigger value="private">Private</Tabs.Trigger>
-						<Tabs.Trigger value="liked">Liked</Tabs.Trigger>
+					<Tabs.List class="h-[5%] bg-transparent gap-2">
+						<Tabs.Trigger value="pinned" class="dark:bg-black/55">Pinned</Tabs.Trigger>
+						<Tabs.Trigger value="public" class="dark:bg-black/55">Public</Tabs.Trigger>
+						<Tabs.Trigger value="private" class="dark:bg-black/55">Private</Tabs.Trigger>
+						<Tabs.Trigger value="liked" class="dark:bg-black/55">Liked</Tabs.Trigger>
 					</Tabs.List>
 				</div>
 			</div>

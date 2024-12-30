@@ -14,6 +14,7 @@
 	import { Toaster } from '$lib/components/ui/sonner/index.js';
 	import { goto } from '$app/navigation';
 	import { quickStore } from '@/quickStore';
+	  import { ModeWatcher } from "mode-watcher";
 
 	function goBack() {
 		window.history.back();
@@ -27,6 +28,7 @@
 </script>
 
 <Toaster />
+<ModeWatcher />
 
 {#if $page.url.pathname === '/'}
 	{@render children()}
@@ -35,10 +37,10 @@
 		<SideBar />
 		<div class="relative h-full w-full flex-grow">
 			<Header />
-			<section class="relative h-full w-full overflow-auto bg-stone-50 lg:h-[92%]">
+			<section class="relative h-full w-full overflow-auto bg-stone-50 dark:bg-black/55 lg:h-[92%]">
 				<Button
 					onclick={goBack}
-					class={`${$page.url.pathname.startsWith('/details') ? 'flex' : 'hidden'} absolute left-8 top-8 z-50 h-12 bg-black/20 text-white hover:bg-black/40`}
+					class={`${$page.url.pathname.startsWith('/details') ? 'flex' : 'hidden'} absolute left-8 top-8 z-50 h-12 bg-black/20 dark:bg-black/70  text-white hover:bg-black/40`}
 				>
 					<MoveLeft size="25" />
 				</Button>

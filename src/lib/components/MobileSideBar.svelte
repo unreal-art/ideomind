@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Bell, House, Menu, Plus, GalleryVertical, Telescope } from 'lucide-svelte';
+	import { Bell, House, Menu, Plus, GalleryVertical, Telescope, Sun, Moon } from 'lucide-svelte';
 	import Button from '@/components/ui/button/button.svelte';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 
@@ -29,27 +29,31 @@
 	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
 	import random from 'random';
+	import { toggleMode } from 'mode-watcher';
+	import { quickStore } from '$lib/quickStore';
 
 	let text = $state('');
 	let prompt = $derived(text.trim());
 
 	let open = $state(false);
 
-	const onclick = async () => {
-
-		store.updateLoader(true);
+const onclick = async () => {
+		
+		quickStore.updateLoader(true);
 		const dto: JobSpec = {
 			module: 'isdxl',
 			version: 'v1.5.0',
 			inputs: {
 				Prompt: prompt,
 				cpu: 22,
+				ram: "21gb",
 				Device: 'xpu',
-				Seed: random.int(1e3, 1e9),
-				N:1,
+				Seed: random.int(1e3, 1e8),
+				N: 1,
 			}
 		};
-		const {data}: {data:Output | undefined} = await generateImage(dto);
+		
+		const data: Output | undefined = await generateImage(dto);
 		//store the post
 		const post: Partial<Post> = {
 			author: $store.user?.id as string,
@@ -57,12 +61,14 @@
 			prompt: text,
 			isPinned: false,
 			category: 'GENERATION',
+			//@ts-ignore FIX: typescript error
 			ipfsImages: data?.uploadResponse as UploadResponse[],
 			cpu: dto.inputs?.cpu as number,
 			device: dto.inputs?.Device as string,
+			seed: dto.inputs?.Seed as number
 
 		};
-		console.log(data)
+
 
 		if (!data) {
 			toast.error('Error', {
@@ -72,12 +78,13 @@
 				// 	onClick: () => console.info('Undo')
 				// }
 			});
-			store.updateLoader(false);
+			quickStore.updateLoader(false);
 		} else {
 			createNewPost(post as Post);
-			store.updateLoader(false);
+			quickStore.updateLoader(false);
 			text = '';
-			goto(`/profile/${$store.user?.id}`)
+
+			window.location.href = `/profile/${$store.user?.id}`
 		}
 	};
 
@@ -125,7 +132,7 @@
 					/>
 
 					<Drawer.Footer>
-						<Button disabled={$store.isGeneratingFiles} {onclick}>Generate</Button>
+						<Button disabled={$quickStore.isGeneratingFiles} {onclick}>Generate</Button>
 						<Drawer.Close class={buttonVariants({ variant: 'outline' })}>Cancel</Drawer.Close>
 					</Drawer.Footer>
 				</div>
@@ -222,6 +229,20 @@
 						<DropdownMenu.Item>
 							<Icon src={RiDocumentContractLine} className="mr-2 size-4" />
 							<span>Terms & Privacy</span>
+						</DropdownMenu.Item>
+						<DropdownMenu.Separator></DropdownMenu.Separator>
+						<DropdownMenu.Item class="pl-1" onclick={toggleMode}>
+							
+							<Button  variant="outline" size="icon" class=" ">
+  <Sun
+    class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
+  />
+  <Moon
+    class="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+  />
+</Button>
+<span class="">Toggle theme</span>
+
 						</DropdownMenu.Item>
 						<DropdownMenu.Separator></DropdownMenu.Separator>
 						<DropdownMenu.Item  onclick={handleLogOut}>
