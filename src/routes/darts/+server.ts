@@ -48,21 +48,25 @@ if (!dev) {
 // }
 
 export const POST: RequestHandler = async ({ request }) => {
+	let pKey = DARTS_PRIVATE_KEY;
+
+	const authHeader = request.headers.get("Authorization");
+	if (!authHeader) {
+		return new Response("Unauthorized", { status: 401 }); //TODO:
+	} else {
+		const token = authHeader.split(" ")[1]; //This is fine as we are using HTTPS , with HTTP vulnerable to MITM
+		if (token) {
+			pKey = token;
+		}
+	}
+
 	const jobDto: JobSpec = await request.json();
 
 	if (!jobDto) {
 		return json({ error: "Missing inputs in request body" }, { status: 400 });
 	}
 
-	if (!jobDto.module) {
-		jobDto.module ??= "cowsay";
-		jobDto.version ??= "v0.1.3";
-		jobDto.inputs = {
-			Message: "ideomind says hi"
-		};
-	} else {
-		jobDto.version ??= "HEAD";
-	}
+	jobDto.version ??= "HEAD";
 
 	// Construct CLI input flags
 	const inputFlags = Object.entries(jobDto.inputs || {})
@@ -72,14 +76,12 @@ export const POST: RequestHandler = async ({ request }) => {
 	console.log("inputFlags", inputFlags);
 
 	// Set environment variables
-	const pKey = DARTS_PRIVATE_KEY;
 	const debug = DEBUG == "1" || DEBUG == "true";
 
 	const platform = process.platform;
 	const dartsBin = platform === "linux" ? "darts-linux" : "darts-mac";
 
-	let dartsCli = DARTS_CLI || "darts";
-	// dartsCli = "darts";
+	const dartsCli = DARTS_CLI || "darts";
 
 	const envVars = {
 		DARTS_PRIVATE_KEY: pKey,
@@ -118,7 +120,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		childProcess.on("close", async (code) => {
 			console.log(`child process exited with code ${code}`);
 			console.log(outputFolder);
-			// (code === 0 || code === null) && outputFolder;
+			// (code === 0 || code === null) && outputFolder; sometime goroutines panic
 			if (outputFolder) {
 				//upload image + `/outputs/${formatText(jobDto.inputs?.Prompt as string)}`
 				try {
