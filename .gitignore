@@ -29,3 +29,5 @@ notepad.sh
 justfile
 
 wallet.json
+
+rest.local.http
