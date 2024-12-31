@@ -2,8 +2,12 @@
 	"httpyac.requestGotOptions": {
 		"https": {
 			"rejectUnauthorized": false
-		}
+		},
 	},
+	"httpyac.envDirName": ".",
+
+
+
 	"[svelte]": {
 		"editor.formatOnSave": false
 	}

@@ -75,7 +75,7 @@ Content-Type: application/json
   }
 }
 ###
-POST http://localhost:5173/darts
+POST {{u}}/darts
 Authorization: Bearer 0xa618896c28db371a21f9d805c25e622425319d85684a1f9478568509a3f3f4a9
 Content-Type: application/json
 
@@ -91,13 +91,6 @@ Content-Type: application/json
     "N":1
   }
 }
-
-HTTP/1.1 500  - Internal Server Error
-access-control-allow-origin: *
-content-length: 1533
-content-type: application/json
-date: Mon, 30 Dec 2024 01:43:43 GMT
-connection: close
 ###
 OPTIONS http://localhost:5175
 
