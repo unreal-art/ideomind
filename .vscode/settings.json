@@ -5,11 +5,6 @@
 		},
 	},
 	"httpyac.envDirName": ".",
-	"httpyac.environmentSelectedOnStart": [
-		"",
-		"local",
-		"ci"
-	],
 
 	"[svelte]": {
 		"editor.formatOnSave": false

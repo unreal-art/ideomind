@@ -1,51 +1,17 @@
-# Darts
-POST https://supreme-potato-5g4q56gjp7qg2ppxq-5173.app.github.dev/darts
-Content-Type: application/json
+### Options
+OPTIONS {{u}}/darts
 
-{}
-###
-
-POST https://ideomind.vercel.app/darts
-Content-Type: application/json
-
-{
-  "module": "isdxl",
-  "version": "v1.2.0",
-  "inputs": {
-    "Prompt": "mind dreaming of a futuristic aircraft",
-    "Seed": "40",
-    "Device": "xpu",
-    "cpu": "30"
-  }
-}
-
-HTTP/1.1 500  - Internal Server Error
-cache-control: public, max-age=0, must-revalidate
-content-length: 265
-content-type: application/json
-date: Sun, 22 Dec 2024 22:23:49 GMT
-server: Vercel
-strict-transport-security: max-age=63072000; includeSubDomains; preload
-x-robots-tag: noindex
-x-vercel-cache: MISS
-x-vercel-id: bom1::iad1::lv549-1734906223982-4a730474168b
+HTTP/1.1 200  - OK
+access-control-allow-origin: *
+access-control-allow-methods: GET, POST, PUT, DELETE, PATCH, OPTIONS
+vary: Access-Control-Request-Headers
+access-control-allow-headers: *
+date: Tue, 31 Dec 2024 03:03:23 GMT
 connection: close
+transfer-encoding: chunked
 ###
 
-POST http://localhost:5173/darts
-Content-Type: application/json
-
-{
-  "module": "github.com/darts2024/dart-isdxl",
-  "version": "v1.3.0",
-  "inputs": {
-    "Prompt": "Beautiful girl",
-    "Device": "xpu"
-  }
-}
-###
-
-POST http://localhost:5173/darts
+POST {{u}}/darts
 Content-Type: application/json
 
 {
@@ -55,15 +21,8 @@ Content-Type: application/json
     "Message": "Hi from vite dev "
   }
 }
-
-HTTP/1.1 200  - OK
-access-control-allow-origin: *
-content-length: 915
-content-type: application/json
-date: Fri, 27 Dec 2024 18:01:02 GMT
-connection: close
 ###
-POST https://darts.decenterai.com:8080/darts
+POST {{u}}/darts
 Content-Type: application/json
 
 {
@@ -92,12 +51,15 @@ Content-Type: application/json
   }
 }
 ###
-OPTIONS http://localhost:5175
 
-HTTP/1.1 204  - No Content
-access-control-allow-origin: *
-access-control-allow-methods: GET,HEAD,PUT,PATCH,POST,DELETE
-vary: Access-Control-Request-Headers
-allow: GET, HEAD, OPTIONS
-date: Mon, 23 Dec 2024 03:14:34 GMT
-connection: close
+POST {{u}}/darts
+Content-Type: application/json
+
+{
+  "module": "github.com/darts2024/dart-isdxl",
+  "version": "v1.3.0",
+  "inputs": {
+    "Prompt": "Beautiful girl",
+    "Device": "xpu"
+  }
+}
