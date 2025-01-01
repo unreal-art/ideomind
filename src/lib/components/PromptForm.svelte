@@ -34,8 +34,8 @@
 			version: 'v1.5.0',
 			inputs: {
 				Prompt: prompt,
-				cpu: 22,
-				ram: "21gb",
+				cpu: 20,
+				ram: "24gb",
 				Device: 'xpu',
 				Seed: random.int(1e3, 1e8),
 				N: 1,
