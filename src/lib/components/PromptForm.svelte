@@ -29,6 +29,7 @@
 		showInput=false
 
 		quickStore.updateLoader(true);
+		//@ts-ignore
 		const dto: JobSpec = {
 			module: 'isdxl',
 			version: 'v1.5.0',
@@ -39,24 +40,29 @@
 				Device: 'xpu',
 				Seed: random.int(1e3, 1e8),
 				N: 1,
-			}
+			},
+			author: $store.user?.id as string,
+			isPrivate: false,
+			isPinned: false,
+			category: 'GENERATION',
+			
+			
 		};
 		
 		const data: Output | undefined = await generateImage(dto);
 		//store the post
-		const post: Partial<Post> = {
-			author: $store.user?.id as string,
-			isPrivate: false,
-			prompt: text,
-			isPinned: false,
-			category: 'GENERATION',
-			//@ts-ignore FIX: typescript error
-			ipfsImages: data?.uploadResponse as UploadResponse[],
-			cpu: dto.inputs?.cpu as number,
-			device: dto.inputs?.Device as string,
-			seed: dto.inputs?.Seed as number
-
-		};
+		// const post: Partial<Post> = {
+		// 	author: $store.user?.id as string,
+		// 	isPrivate: false,
+		// 	prompt: text,
+		// 	isPinned: false,
+		// 	category: 'GENERATION',
+		// 	//@ts-ignore FIX: typescript error
+		// 	ipfsImages: data?.uploadResponse as UploadResponse[],
+		// 	cpu: dto.inputs?.cpu as number,
+		// 	device: dto.inputs?.Device as string,
+		// 	seed: dto.inputs?.Seed as number
+		// };
 
 
 		if (!data) {
@@ -69,10 +75,10 @@
 			});
 			quickStore.updateLoader(false);
 		} else {
-			createNewPost(post as Post);
+			// createNewPost(post as Post);
 			quickStore.updateLoader(false);
 			text = '';
-
+			//force page load from server
 			window.location.href = `/profile/${$store.user?.id}`
 		}
 	};

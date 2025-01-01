@@ -34,12 +34,6 @@ export async function generateImage(dto: JobSpec) {
 
 	try {
 		const response: DartsJobData = await axios.post(`${API_BACKEND}/darts`, dto);
-		// const response = await axios.post("/api", dto, {
-		// 	headers: {
-		// 		"Content-Type": "application/json" // Explicitly set Content-Type
-		// 	}
-		// });
-
 		return response.data;
 	} catch (error) {
 		console.error("Error:", error);
