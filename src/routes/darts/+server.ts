@@ -7,6 +7,7 @@ import { dev } from "$app/environment";
 import { DARTS_PRIVATE_KEY, DARTS_CLI } from "$env/static/private";
 import { uploadFilesInOutputs } from "./lighthouse";
 import { postDataToDb } from "./postDataToDb";
+import Bluebird from "bluebird";
 
 if (!dev) {
 	// await execAsync(`curl -sSL https://bit.ly/install-darts | bash -s -- darts`);
@@ -101,10 +102,25 @@ export const POST: RequestHandler = async ({ request }) => {
 					const uploadResponse = await uploadFilesInOutputs(outputFolder);
 					console.log("Image upload successful:", uploadResponse);
 					//post to db
-					await postDataToDb(uploadResponse, jobDto);
+
+					const dto = jobDto;
+
+					await postDataToDb({
+						device: dto.inputs?.Device,
+						cpu: dto.inputs?.cpu,
+						seed: dto.inputs?.Seed,
+						prompt: dto.inputs?.Prompt,
+						n: dto.inputs?.N,
+
+						author: dto.author ?? "e260b0ab-9867-4507-97be-976779c20c9f",
+						ipfsImages: uploadResponse,
+						isPrivate: dto.isPrivate ?? false,
+						isPinned: dto.isPinned ?? false,
+						category: "GENERATION"
+					});
 					resolve(json({ outputFolder, stdout, command, uploadResponse }));
 				} catch (uploadError) {
-					console.error("Error uploading image:", uploadError);
+					console.error("Error uploading image/post:", uploadError);
 					resolve(
 						json(
 							{

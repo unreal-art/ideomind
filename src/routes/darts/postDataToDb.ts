@@ -1,4 +1,4 @@
-import type { UploadResponse } from "@/types";
+import type { Post, UploadResponse } from "@/types";
 import { supabase } from "../../supabaseClient";
 import type { JobSpec } from "./darts";
 
@@ -9,22 +9,9 @@ import type { JobSpec } from "./darts";
 // 	return `${formattedText}.png`;
 // }
 //post to db
-export const postDataToDb = async (uploadResponse: UploadResponse[], dto: JobSpec) => {
+export const postDataToDb = async (post: Post) => {
 	try {
-		const { data, error } = await supabase.from("posts").insert([
-			{
-				author: dto.author,
-				isPrivate: dto.isPrivate,
-				prompt: dto.inputs?.Prompt,
-				isPinned: dto.isPinned,
-				category: dto.category,
-				ipfsImages: uploadResponse,
-				cpu: dto.inputs?.cpu,
-				device: dto.inputs?.Device,
-				seed: dto.inputs?.Seed,
-				n: dto.inputs?.N
-			}
-		]);
+		const { data, error } = await supabase.from("posts").insert([post]);
 
 		if (error) {
 			throw new Error(`Error inserting data: ${error.message}`);
