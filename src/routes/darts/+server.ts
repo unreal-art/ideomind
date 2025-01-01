@@ -1,6 +1,4 @@
 import { exec } from "child_process";
-import path from "path";
-import { promisify } from "util";
 import { json, type RequestHandler } from "@sveltejs/kit";
 import { extractLocationURL } from "./darts";
 import { DARTS_DEBUG } from "$env/static/private";
@@ -10,25 +8,6 @@ import { DARTS_PRIVATE_KEY, DARTS_CLI } from "$env/static/private";
 import { uploadFilesInOutputs } from "./lighthouse";
 import type { Post, UploadResponse } from "@/types";
 import { supabase } from "../../supabaseClient";
-
-const execAsync = promisify(exec);
-
-async function installDarts() {
-	try {
-		// Check if 'darts' binary exists
-		await execAsync("command -v darts");
-		console.log("Darts binary already installed.");
-		return "Darts binary is already installed.";
-	} catch {
-		// If not found and not in dev mode, install it
-		console.log("Installing darts binary...");
-		await execAsync("curl -sSL https://bit.ly/install-darts | DARTS_LOC=darts bash -s -- darts");
-
-		console.log("Darts installation successful.");
-		return "Darts binary installed successfully.";
-		return "Skipping installation in development mode.";
-	}
-}
 
 export interface JobSpec extends Post {
 	module?: string;
