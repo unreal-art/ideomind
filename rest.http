@@ -64,7 +64,8 @@ Content-Type: application/json
     "ram": "22gb",
     "Seed":"10000",
     "N":1
-  }
+  },
+  "author": "e260b0ab-9867-4507-97be-976779c20c9f"
 }
 
 HTTP/1.1 200  - OK

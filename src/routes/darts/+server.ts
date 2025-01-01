@@ -105,19 +105,37 @@ export const POST: RequestHandler = async ({ request }) => {
 
 					const dto = jobDto;
 
-					await postDataToDb({
-						device: dto.inputs?.Device,
-						cpu: dto.inputs?.cpu,
-						seed: dto.inputs?.Seed,
-						prompt: dto.inputs?.Prompt,
-						n: dto.inputs?.N,
+					try {
+						await postDataToDb({
+							device: dto.inputs?.Device,
+							cpu: dto.inputs?.cpu,
+							seed: dto.inputs?.Seed,
+							prompt: dto.inputs?.Prompt,
+							n: dto.inputs?.N,
 
-						author: dto.author ?? "e260b0ab-9867-4507-97be-976779c20c9f",
-						ipfsImages: uploadResponse,
-						isPrivate: dto.isPrivate ?? false,
-						isPinned: dto.isPinned ?? false,
-						category: "GENERATION"
-					});
+							author: dto.author ?? "e260b0ab-9867-4507-97be-976779c20c9f",
+							ipfsImages: uploadResponse,
+							isPrivate: dto.isPrivate ?? false,
+							isPinned: dto.isPinned ?? false,
+							category: "GENERATION"
+						});
+					} catch (e) {
+						console.error("Error posting to db", e);
+						resolve(
+							json(
+								{
+									outputFolder,
+									stdout,
+									command,
+									uploadResponse,
+									error: "Post failed.",
+									errorMessage: e
+								},
+								{ status: 500 }
+							)
+						);
+					}
+
 					resolve(json({ outputFolder, stdout, command, uploadResponse }));
 				} catch (uploadError) {
 					console.error("Error uploading image/post:", uploadError);
