@@ -131,7 +131,7 @@
 
 <main class="flex h-screen w-screen flex-col items-center justify-center">
 	<div class="flex h-2/4 w-[90%] max-w-[800px] flex-col gap-3">
-		<div class="flex w-full items-center space-x-3 text-xl font-semibold">Unreal-Art</div>
+		<div class="flex w-full items-center space-x-3 text-xl font-semibold">Unreal</div>
 
 		<!-- <enhanced:img src={img} alt="landing page image  " /> -->
 		<div class="flex h-[90%] w-full flex-col gap-2 lg:flex-row">
@@ -161,7 +161,7 @@
 				<p class="text-md text-center font-semibold">Get started</p>
 				<button
 					onclick={signInWithDiscord}
-					class=" h- fonr-semibold flex h-12 w-full items-center justify-center gap-3 rounded-md bg-primary text-center text-white"
+					class=" h- fonr-semibold flex h-12 w-full items-center justify-center gap-3 rounded-md dark:bg-secondary text-center text-white"
 				>
 					<Icon
 						src={AiOutlineDiscord}
@@ -173,7 +173,7 @@
 				>
 				<button
 					onclick={signInWithGoogle}
-					class=" h- fonr-semibold flex h-12 w-full items-center justify-center gap-3 rounded-md bg-primary text-center text-white"
+					class=" h- fonr-semibold flex h-12 w-full items-center justify-center gap-3 rounded-md text-center text-white dark:bg-secondary"
 				>
 					<Icon
 						src={AiOutlineGooglePlus}
