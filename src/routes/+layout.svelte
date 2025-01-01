@@ -53,7 +53,7 @@
 					<div class="flex items-center space-x-4">
 						<!-- Spinner -->
 						<div
-							class="h-6 w-6 animate-spin rounded-full border-4 border-primary border-t-transparent"
+							class="h-6 w-6 animate-spin rounded-full border-4 border-black border-t-transparent"
 						></div>
 						<!-- Loading Text -->
 						<p class="text-lg font-light text-gray-700">Generating files</p>

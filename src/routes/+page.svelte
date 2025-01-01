@@ -129,13 +129,20 @@
 	});
 </script>
 
-<main class="flex h-screen w-screen flex-col items-center justify-center">
-	<div class="flex h-2/4 w-[90%] max-w-[800px] flex-col gap-3">
-		<div class="flex w-full items-center space-x-3 text-xl font-semibold">Unreal</div>
+<main class="flex h-screen w-screen flex-col ">
+	<div class="h-[8%] w-full py-2 px-5">
+
+		<img src="/darkLogo.png" alt="unreal-art logo" class="flex dark:hidden h-full" />
+		<img src="/whiteLogo.png" alt="unreal-art logo" class="hidden dark:flex h-full" />
+	</div>
+	<div class="h-[92%] w-full flex items-center justify-center">
+
+<div class="flex h-full max-h-2/4  w-[90%] max-w-[800px] flex-col gap-3  py-3">
+
 
 		<!-- <enhanced:img src={img} alt="landing page image  " /> -->
-		<div class="flex h-[90%] w-full flex-col gap-2 lg:flex-row">
-			<div class="flex h-full w-full items-center lg:w-[50%]">
+		<div class="flex h-[90%] w-full flex-col gap-20 lg:flex-row justify-center items-center pt-8">
+			<div class="flex h-full max-h-[400px] w-full items-center lg:w-[50%]">
 				{#if !imageUrl}
 					<div class="flex h-full w-full items-center justify-center bg-gray-100">
 						<div class="flex items-center space-x-2">
@@ -159,21 +166,10 @@
 				class="flex h-full w-full flex-col items-center justify-center gap-3 text-center lg:w-[50%]"
 			>
 				<p class="text-md text-center font-semibold">Get started</p>
-				<button
-					onclick={signInWithDiscord}
-					class=" h- fonr-semibold flex h-12 w-full items-center justify-center gap-3 rounded-md dark:bg-secondary text-center text-white"
-				>
-					<Icon
-						src={AiOutlineDiscord}
-						size="28"
-						viewBox="0 0 1024 1024"
-						className="custom-icon"
-						title="Custom icon params"
-					></Icon>Discord</button
-				>
+				
 				<button
 					onclick={signInWithGoogle}
-					class=" h- fonr-semibold flex h-12 w-full items-center justify-center gap-3 rounded-md text-center text-white dark:bg-secondary"
+					class=" h- font-semibold flex h-12 w-full items-center justify-center gap-3 rounded-full border text-center hover:bg-secondary "
 				>
 					<Icon
 						src={AiOutlineGooglePlus}
@@ -183,7 +179,21 @@
 						title="Custom icon params"
 					></Icon>Google</button
 				>
+				<button
+					onclick={signInWithDiscord}
+					class="  h- font-semibold flex h-12 w-full items-center justify-center gap-3 rounded-full border text-center hover:bg-secondary"
+				>
+					<Icon
+						src={AiOutlineDiscord}
+						size="28"
+						viewBox="0 0 1024 1024"
+						className="custom-icon"
+						title="Custom icon params"
+					></Icon>Discord</button
+				>
 			</div>
 		</div>
 	</div>
+	</div>
+	
 </main>
