@@ -26,3 +26,11 @@ async function installDarts() {
 		return "Skipping installation in development mode.";
 	}
 }
+
+import type { Post } from "@/types";
+
+export interface JobSpec extends Post {
+	module?: string;
+	version?: string; //version
+	inputs?: Record<string, string | number>;
+}

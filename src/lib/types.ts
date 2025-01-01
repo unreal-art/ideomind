@@ -1,4 +1,4 @@
-import type { JobSpec as IJobSpec } from "../routes/darts/+server";
+import type { JobSpec as IJobSpec } from "../routes/darts/darts";
 
 export type JobSpec = IJobSpec;
 
@@ -7,8 +7,8 @@ export type Category = "EDIT" | "UPSCALE" | "GENERATION" | "UPLOAD";
 export interface UploadResponse {
 	name: string;
 	hash: string;
-  	size: string;
-  	fileNames: string[];
+	size: string;
+	fileNames: string[];
 }
 
 export interface Post {

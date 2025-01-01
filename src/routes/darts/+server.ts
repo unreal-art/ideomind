@@ -1,61 +1,18 @@
 import { exec } from "child_process";
 import { json, type RequestHandler } from "@sveltejs/kit";
-import { extractLocationURL } from "./darts";
+import { extractLocationURL, type JobSpec } from "./darts";
 import { DARTS_DEBUG } from "$env/static/private";
 import { dev } from "$app/environment";
 
 import { DARTS_PRIVATE_KEY, DARTS_CLI } from "$env/static/private";
 import { uploadFilesInOutputs } from "./lighthouse";
-import type { Post, UploadResponse } from "@/types";
-import { supabase } from "../../supabaseClient";
-
-export interface JobSpec extends Post {
-	module?: string;
-	version?: string; //version
-	inputs?: Record<string, string | number>;
-}
+import { postDataToDb } from "./postDataToDb";
 
 if (!dev) {
 	// await execAsync(`curl -sSL https://bit.ly/install-darts | bash -s -- darts`);
 	// await installDarts();
 	console.log("installing darts doesn't seem to work");
 }
-
-// function formatText(input: string): string {
-// 	// Replace all spaces with '-'
-// 	const formattedText = input.replace(/\s+/g, '-');
-// 	// Append '.png' at the end
-// 	return `${formattedText}.png`;
-// }
-
-//post to db
-const postDataToDb = async (uploadResponse: UploadResponse[], dto: JobSpec) => {
-	try {
-		const { data, error } = await supabase.from("posts").insert([
-			{
-				author: dto.author,
-				isPrivate: dto.isPrivate,
-				prompt: dto.inputs?.Prompt,
-				isPinned: dto.isPinned,
-				category: dto.category,
-				ipfsImages: uploadResponse,
-				cpu: dto.inputs?.cpu,
-				device: dto.inputs?.Device,
-				seed: dto.inputs?.Seed,
-				n: dto.inputs?.N
-			}
-		]);
-
-		if (error) {
-			throw new Error(`Error inserting data: ${error.message}`);
-		}
-
-		return data; // Return data if needed
-	} catch (err) {
-		console.error("Failed to insert data into posts table:", err);
-		throw err; // Optionally re-throw the error if the caller needs to handle it
-	}
-};
 
 export const POST: RequestHandler = async ({ request }) => {
 	let Ephemeral = false;
