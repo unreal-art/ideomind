@@ -112,6 +112,13 @@ Content-Type: application/json
     "Seed": "${{$randomInt 1 10000000}}"
   }
 }
+
+HTTP/1.1 500  - Internal Server Error
+access-control-allow-origin: *
+content-length: 4016
+content-type: application/json
+date: Thu, 02 Jan 2025 01:24:55 GMT
+connection: close
 ###
 
 POST {{u}}/darts
