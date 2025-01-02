@@ -1,7 +1,7 @@
 // Update the path to your Supabase client
 import type { User } from "@/types";
 import { supabase } from "../supabaseClient";
-import { authenticate } from "@/api";
+import { authenticate, isAuthenticated } from "@/api";
 import { goto } from "$app/navigation";
 import type { LayoutLoad } from "./$types";
 import { store } from "$lib/store";

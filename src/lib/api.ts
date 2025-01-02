@@ -648,3 +648,8 @@ export const logoutUser = async () => {
 		console.error("Unexpected error during logout:", err);
 	}
 };
+
+export const isAuthenticated = (): boolean => {
+	const state = store.getState();
+	return state?.isAuthenticated || false;
+};

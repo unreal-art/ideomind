@@ -70,6 +70,7 @@ const createStore = () => {
 			// 	isGeneratingFiles: false
 			// });
 		},
+
 		authenticateUser: (user: User) => {
 			update((state) => {
 				const curState = {
