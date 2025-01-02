@@ -16,7 +16,8 @@
     "shadx": "bun x shadcn-svelte@next add",
     "installdarts": "cat install.sh | bash -s -- darts",
     "lh": "lighthouse-web3",
-    "lh:wallet": "lighthouse-web3 create-wallet"
+    "lh:wallet": "lighthouse-web3 create-wallet",
+    "play": "dotenv -e .env python3 play.py "
   },
   "devDependencies": {
     "@playwright/test": "^1.45.3",
@@ -49,7 +50,8 @@
     "typescript-eslint": "^8.0.0",
     "vaul-svelte": "^1.0.0-next.3",
     "vite": "^5.0.3",
-    "zod": "^3.23.8"
+    "zod": "^3.23.8",
+    "dotenv-cli": "^7.4.2"
   },
   "dependencies": {
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
