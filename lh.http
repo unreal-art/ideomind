@@ -1,0 +1,33 @@
+
+GET {{lh}}/api/auth/get_message?publicKey=0xdcc01b2d65778c23ee80bf83bb5e5929c7d83e0b
+Content-Type: application/json
+
+
+HTTP/1.1 200  - OK
+server: nginx/1.18.0 (Ubuntu)
+date: Thu, 02 Jan 2025 21:57:20 GMT
+content-type: application/json; charset=utf-8
+content-length: 92
+connection: close
+x-powered-by: Express
+access-control-allow-origin: *
+etag: W/"5c-v8gr7gZgy+sEgCe/0JYfcC2DiUA"
+###
+
+POST {{lh}}/api/auth/create_api_key
+Content-Type: application/json
+
+{
+  "publicKey": "0x1b840e5de02d271d2fcffc9a8aa1fb0d3cf5a3c5",
+  "signedMessage": "0xc5272716c582b609aca2e7a4bd5f2d527c84e7058c027e49c6fa2e8cb9d4affa71a2db231563c434c245198ba4bc0fca81294e5b48a8eb53b03646e55ac1ba111c"
+}
+
+HTTP/1.1 401  - Unauthorized
+server: nginx/1.18.0 (Ubuntu)
+date: Thu, 02 Jan 2025 22:02:10 GMT
+content-type: application/json; charset=utf-8
+content-length: 57
+connection: close
+x-powered-by: Express
+access-control-allow-origin: *
+etag: W/"39-1UgHaypEXpV/Pi5WWw9IJALpUIQ"
