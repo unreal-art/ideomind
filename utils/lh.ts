@@ -6,35 +6,36 @@ import lighthouse from "@lighthouse-web3/sdk";
 import { Wallet } from "ethers5";
 import { ethers } from "ethers6";
 
-// const wallet = new ethers.wallet();
+export async function genLhApiKey(): Promise<string> {
+	const wallet = ethers.Wallet.createRandom();
 
-// axios.get(`${lhApi}/api/auth/get_message?publicKey=`);
+	console.log("privateKey: " + wallet.privateKey);
 
-// privateKey = "0x911f631b78802ceca32c168ec2fbd2ab9e70ffd80247a222aaaff06c21ff1d24";
-const wallet = ethers.Wallet.createRandom();
+	// Not working
+	// const { data } = await lighthouse.getAuthMessage(wallet.address);
+	// let { message } = data;
+	// console.log(data);
+	// console.log(`message: ${message}`);
+	// message = JSON.stringify(data);
 
-console.log("privateKey: " + wallet.privateKey);
+	const res = await axios.get(`${lhApi}/api/auth/get_message?publicKey=${wallet.address}`);
+	const message = res.data;
 
-// const { data } = await lighthouse.getAuthMessage(wallet.address);
-// let { message } = data;
-// console.log(data);
-// console.log(`message: ${message}`);
-// message = JSON.stringify(data);
+	const signedMessage = await wallet.signMessage(message || "");
+	console.log(`signed message: ${signedMessage}`);
 
-const res = await axios.get(`${lhApi}/api/auth/get_message?publicKey=${wallet.address}`);
-let message = res.data;
+	const { data: apiKeyData } = await lighthouse.getApiKey(wallet.address, signedMessage);
+	const apiKey = apiKeyData.apiKey;
 
-const signedMessage = await wallet.signMessage(message || "");
-console.log(`signed message: ${signedMessage}`);
+	// const res1 = await axios.post(`${lhApi}/api/auth/create_api_key`, {
+	// 	publicKey: publicKey,
+	// 	signedMessage: signedMessage
+	// });
+	// const apiKeyData = await res1.data;
 
-// const { data: apiKeyData } = await lighthouse.getApiKey(publicKey, signedMessage);
-const { data: apiKeyData } = await lighthouse.getApiKey(wallet.address, signedMessage);
-const apiKey = apiKeyData.apiKey;
+	console.log("apiKey: " + apiKey);
 
-// const res1 = await axios.post(`${lhApi}/api/auth/create_api_key`, {
-// 	publicKey: publicKey,
-// 	signedMessage: signedMessage
-// });
-// const apiKeyData = await res1.data;
+	return apiKey;
+}
 
-console.log("apiKey: " + apiKey);
+// await genLhApiKey();

@@ -9,8 +9,29 @@
 		"skipLibCheck": true,
 		"sourceMap": true,
 		"strict": true,
-		"moduleResolution": "bundler"
-	}
+		"moduleResolution": "bundler",
+			"paths": {
+			//			don't forget to add to vite
+			"@/*": ["./*"],
+			"@static/*": ["./static/*"],
+			"@src/*": ["./src/*"],
+			"@routes/*": ["./src/routes/*"],
+			"$routes/*": ["./src/routes/*"],
+			"$lib": ["./src/lib"],
+			"$lib/*": ["./src/lib/*"],
+			"$stores": ["./src/stores"],
+			"$stores/*": ["./src/stores/*"],
+			"@stores": ["./src/store"],
+			"@stores/*": ["./src/store/*"],
+			"@utils": ["./utils"],
+			"@utils/*": ["./utils/*"],
+			"$utils/*": ["./utils/*"],
+			"@logos/*": ["./static/logos/*"],
+			"@config/*": ["./config/*"],
+			"@components/*": ["./src/lib/components/*"],
+			"$components/*": ["./src/lib/components/*"],
+		},
+	},
 	// Path aliases are handled by https://svelte.dev/docs/kit/configuration#alias
 	// except $lib which is handled by https://svelte.dev/docs/kit/configuration#files
 	//

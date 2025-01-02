@@ -2,7 +2,6 @@
 GET {{lh}}/api/auth/get_message?publicKey=0xdcc01b2d65778c23ee80bf83bb5e5929c7d83e0b
 Content-Type: application/json
 
-
 HTTP/1.1 200  - OK
 server: nginx/1.18.0 (Ubuntu)
 date: Thu, 02 Jan 2025 21:57:20 GMT
@@ -31,3 +30,16 @@ connection: close
 x-powered-by: Express
 access-control-allow-origin: *
 etag: W/"39-1UgHaypEXpV/Pi5WWw9IJALpUIQ"
+###
+GET {{lh}}/api/user/user_data_usage
+Authorization: Bearer a2619aaf.42a0db77c1634e8d9eedf780e94c0c0b
+
+HTTP/1.1 200  - OK
+server: nginx/1.18.0 (Ubuntu)
+date: Thu, 02 Jan 2025 22:46:33 GMT
+content-type: application/json; charset=utf-8
+content-length: 45
+connection: close
+x-powered-by: Express
+access-control-allow-origin: *
+etag: W/"2d-Vz43j/tf3wlDNKBtQhVFWGh+LJU"

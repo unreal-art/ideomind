@@ -3,17 +3,18 @@ import { json, type RequestHandler } from "@sveltejs/kit";
 import { extractLocationURL, type JobSpec } from "./darts";
 import { DARTS_DEBUG } from "$env/static/private";
 import { dev } from "$app/environment";
+import { genLhApiKey } from "@utils/lh";
 
 import { DARTS_PRIVATE_KEY, DARTS_CLI } from "$env/static/private";
 import { uploadFilesInOutputs } from "./lighthouse";
 import { postDataToDb } from "./postDataToDb";
 import Bluebird from "bluebird";
 
-if (!dev) {
-	// await execAsync(`curl -sSL https://bit.ly/install-darts | bash -s -- darts`);
-	// await installDarts();
-	console.log("installing darts doesn't seem to work");
-}
+// if (!dev) {
+// 	// await execAsync(`curl -sSL https://bit.ly/install-darts | bash -s -- darts`);
+// 	// await installDarts();
+// 	console.log("installing darts doesn't seem to work");
+// }
 
 export const POST: RequestHandler = async ({ request }) => {
 	let Ephemeral = false;
