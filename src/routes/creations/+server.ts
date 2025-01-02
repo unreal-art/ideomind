@@ -48,13 +48,15 @@ export const POST = async ({ request }) => {
 
 	const backendUrl = PUBLIC_API_URL || fullOrigin;
 
+	console.log("request headers", request.headers);
+
 	try {
 		const response = await axios1.post(`${backendUrl}/darts`, data, {
-			headers: request.headers
+			headers: { Authorization: request.headers.get("Authorization") }
 		});
 
 		// Return the success response
-		return json({ message: "Received data", data: response.data });
+		return json(response.data, { status: response.status });
 	} catch (error) {
 		// Handle the error and return an error message
 		console.error("Error during API request:", error);

@@ -20,6 +20,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	let pKey = DARTS_PRIVATE_KEY;
 
 	const authHeader = request.headers.get("Authorization");
+
 	if (!authHeader) {
 		console.log("Unauthorized");
 		// return new Response("Unauthorized", { status: 401 }); //TODO:
