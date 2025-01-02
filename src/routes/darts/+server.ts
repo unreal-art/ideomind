@@ -24,7 +24,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	if (!authHeader) {
 		console.log("Unauthorized");
 		// return new Response("Unauthorized", { status: 401 }); //TODO:
-		// Ephemeral = true; //TODO: it doesn't work with US instances
+		Ephemeral = true; //TODO: it doesn't work with US instances
 	} else {
 		const token = authHeader.split(" ")[1]; //This is fine as we are using HTTPS , with HTTP vulnerable to MITM
 		if (token) {
