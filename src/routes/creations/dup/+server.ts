@@ -1,7 +1,5 @@
-import axios from "axios";
 import { json } from "@sveltejs/kit";
 import { PUBLIC_API_URL } from "$env/static/public";
-
 import https from "https";
 
 const agent = new https.Agent({
@@ -30,52 +28,39 @@ lQ7Ghuq6/cFOhwmhdh2zUf8x/N8lzzeZqPdy3DYVGPmPyKOAPRsq69s=
 -----END CERTIFICATE-----`.trim()
 });
 
-let axios1 = axios.create({ httpsAgent: agent });
-
 export const POST = async ({ request }) => {
 	const data = await request.json();
 
-	// const origin = request.headers.get("origin");
-
-	// Alternatively, if you want the full URL, you can use the 'referer' or build the origin from the 'host' and 'protocol'
 	const referer = request.headers.get("referer"); // Another way to get the origin
 	const host = request.headers.get("host"); // Get the host
-	const protocol = "http"; // Determine the protocol
-	// Combine protocol and host to build the origin if not directly available
-	const fullOrigin = protocol + "://" + host;
-	// console.log("Request Origin:", origin);
+	const protocol = "http"; // Assume HTTP for now
+	const fullOrigin = `${protocol}://${host}`;
+
 	console.log("Full Origin:", fullOrigin);
 
 	const backendUrl = PUBLIC_API_URL || fullOrigin;
 
 	try {
-		const response = await axios1.post(`${backendUrl}/darts`, data, {
-			headers: request.headers
+		// Make the proxy request using `fetch`
+		const response = await fetch(`${backendUrl}/darts`, {
+			method: "POST",
+			headers: request.headers, // Pass the original headers
+			body: JSON.stringify(data) // Send the body data
+			// agent // Attach the custom HTTPS agent for SSL verification if needed
 		});
 
+		const responseData = await response.json(); // Assuming the response is in JSON format
+
 		// Return the success response
-		return json({ message: "Received data", data: response.data });
+		return json({ message: "Received data", data: responseData });
 	} catch (error) {
-		// Handle the error and return an error message
 		console.error("Error during API request:", error);
 
-		// Check if it's an Axios error and respond accordingly
-		if (axios.isAxiosError(error)) {
-			// You can further check the error type or status code if needed
-			return json(
-				{
-					message: "Failed to send data",
-					error: error.response ? error.response.data : error.message
-				},
-				{ status: 500 }
-			);
-		}
-
-		// General error handling for non-Axios related errors
+		// Handle errors gracefully
 		return json(
 			{
-				message: "An unexpected error occurred",
-				error
+				message: "Failed to send data",
+				error: error.message || error
 			},
 			{ status: 500 }
 		);
