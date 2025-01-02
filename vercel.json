@@ -1,7 +1,7 @@
 {
 	"version": 2,
 	"framework": "sveltekit",
-	"buildCommand": "export PATH=$CUSTOM_CLI_PATH:$PATH && bun run build",
+	"buildCommand": "cp .env.example .env && bun run build",
 	"installCommand": "bun install",
 	"devCommand": "bun run dev",
 	"public": true,

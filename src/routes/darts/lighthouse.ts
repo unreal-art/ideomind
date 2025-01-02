@@ -2,16 +2,21 @@ import lighthouse from "@lighthouse-web3/sdk";
 import path from "path";
 import fs from "fs/promises";
 import { LIGHTHOUSE_KEY as LH_KEY } from "$env/static/private";
+import env from "$env/static/private";
 import { genLhApiKey } from "@utils/lh";
 
 let LIGHTHOUSE_KEY = LH_KEY;
 
-try {
-	const lhApiKey = await genLhApiKey();
-	console.log("generated key", lhApiKey);
-	LIGHTHOUSE_KEY = lhApiKey;
-} catch (e) {
-	console.error("failed to genr", e);
+if (env?.USE_RANDOM_LH_KEY == "true" || env?.USE_RANDOM_LH_KEY == "1") {
+	console.log("Using random LH key");
+
+	try {
+		const lhApiKey = await genLhApiKey();
+		console.log("generated key", lhApiKey);
+		LIGHTHOUSE_KEY = lhApiKey;
+	} catch (e) {
+		console.error("failed to genr", e);
+	}
 }
 
 export interface UploadResponse {
