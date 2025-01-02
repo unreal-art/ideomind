@@ -35,7 +35,7 @@ prompt = prompts[0]
 import os
 import requests
 
-u = os.getenv('u', 'http://localhost:5173')
+u = os.getenv('PLAY_U', 'http://localhost:5173')
 # Define constants
 url = f"{u}/darts"
 
