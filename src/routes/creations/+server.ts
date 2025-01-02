@@ -30,7 +30,7 @@ lQ7Ghuq6/cFOhwmhdh2zUf8x/N8lzzeZqPdy3DYVGPmPyKOAPRsq69s=
 -----END CERTIFICATE-----`.trim()
 });
 
-let axios1 = axios.create({ httpsAgent: agent });
+const axios1 = axios.create({ httpsAgent: agent });
 
 export const POST = async ({ request }) => {
 	const data = await request.json();
@@ -61,25 +61,6 @@ export const POST = async ({ request }) => {
 		// Handle the error and return an error message
 		console.error("Error during API request:", error);
 
-		// Check if it's an Axios error and respond accordingly
-		if (axios.isAxiosError(error)) {
-			// You can further check the error type or status code if needed
-			return json(
-				{
-					message: "Failed to send data",
-					error: error.response ? error.response.data : error.message
-				},
-				{ status: 500 }
-			);
-		}
-
-		// General error handling for non-Axios related errors
-		return json(
-			{
-				message: "An unexpected error occurred",
-				error
-			},
-			{ status: 500 }
-		);
+		return json(error, { status: 500 });
 	}
 };
