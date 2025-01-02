@@ -62,7 +62,7 @@ Content-Type: application/json
     "Device": "xpu",
     "cpu": "20",
     "ram": "22gb",
-    "Seed":"10000",
+    "Seed": "${{$randomInt 1 10000000}}",
     "N":1
   },
   "author": "e260b0ab-9867-4507-97be-976779c20c9f"
@@ -84,7 +84,8 @@ Content-Type: application/json
   "version": "v1.3.0",
   "inputs": {
     "Prompt": "Beautiful girl",
-    "Device": "xpu"
+    "Device": "xpu",
+    "Seed": "${{$randomInt 1 10000000}}"
   }
 }
 
@@ -107,9 +108,17 @@ Content-Type: application/json
   "version": "v1.5.0",
   "inputs": {
     "Prompt": "Beautiful girl",
-    "Device": "xpu"
+    "Device": "xpu",
+    "Seed": "${{$randomInt 1 10000000}}"
   }
 }
+
+HTTP/1.1 500  - Internal Server Error
+access-control-allow-origin: *
+content-length: 4016
+content-type: application/json
+date: Thu, 02 Jan 2025 01:24:55 GMT
+connection: close
 ###
 
 POST {{u}}/darts
