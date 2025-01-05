@@ -16,6 +16,28 @@ descriptors = [
     "with neon lights", "in a dream", "with mystical fog"
 ]
 
+#modern art
+
+themes += [
+    "Abstract", "Contemporary", "Cubist", "Minimalist", "Expressionist", 
+    "Geometric", "Monochromatic", "Pop Art-Inspired", "Deconstructed", "Surrealist"
+]
+
+subjects += [
+    "abstract forms", "urban geometry", "human silhouettes", "fragmented faces", 
+    "fluid shapes", "vibrant textures", "layered patterns", "asymmetrical designs", 
+    "chaotic splashes", "evolving shapes"
+]
+
+descriptors += [
+    "in bold, contrasting colors", "with dynamic brushstrokes", 
+    "as a collage of textures", "with surreal proportions", 
+    "inspired by natural forms", "in muted tones", "with fragmented patterns", 
+    "with glowing highlights", "with metallic finishes", 
+    "blending reality and imagination"
+]
+
+
 # %%
 import random
 
@@ -30,6 +52,8 @@ random.shuffle(all_combinations)
 # Select the first 1000 prompts
 prompts = all_combinations[:1000] 
 prompt = prompts[0]
+
+print(f"prompt is {prompt}")
 
 # %%
 import os
