@@ -1,4 +1,9 @@
-# %%
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[2]:
+
+
 prompts = []
 
 themes = [
@@ -38,7 +43,9 @@ descriptors += [
 ]
 
 
-# %%
+# In[7]:
+
+
 import random
 
 all_combinations = [
@@ -55,7 +62,10 @@ prompt = prompts[0]
 
 print(f"prompt is {prompt}")
 
-# %%
+
+# In[6]:
+
+
 import os
 import requests
 
@@ -83,7 +93,8 @@ payload = {
         "cpu": "18",
         "ram":"30gb",
         "Seed": random.randint(1000000, 1000000000),
-        "author": "4b64f953-1441-43fe-a1c7-ffd060516bd0"
+        "author": "4b64f953-1441-43fe-a1c7-ffd060516bd0",
+        "Format": "webp"
     }
 }
 
@@ -98,6 +109,4 @@ if response.status_code == 200:
     print(data)
 else:
     print(f"Failed for prompt '{prompt}':", response.status_code, response.text)
-
-
 
