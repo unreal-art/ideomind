@@ -76,7 +76,7 @@ print("headers: {}".format(headers))
 
 payload = {
     "module": "isdxl",
-    "version": "v1.5.0",
+    "version": "v1.6.0",
     "inputs": {
         "Prompt": prompt,
         "Device": "xpu",

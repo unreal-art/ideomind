@@ -44,7 +44,7 @@ const onclick = async () => {
 		//@ts-ignore
 		const dto: JobSpec = {
 			module: 'isdxl',
-			version: 'v1.5.0',
+			version: 'v1.6.0',
 			inputs: {
 				Prompt: prompt,
 				cpu: 20,
