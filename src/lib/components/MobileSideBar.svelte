@@ -52,6 +52,7 @@ const onclick = async () => {
 				Device: 'xpu',
 				Seed: random.int(1e3, 1e8),
 				N: 1,
+				Format: "webp",
 			},
 			author: $store.user?.id as string,
 			isPrivate: false,
