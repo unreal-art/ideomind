@@ -14,7 +14,8 @@ export const load: LayoutLoad = async ({ url }) => {
 			.select("*")
 			//@ts-ignore
 			.eq("author", store.getState().user.id) // Filter posts by the author_id
-			.order("createdAt", { ascending: false }); // Order posts by creation date, descending
+			.order("createdAt", { ascending: false }) // Order posts by creation date, descending
+			.range(0, 9);
 
 		if (error) {
 			console.error("Error fetching posts with likes:", error);
