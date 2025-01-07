@@ -7,6 +7,7 @@
 	import type { PageData } from "./$types";
 	import { goto } from "$app/navigation";
 	import type { Post } from "@/types";
+	import SearchBox from "@/components/SearchBox.svelte";
 
 	let postFromFollowedUsers = $state<Post[]>([]);
 	let posts = $state<Post[]>([])
@@ -36,8 +37,12 @@
 		<PromptForm section={"body"} />
 	</div>
 	<div class="h-full lg:h-[79%]">
+		
 		<Tabs.Root value="explore" class="h-full w-full">
-			<div class="fixed top-0 left-0 h-[8%] w-full bg-stone-50 dark:bg-secondary lg:relative">
+			<div class="fixed flex top-0 left-0 h-[8%] w-full bg-stone-50 dark:bg-secondary lg:relative">
+				<div class="flex h-full items-center" >
+						<SearchBox />
+					</div>
 				<Tabs.List class="h-full bg-transparent gap-2">
 					<Tabs.Trigger value="explore" class="dark:bg-black/55">Explore</Tabs.Trigger>
 					<Tabs.Trigger value="following" class="dark:bg-black/55">Following</Tabs.Trigger>

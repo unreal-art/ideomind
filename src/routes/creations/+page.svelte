@@ -13,6 +13,7 @@
 	import type { PageData } from "../$types";
 	import type { Post } from "@/types";
 	import { page } from "$app/stores";
+	import SearchBox from "@/components/SearchBox.svelte";
 
 	const choices = [
 		{ value: "everything", label: "Everything" },
@@ -48,16 +49,16 @@
 	};
 
 	// Handle clicks outside the input
-	const handleClickOutside = (event: MouseEvent): void => {
-		const target = event.target as Node;
+	// const handleClickOutside = (event: MouseEvent): void => {
+	// 	const target = event.target as Node;
 
-		if (inputRef && buttonRef) {
-			// Check if the click was outside both the button and the input field
-			if (!inputRef.contains(target) && !buttonRef.contains(target)) {
-				showInput = false;
-			}
-		}
-	};
+	// 	if (inputRef && buttonRef) {
+	// 		// Check if the click was outside both the button and the input field
+	// 		if ( !buttonRef.contains(target)) {
+	// 			showInput = false;
+	// 		}
+	// 	}
+	// };
 
 	const reloadData = async () => {
 		loading = true;
@@ -80,11 +81,11 @@
 		loading = false;
 	});
 
-	// Attach and clean up event listeners
-	$effect(() => {
-		document.addEventListener("click", handleClickOutside);
-		return () => document.removeEventListener("click", handleClickOutside);
-	});
+	// // Attach and clean up event listeners
+	// $effect(() => {
+	// 	document.addEventListener("click", handleClickOutside);
+	// 	return () => document.removeEventListener("click", handleClickOutside);
+	// });
 </script>
 
 <section class="h-full w-full overflow-auto px-2">
@@ -95,27 +96,10 @@
 	<div class="h-full lg:h-[79%]">
 		<Tabs.Root onValueChange={() => reloadData()} value="all" class="h-full w-full ">
 			<div class="fixed left-0 top-0 z-10 flex h-12 w-full justify-between bg-stone-50 dark:bg-secondary items-center lg:relative">
-				<div
-					class={` ${showInput ? "block" : "hidden"} absolute left-0 top-0 z-20 h-full w-full max-w-[1000px] rounded-2xl border bg-stone-50`}
-				>
-					<div class="absolute right-0 top-0 flex h-full w-10 items-center justify-center">
-						<Button variant="ghost" class="h-full hover:bg-transparent">
-							<X size={20} />
-						</Button>
-					</div>
-					<div class="h-full w-full" bind:this={inputRef}>
-						<Input
-							type="text"
-							placeholder="Search your creations"
-							class=" h-full w-full rounded-l-2xl  border-none bg-stone-50 dark:bg-black pr-10 "
-						/>
-					</div>
-				</div>
+				
 				<div class=" flex h-full items-center space-x-1">
-					<div class="flex h-full items-center" bind:this={buttonRef}>
-						<Button onclick={toggleInput} variant="ghost" class="h-full">
-							<Search size={20} />
-						</Button>
+					<div class="flex h-full items-center" >
+						<SearchBox />
 					</div>
 					<Tabs.List class="h-[5%] bg-transparent gap-2">
 						<Tabs.Trigger value="all" class="dark:bg-black/55">All</Tabs.Trigger>
@@ -124,12 +108,12 @@
 						<Tabs.Trigger value="private" class="dark:bg-black/55">Private</Tabs.Trigger>
 					</Tabs.List>
 
-					<div class="flex h-full items-center lg:hidden">
+					<div class="flex h-full items-center lg:hidden ">
 						<DropdownMenu.Root>
 							<DropdownMenu.Trigger class={buttonVariants({ variant: "ghost" })}>
 								<ListFilter size={20} /></DropdownMenu.Trigger
 							>
-							<DropdownMenu.Content class="w-56">
+							<DropdownMenu.Content class="w-56 ">
 								<DropdownMenu.Group>
 									<DropdownMenu.GroupHeading>Filter</DropdownMenu.GroupHeading>
 									<DropdownMenu.Separator />
