@@ -15,18 +15,13 @@
 	import { goto } from '$app/navigation';
 	import { quickStore } from '@/quickStore';
 	  import { ModeWatcher } from "mode-watcher";
-	import { isAuthenticated } from '@/api';
-
+	
 	function goBack() {
 		window.history.back();
 	}
 
 
-	$effect(() => {
-		if (isAuthenticated()) {
-			goto("/explore")
-		}
-	});
+	
 
 </script>
 

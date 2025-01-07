@@ -8,7 +8,7 @@
 	// Function to fetch the image
 	const getImage = async (cid: string) => {
 		try {
-			imageUrl = import.meta.env.VITE_LIGHTHOUSE_GATE_WAY + item.ipfsImages[0].hash+'/' + item.ipfsImages[0].fileNames[0]  + "?h=300&w=300"
+			imageUrl = import.meta.env.VITE_LIGHTHOUSE_GATE_WAY + item.ipfsImages[0].hash+'/' + item.ipfsImages[0].fileNames[0] + "?h-100&w=100"
 		} catch (error) {
 			console.error("Error fetching image:", error);
 			imageUrl = ""; // Use fallback image on fetch error
@@ -34,7 +34,7 @@
 </script>
 
 {#if isLoading || !imageUrl}
-	<div class="flex h-96 items-center justify-center bg-gray-100">
+	<div class="flex h-full items-center justify-center bg-gray-100">
 		<div class="flex items-center space-x-2">
 			<div class="h-4 w-4 animate-spin rounded-full border-b-2 border-t-2 border-primary"></div>
 			<span class="font-medium text-gray-600">Loading...</span>
