@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[2]:
+# In[1]:
 
 
 prompts = []
@@ -43,7 +43,7 @@ descriptors += [
 ]
 
 
-# In[7]:
+# In[2]:
 
 
 import random
@@ -63,7 +63,7 @@ prompt = prompts[0]
 print(f"prompt is {prompt}")
 
 
-# In[6]:
+# In[ ]:
 
 
 import os
@@ -94,7 +94,7 @@ payload = {
         "ram":"30gb",
         "Seed": random.randint(1000000, 1000000000),
         "author": "4b64f953-1441-43fe-a1c7-ffd060516bd0",
-        "Format": "webp"
+        "Format": "webp",
     }
 }
 
