@@ -165,7 +165,7 @@
 				{#if activeFollow != null && !activeFollow}
 					<Button
 						onclick={handleFollow}
-						class="h-fit w-fit rounded-full bg-red-500 p-1   px-2 text-xs">follow</Button
+						class="h-fit w-fit rounded-full bg-red-500 p-1 text-white   px-2 text-xs">follow</Button
 					>
 				{/if}
 				{#if activeFollow != null && activeFollow}

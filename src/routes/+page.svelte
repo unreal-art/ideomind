@@ -35,7 +35,7 @@
 
 	// Function to fetch the image or get it from cache
 	const getImage = async (cid: string) => {
-		imageUrl = import.meta.env.VITE_LIGHTHOUSE_GATE_WAY + cid;
+		imageUrl = import.meta.env.VITE_LIGHTHOUSE_GATE_WAY + cid + "?h=300&w=300";
 	};
 
 	// Function to start the image rotation
@@ -141,8 +141,8 @@
 
 
 		<!-- <enhanced:img src={img} alt="landing page image  " /> -->
-		<div class="flex h-[90%] w-full flex-col gap-20 lg:flex-row justify-center items-center pt-8">
-			<div class="flex h-full max-h-[400px] w-full items-center lg:w-[50%]">
+		<div class="flex h-[90%] w-full flex-col gap-2 lg:flex-row justify-center items-center pt-8">
+			<div class="flex h-full max-h-[400px] w-full items-center justify-center lg:w-[50%]">
 				{#if !imageUrl}
 					<div class="flex h-full w-full items-center justify-center bg-gray-100">
 						<div class="flex items-center space-x-2">
@@ -157,7 +157,7 @@
 						src={imageUrl ? imageUrl : "/assets/ima1.jpg"}
 						alt="home page"
 						onerror={handleImageError}
-						class={`h-full w-full rounded-md object-cover transition-opacity duration-300 ease-in-out`}
+						class={` rounded-md object-cover transition-opacity duration-300 ease-in-out`}
 					/>
 				{/if}
 			</div>
