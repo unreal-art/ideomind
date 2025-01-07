@@ -63,7 +63,7 @@ prompt = prompts[0]
 print(f"prompt is {prompt}")
 
 
-# In[ ]:
+# In[3]:
 
 
 import os
@@ -90,8 +90,8 @@ payload = {
     "inputs": {
         "Prompt": prompt,
         "Device": "xpu",
-        "cpu": "18",
-        "ram":"30gb",
+        "cpu": "30",
+        "ram":"40gb",
         "Seed": random.randint(1000000, 1000000000),
         "author": "4b64f953-1441-43fe-a1c7-ffd060516bd0",
         "Format": "webp",
