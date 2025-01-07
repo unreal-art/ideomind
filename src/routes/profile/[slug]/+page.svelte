@@ -4,12 +4,13 @@
 	import { Input } from "$lib/components/ui/input/index.js";
 	import * as Tabs from "$lib/components/ui/tabs";
 	import image1 from "$lib/assets/ima1.jpg";
-	import { Search, X, CalendarRange, MapPinHouse } from "lucide-svelte";
+	import { Search, X, CalendarRange, MapPinHouse, User } from "lucide-svelte";
 	import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import { Label } from "$lib/components/ui/label/index.js";
 	import Textarea from "@/components/ui/textarea/textarea.svelte";
 	import { store } from "$lib/store";
 	import type { PageData } from "./$types";
+	
 	import {
 		getUser,
 		updateUserDetails,
@@ -17,12 +18,17 @@
 		getUserPosts,
 		getLikesReceivedByUser,
 		getFollowStats,
-		fetchProfilePosts
+		fetchProfilePosts,
+
+		fetchProfileData
+
 	} from "@/api";
 	import UserPostList from "@/components/profile/UserPostList.svelte";
 	import { page } from "$app/stores";
 	import { goto } from "$app/navigation";
 	import type { Post } from "@/types";
+	import { supabase } from "@src/supabaseClient";
+	import SearchBox from "@/components/SearchBox.svelte";
 
 	let { data }: { data: PageData } = $props();
 
@@ -34,11 +40,12 @@
 	let targetPosition: number = $state(0);
 	let targetElement: HTMLElement | null = $state(null);
 	let scrollContainer: HTMLElement | null = $state(null);
-
-	let name = $state($store.user?.name);
-	let username = $state($store.user?.name);
-	let bio = $state($store.user?.bio);
-	let location = $state($store.user?.location);
+	
+	let currentUser = $state<User | null>(null)
+	let name = $state("");
+	let username = $state("");
+	let bio = $state("");
+	let location = $state("");
 	let open = $state(false);
 	let likedPosts = $state<Post[]>([]);
 	let pinnedPosts = $state<Post[]>([]);
@@ -49,6 +56,9 @@
 	let updating = $state(false);
 	let loading = $state(true);
 	let posts = $state<Post[]>(data.posts as Post[]);
+let loadingMore = $state(false);
+let offset = $state(10);
+let tab = $state("")
 
 	$effect(() => {
 		if (!$store.isAuthenticated) goto("/");
@@ -59,20 +69,82 @@
 		showInput = true;
 	};
 
+async function loadMore() {
+ 
+
+  if (tab !== 'liked') {
+	 if (loadingMore || posts.length < 10) return;
+  
+  loadingMore = true;
+    // Fetch posts from "posts" table where author matches the slug
+    const { data: newPosts, error } = await supabase
+      .from("posts")
+      .select(`*`)
+      .eq("author", $page.params.slug)
+      .order("createdAt", { ascending: false })
+      .range(offset, offset + 9); // Fetch the next 10 posts
+
+    if (error) {
+      loadingMore = false;
+      console.error("Error loading more posts:", error);
+      return;
+    }
+
+    if (newPosts?.length) {
+      posts = [...posts, ...newPosts]; // Assuming your store has an `addPosts` method
+      // console.log(posts);
+      offset += 10; // Increment offset
+    }
+  } else {
+
+	 if (loadingMore || likedPosts.length < 10) return;
+  
+  loadingMore = true;
+    // Query the "likes" table and join it with the "posts" table
+    const { data, error } = await supabase
+      .from("likes") // Query the "likes" table
+      .select(`
+        posts(*), 
+        created_at
+      `) // Fetch all columns from "posts" and include "likes.created_at"
+      .eq("author", $page.params.slug) // Filter by the user ID
+      .order("created_at", { ascending: false }) // Order by "likes.created_at"
+      .range(offset, offset + 9); // Pagination: fetch 10 records
+
+    // Map through the data to extract the posts array
+    const newPosts = data?.flatMap((like: { posts: Post[] }) => like.posts) || [];
+
+    if (error) {
+      loadingMore = false;
+      console.error("Error loading more posts:", error);
+      return;
+    }
+
+    if (newPosts?.length) {
+      likedPosts = [...likedPosts, ...newPosts]; // Assuming your store has an `addPosts` method
+      // console.log(posts);
+      offset += 10; // Increment offset
+    }
+  }
+
+  loadingMore = false;
+}
+
 	// Handle clicks outside the input
-	const handleClickOutside = (event: MouseEvent): void => {
-		const target = event.target as Node;
+	// const handleClickOutside = (event: MouseEvent): void => {
+	// 	const target = event.target as Node;
 
-		if (inputRef && buttonRef) {
-			// Check if the click was outside both the button and the input field
-			if (!inputRef.contains(target) && !buttonRef.contains(target)) {
-				showInput = false;
-			}
-		}
-	};
+	// 	if (inputRef && buttonRef) {
+	// 		// Check if the click was outside both the button and the input field
+	// 		if (!inputRef.contains(target) && !buttonRef.contains(target)) {
+	// 			showInput = false;
+	// 		}
+	// 	}
+	// };
 	function handleScroll(): void {
+		
 		if (!scrollContainer) return;
-
+loadMore()
 		// Get the scroll position within the container
 		const currentScroll = scrollContainer.scrollTop;
 
@@ -107,29 +179,26 @@
 		updating = false;
 	};
 
-	const reloadData = async () => {
+	const reloadData = async (value: string) => {
+		tab = value
 		loading = true;
-		// console.log($page.url.pathname);
-		// // Re-run the load function for the current route
-		// const currentPath = $page.url.pathname;
-		// await invalidate(currentPath);
-		const data = await fetchProfilePosts();
+		const data = await fetchProfilePosts($page.params.slug, 0);
 		posts = data.posts;
 		loading = false;
 	};
 
 	const getLikedPosts = async () => {
-		likedPosts = await getUserLikedPosts($store.user?.id);
+		likedPosts = await getUserLikedPosts($page.params.slug, 0);
 	};
 
 	// Attach and clean up event listeners
-	$effect(() => {
-		document.addEventListener("click", handleClickOutside);
+	// $effect(() => {
+	// 	document.addEventListener("click", handleClickOutside);
 
-		return () => {
-			document.removeEventListener("click", handleClickOutside);
-		};
-	});
+	// 	return () => {
+	// 		document.removeEventListener("click", handleClickOutside);
+	// 	};
+	// });
 	$effect(() => {
 		if (targetElement && scrollContainer) {
 			// Get the position of the target element relative to the scroll container
@@ -161,14 +230,14 @@
 	$effect(() => {
 		const fetchLikesReceived = async () => {
 			try {
-				likesReceived = await getLikesReceivedByUser($store.user?.id);
+				likesReceived = await getLikesReceivedByUser($page.params.slug);
 			} catch (error) {
 				console.error("Error fetching likes received:", error);
 			}
 		};
 		const fetchFollowStat = async () => {
 			try {
-				followStats = await getFollowStats($store.user?.id);
+				followStats = await getFollowStats($page.params.slug);
 			} catch (error) {
 				console.error("Error fetching likes received:", error);
 			}
@@ -176,6 +245,19 @@
 		fetchLikesReceived();
 		fetchFollowStat();
 	});
+
+	$effect(() => {
+		(async () =>{
+			const data = await fetchProfileData($page.params.slug)
+			if(data) {
+				currentUser = data[0]
+				let name = $state(data[0].full_name);
+				let username = $state(data[0].username);
+				let bio = $state(data[0].bio);
+				let location = $state(data[0].location);
+			}
+		})()
+	})
 </script>
 
 <section bind:this={scrollContainer} class="relative h-full w-full overflow-auto px-2">
@@ -184,11 +266,11 @@
 		"
 	>
 		<div class="gap-6 lg:flex">
-			<img src={$store.user?.image} alt="user profile" class="h-32 w-32 rounded-full" />
+			<img src={currentUser?.avatar_url} alt="user profile" class="h-32 w-32 rounded-full" />
 			<div class="flex flex-col gap-4 px-2 pt-4">
 				<div class="">
-					<p class="text-md font-semibold">{$store.user?.name}</p>
-					<p class="text-sm font-extralight text-gray-500">{$store.user?.email}</p>
+					<p class="text-md font-semibold">{currentUser?.full_name}</p>
+					<p class="text-sm font-extralight text-gray-500">{currentUser?.email}</p>
 				</div>
 				<div class="flex gap-6">
 					<div class="">
@@ -212,22 +294,23 @@
 				</div>
 				<div class="">
 					<p class="text-md font-semibold">Bio</p>
-					<p class="text-md prose font-extralight text-gray-500">{$store.user?.bio}</p>
+					<p class="text-md prose font-extralight text-gray-500">{currentUser?.bio}</p>
 				</div>
 				<div class="flex gap-4">
 					<div class="flex items-center gap-2 font-extralight text-gray-500">
 						<CalendarRange size={20} />
-						<p class="text-md prose whitespace-nowrap">Joined {getDate($store.user?.createdAt)}</p>
+						<p class="text-md prose whitespace-nowrap">Joined {getDate(currentUser?.createdAt)}</p>
 					</div>
 					<div class="flex items-center gap-2 font-extralight text-gray-500">
 						<MapPinHouse size={20} />
-						<p class="text-md prose whitespace-nowrap">{$store.user?.location}</p>
+						<p class="text-md prose whitespace-nowrap">{currentUser?.location}</p>
 					</div>
 				</div>
 			</div>
 		</div>
 
 		<div class="flex h-full items-start">
+			{#if $page.params.slug == $store.user?.id}
 			<Dialog.Root bind:open>
 				<Dialog.Trigger
 					class={buttonVariants({ variant: "outline" }) +
@@ -275,15 +358,16 @@
 					</form>
 				</Dialog.Content>
 			</Dialog.Root>
+			{/if}
 		</div>
 	</div>
 	<div class=" relative min-h-[60vh]">
-		<Tabs.Root onValueChange={() => reloadData()} value="public" class="relative h-full w-full">
+		<Tabs.Root onValueChange={(value) => reloadData(value)} value="public" class="relative h-full w-full">
 			<div
 				bind:this={targetElement}
 				class={`${isFixed ? "fixed left-0 lg:top-16 " : " lg:relative"} top-0 z-20 flex h-12 w-full justify-center bg-stone-50 dark:bg-secondary`}
 			>
-				<div
+				<!-- <div
 					class={`${showInput ? "block" : "hidden"} absolute left-0 top-0 z-20 h-full w-full max-w-[1000px] rounded-2xl border bg-stone-50`}
 				>
 					<div class="absolute right-0 top-0 flex h-full w-10 items-center justify-center">
@@ -298,17 +382,17 @@
 							class=" h-full w-full rounded-l-2xl  border-none bg-stone-50 dark:bg-black pr-10 "
 						></Input>
 					</div>
-				</div>
+				</div> -->
 				<div class=" relative flex h-full w-full items-center justify-center space-x-1">
-					<img
-						src={$store.user?.image} 
+					<div class="flex gap-1 pl-1">
+						<img
+						src={currentUser?.avatar_url} 
 						alt="user profile"
-						class={`${isFixed ? "block" : "hidden"} absolute left-2 top-2 h-8 w-8 rounded-full lg:left-28`}
+						class={`${isFixed ? "block" : "hidden"}  left-2 top-2 h-8 w-8 rounded-full lg:left-28`}
 					/>
-					<div class="flex h-full items-center" bind:this={buttonRef}>
-						<Button onclick={toggleInput} variant="ghost" class="hidden h-full lg:block">
-							<Search size={20}></Search>
-						</Button>
+					<div class="flex h-full items-center " >
+						<SearchBox />
+					</div>
 					</div>
 					<Tabs.List class="h-[5%] bg-transparent gap-2">
 						<Tabs.Trigger value="pinned" class="dark:bg-black/55">Pinned</Tabs.Trigger>
@@ -319,18 +403,30 @@
 				</div>
 			</div>
 
-			<Tabs.Content value="pinned">
+			<Tabs.Content value="pinned" class="w-full  pb-14 ">
 				<UserPostList data={pinnedPosts} {loading} />
+				{#if loadingMore}
+				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
+				{/if}
 			</Tabs.Content>
-			<Tabs.Content value="public">
+			<Tabs.Content value="public" class="w-full  pb-14 ">
 				<UserPostList data={publicPosts} {loading} />
+				{#if loadingMore}
+				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
+				{/if}
 			</Tabs.Content>
-			<Tabs.Content value="private">
+			<Tabs.Content value="private" class="w-full  pb-14 ">
 				<UserPostList data={privatePosts} {loading} />
+				{#if loadingMore}
+				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
+				{/if}
 			</Tabs.Content>
 
-			<Tabs.Content value="liked" class="h-[95%] w-full  ">
+			<Tabs.Content value="liked" class="pb-14 w-full  ">
 				<UserPostList data={likedPosts} isLikes={true} {loading} />
+				{#if loadingMore}
+				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
+				{/if}
 			</Tabs.Content>
 		</Tabs.Root>
 	</div>

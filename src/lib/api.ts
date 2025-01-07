@@ -86,7 +86,7 @@ export const createNewPost = async (post: Post) => {
 	} else {
 		console.log("Post inserted successfully:", data);
 		//fetch post for profile page
-		fetchProfilePosts();
+		//fetchProfilePosts();
 		data && store.createPost(data);
 	}
 };
@@ -113,14 +113,15 @@ export const fetchPosts = async () => {
 		return { posts: [] };
 	}
 };
-export const fetchProfilePosts = async () => {
+export const fetchProfilePosts = async (slug: string, offset: number) => {
 	try {
 		// Fetch posts with likes where author matches the specified value
 		const { data: posts, error } = await supabase
 			.from("posts")
 			.select(`*`)
-			.eq("author", store.getState().user?.id)
-			.order("createdAt", { ascending: false }); // Filter posts by author
+			.eq("author", slug)
+			.order("createdAt", { ascending: false }) // Filter posts by author
+			.range(offset, offset + 9);
 
 		if (error) {
 			console.error("Error fetching posts with likes:", error);
@@ -169,29 +170,35 @@ export const getUserOtherPosts = (
 	return allPosts.filter((post) => post.author === userId && post.id !== excludedPostId);
 };
 
-export const fetchAuthorOtherPosts = async (authorId: string, excludePostId: string) => {
-	if (!authorId || !excludePostId) return;
+export const fetchAuthorOtherPosts = async (
+	authorId: string,
+	excludePostId: string,
+	offset: number
+): Promise<Post[]> => {
+	if (!authorId || !excludePostId) return []; // Ensure to return an empty array when either param is missing
 	try {
 		// Fetch posts by the author, excluding the one with the specified ID
 		const { data: posts, error } = await supabase
 			.from("posts")
 			.select(
 				`
-            *,
-            likes (
-                *
-            )
+          *,
+          likes (
+            *
+          )
         `
 			) // Adjust columns as necessary
 			.eq("author", authorId) // Filter by author ID
-			.neq("id", excludePostId); // Exclude the post with this ID
+			.neq("id", excludePostId) // Exclude the post with this ID
+			.order("createdAt", { ascending: false }) // Order posts by creation date, descending
+			.range(offset, offset + 9); // Limit to 10 posts
 
 		if (error) {
 			console.error("Error fetching posts by author:", error);
 			return [];
 		}
 
-		store.initPosts(posts);
+		return posts || []; // Ensure we always return an empty array if no posts found
 	} catch (err) {
 		console.error("Unexpected error fetching posts by author:", err);
 		return [];
@@ -255,30 +262,39 @@ export const fetchSelectedPost = async (slug: string) => {
  * @param userId - The ID of the user whose liked posts are to be retrieved. If undefined, an empty array is returned.
  * @returns An array of posts liked by the specified user.
  */
-export const getUserLikedPosts = async (userId: string | undefined): Promise<Post[]> => {
+export const getUserLikedPosts = async (
+	userId: string | undefined,
+	offset: number
+): Promise<Post[]> => {
 	if (!userId) {
 		console.error("Error: userId is undefined");
 		return [];
 	}
 
 	try {
+		// Query the "likes" table and join it with the "posts" table
 		const { data, error } = await supabase
 			.from("likes") // Query the "likes" table
 			.select(
 				`
-        posts(*)  // Fetch all columns from the "posts" table
-      `
+        posts(*), 
+        created_at
+      ` // Fetch all columns from "posts" and include "likes.created_at"
 			)
-			.eq("author", userId); // Filter by the user ID
+			.eq("author", userId) // Filter by the user ID
+			.order("created_at", { ascending: false }) // Order by "likes.created_at"
+			.range(offset, offset + 9); // Pagination: fetch 10 records
 
 		if (error) {
 			console.error("Error fetching liked posts:", error);
 			return [];
 		}
 
-		// Extract the `posts` array from the response structure
-		//@ts-ignore
-		return (data?.map((like) => like.posts) || []) as Post[];
+		// Map through the data to extract the posts array
+		const posts = data?.flatMap((like: { posts: Post[] }) => like.posts) || [];
+
+		// Return the mapped posts array
+		return posts;
 	} catch (err) {
 		console.error("Unexpected error fetching liked posts:", err);
 		return [];
@@ -631,6 +647,25 @@ export const doesUserFollow = async (followerId: string, followeeId: string) => 
 	} catch (err) {
 		console.error("Unexpected error:", err);
 		return false;
+	}
+};
+
+export const fetchProfileData = async (userId: string) => {
+	try {
+		const { data, error } = await supabase
+			.from("profiles") // Reference the "profiles" table
+			.select("*") // Fetch all columns (or specify columns like "name", "email" etc.)
+			.eq("id", userId); // Filter by the user ID
+
+		if (error) {
+			console.error("Error fetching profile data:", error);
+			return null;
+		}
+
+		return data; // Return the fetched profile data
+	} catch (err) {
+		console.error("Unexpected error:", err);
+		return null;
 	}
 };
 

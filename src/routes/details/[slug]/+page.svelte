@@ -17,6 +17,7 @@
 	import PostAuthor from "@/components/PostAuthor.svelte";
 	import Likes from "@/Likes.svelte";
 	import DetailList from "@/components/detail/DetailList.svelte";
+	import { supabase } from "@src/supabaseClient";
 
 	let imageUrls = $state([""]);
 	let { data }: { data: PageData } = $props();
@@ -29,6 +30,9 @@
 	let post = $state<Post>(data.data as Post);
 	let text = $state("");
 	let activeFollow = $state<boolean | null>(null);
+let loadingMore = $state(false);
+	let sectionElement: HTMLElement | null = $state(null);
+	let offset = $state(10);
 
 	$effect(() => {
 		if (!$store.isAuthenticated) goto("/");
@@ -38,17 +42,25 @@
 		text = post.prompt;
 	});
 
-	$effect(() => {
-		otherPosts = $store.posts;
-	});
+	// $effect(() => {
+	// 	otherPosts = $store.posts;
+	// });
 
 	$effect(() => {
 		//update from store
 		post = $store.post;
 	});
 	$effect(() => {
-		fetchAuthorOtherPosts(post?.author, post?.id as string);
+		(async () => {
+ 		 // Fetch the other posts from the author, ensuring post?.author and post?.id are defined
+		if (post?.author && post?.id) {
+			 otherPosts = await fetchAuthorOtherPosts(post?.author, post?.id as string,0);
+			// console.log(otherPosts); // You can do something with otherPosts here
+		}
+		})();
+
 	});
+
 	$effect(() => {
 		if ($store.user?.id) check();
 	});
@@ -63,10 +75,7 @@
 		likePost(item.id as string, $store.user?.id, "details", post.author, post.id);
 	};
 
-	const isInLikedPosts = (likes: any[]): boolean => {
-		if (!likes) return false;
-		return likes.filter((item) => item.author === $store.user?.id).length > 0;
-	};
+
 
 	const getDate = (date: Date | undefined): string => {
 		if (!date) return "";
@@ -115,6 +124,20 @@
 		// Stop loading indicator
 	}
 
+	async function loadMore() {
+	
+	loadingMore = true
+    const newPosts = await fetchAuthorOtherPosts(post?.author, post?.id as string,offset);
+
+    if (newPosts?.length) {
+        otherPosts = [...otherPosts, ...newPosts ]; 
+		// console.log(posts)
+        offset += 10; // Increment offset
+    }
+	
+	loadingMore = false
+}
+
 	$effect(() => {
 		const fetchResolution = async () => {
 			const result: { width: string; height: string } = (await getImageResolution(
@@ -128,9 +151,33 @@
 	$effect(() => {
 		getImages(post.ipfsImages);
 	});
+
+
+		  const handleScroll = () => {
+  if (!sectionElement || loadingMore || otherPosts.length < 10) return;
+
+  // Check if the user is very near the bottom of the section
+  const { scrollTop, scrollHeight, clientHeight } = sectionElement;
+  if (scrollTop + clientHeight >= scrollHeight - 0) { // Trigger closer to the bottom
+    loadMore();
+  }
+};
+
+		$effect(() => {
+    if (sectionElement) {
+      
+      sectionElement.addEventListener("scroll", handleScroll);
+
+      return () => {
+     
+      sectionElement &&  sectionElement.removeEventListener("scroll", handleScroll);
+      };
+    }
+  });
+
 </script>
 
-<section class="relative h-full w-full overflow-y-auto px-2">
+<section bind:this={sectionElement} class="relative h-full w-full overflow-y-auto px-2">
 	<section class="min-h-[92vh] w-full lg:flex">
 		<div class="flex h-full items-center justify-center lg:w-[75%]">
 			{#if !imageUrls[0]}
@@ -339,4 +386,7 @@
 	<!-- image list -->
 
 	<DetailList data={otherPosts} />
+	{#if loadingMore}
+				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
+				{/if}
 </section>

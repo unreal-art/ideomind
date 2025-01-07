@@ -18,6 +18,7 @@
 		<div class="mb-6 break-inside-avoid">
 			<Image {item} />
 			<div class="mt-3 flex h-10 w-full items-center justify-between">
+				<a href={`/profile/${item.author}`}>
 				<div class="flex h-full space-x-2">
 					<PosterImage authorId={item.author} />
 					<div class="flex flex-col">
@@ -27,6 +28,7 @@
 						</p>
 					</div>
 				</div>
+			</a>
 				<div class="flex items-center">
 					<More />
 					<Likes id={item.id} post={item} />

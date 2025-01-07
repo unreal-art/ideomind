@@ -14,6 +14,7 @@
 	import type { Post } from "@/types";
 	import { page } from "$app/stores";
 	import SearchBox from "@/components/SearchBox.svelte";
+	import { supabase } from "@src/supabaseClient";
 
 	const choices = [
 		{ value: "everything", label: "Everything" },
@@ -30,12 +31,15 @@
 
 	let { data }: { data: PageData } = $props();
 	let showInput: boolean = $state(false);
-	let inputRef: HTMLDivElement | null = $state(null);
-	let buttonRef: HTMLDivElement | null = $state(null);
+	
 	let pinnedPosts = $state<Post[]>([]);
 	let privatePosts = $state<Post[]>([]);
 	let publicPosts = $state<Post[]>([]);
 	let loading = $state(true);
+	let loadingMore = $state(false);
+	let sectionElement: HTMLElement | null = $state(null);
+	let offset = $state(10);
+
 	//@ts-ignore
 	let posts = $state<Post[]>(data.posts as Post[]);
 
@@ -48,28 +52,41 @@
 		showInput = true;
 	};
 
-	// Handle clicks outside the input
-	// const handleClickOutside = (event: MouseEvent): void => {
-	// 	const target = event.target as Node;
 
-	// 	if (inputRef && buttonRef) {
-	// 		// Check if the click was outside both the button and the input field
-	// 		if ( !buttonRef.contains(target)) {
-	// 			showInput = false;
-	// 		}
-	// 	}
-	// };
 
 	const reloadData = async () => {
 		loading = true;
-		// console.log($page.url.pathname);
-		// // Re-run the load function for the current route
-		// const currentPath = $page.url.pathname;
-		// await invalidate(currentPath);
 		const data = await fetchCreationsPost();
 		posts = data.posts;
 		loading = false;
 	};
+
+
+async function loadMore() {
+	
+	loadingMore = true
+    const { data: newPosts, error } = await supabase
+        .from("posts")
+        .select("*")
+		// @ts-ignore
+		.eq("author", $store.user.id) // Filter posts by the author_id
+		.order("createdAt", { ascending: false })
+        .range(offset, offset + 9); // Fetch the next 10 posts
+
+    if (error) {
+		loadingMore = false
+        console.error("Error loading more posts:", error);
+        return;
+    }
+
+    if (newPosts?.length) {
+        posts = [...posts, ...newPosts ]; // Assuming your store has an `addPosts` method
+		// console.log(posts)
+        offset += 10; // Increment offset
+    }
+	
+	loadingMore = false
+}
 
 	//fill posts
 	$effect(() => {
@@ -81,19 +98,36 @@
 		loading = false;
 	});
 
-	// // Attach and clean up event listeners
-	// $effect(() => {
-	// 	document.addEventListener("click", handleClickOutside);
-	// 	return () => document.removeEventListener("click", handleClickOutside);
-	// });
+		  const handleScroll = () => {
+  if (!sectionElement || loadingMore || posts.length < 10) return;
+
+  // Check if the user is very near the bottom of the section
+  const { scrollTop, scrollHeight, clientHeight } = sectionElement;
+  if (scrollTop + clientHeight >= scrollHeight - 0) { // Trigger closer to the bottom
+    loadMore();
+  }
+};
+
+	$effect(() => {
+    if (sectionElement) {
+      
+      sectionElement.addEventListener("scroll", handleScroll);
+
+      return () => {
+     
+      sectionElement &&  sectionElement.removeEventListener("scroll", handleScroll);
+      };
+    }
+  });
+
 </script>
 
-<section class="h-full w-full overflow-auto px-2">
+<section bind:this={sectionElement}  class="h-full w-full overflow-auto px-2">
 	<div class="hidden h-[20%] flex-col items-center justify-center gap-3 z-20 lg:flex">
 		<h2 class="text-sm font-semibold md:text-2xl lg:text-4xl">Unleash your creative juice.</h2>
 		<PromptForm section={"body"} />
 	</div>
-	<div class="h-full lg:h-[79%]">
+	<div class="h-full ">
 		<Tabs.Root onValueChange={() => reloadData()} value="all" class="h-full w-full ">
 			<div class="fixed left-0 top-0 z-10 flex h-12 w-full justify-between bg-stone-50 dark:bg-secondary items-center lg:relative">
 				
@@ -146,17 +180,29 @@
 					</Select.Root>
 				</div>
 			</div>
-			<Tabs.Content value="all" class="h-[95%] w-full  ">
+			<Tabs.Content value="all" class="w-full  pb-14 ">
 				<CreationList data={posts} choice={selectedChoice} {loading} />
+				{#if loadingMore}
+				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
+				{/if}
 			</Tabs.Content>
-			<Tabs.Content value="pinned">
+			<Tabs.Content value="pinned" class=" w-full pb-14">
 				<CreationList data={pinnedPosts} choice={selectedChoice} {loading} />
+				{#if loadingMore}
+				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
+				{/if}
 			</Tabs.Content>
-			<Tabs.Content value="public">
+			<Tabs.Content value="public" class=" w-full pb-14">
 				<CreationList data={publicPosts} choice={selectedChoice} {loading} />
+				{#if loadingMore}
+				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
+				{/if}
 			</Tabs.Content>
-			<Tabs.Content value="private">
+			<Tabs.Content value="private" class=" w-full pb-14">
 				<CreationList data={privatePosts} choice={selectedChoice} {loading} />
+				{#if loadingMore}
+				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
+				{/if}
 			</Tabs.Content>
 		</Tabs.Root>
 	</div>
