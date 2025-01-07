@@ -1,10 +1,23 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[10]:
 
 
+def comb(themes, subjects,descriptors):
+    combs = [
+        f"{theme} {subject} {descriptor}"
+        for theme in themes
+        for subject in subjects
+        for descriptor in descriptors
+    ]
+    return combs
+  
 prompts = []
+
+
+# In[11]:
+
 
 themes = [
     "Beautiful", "Majestic", "Surreal", "Abstract", "Futuristic", "Epic",
@@ -21,43 +34,46 @@ descriptors = [
     "with neon lights", "in a dream", "with mystical fog"
 ]
 
-#modern art
 
-themes += [
+prompts += comb(themes, subjects, descriptors)
+
+
+# Modern Art
+
+# In[12]:
+
+
+themes = [
     "Abstract", "Contemporary", "Cubist", "Minimalist", "Expressionist", 
     "Geometric", "Monochromatic", "Pop Art-Inspired", "Deconstructed", "Surrealist"
 ]
 
-subjects += [
+subjects = [
     "abstract forms", "urban geometry", "human silhouettes", "fragmented faces", 
     "fluid shapes", "vibrant textures", "layered patterns", "asymmetrical designs", 
     "chaotic splashes", "evolving shapes"
 ]
 
-descriptors += [
+descriptors = [
     "in bold, contrasting colors", "with dynamic brushstrokes", 
     "as a collage of textures", "with surreal proportions", 
     "inspired by natural forms", "in muted tones", "with fragmented patterns", 
     "with glowing highlights", "with metallic finishes", 
     "blending reality and imagination"
 ]
+prompts += comb(themes, subjects, descriptors)
 
 
-# In[2]:
+# In[13]:
 
 
 import random
 
-all_combinations = [
-    f"{theme} {subject} {descriptor}"
-    for theme in themes
-    for subject in subjects
-    for descriptor in descriptors
-]
-random.shuffle(all_combinations)
+
+random.shuffle(prompts)
 
 # Select the first 1000 prompts
-prompts = all_combinations[:1000] 
+prompts = prompts[:1000] 
 prompt = prompts[0]
 
 print(f"prompt is {prompt}")
