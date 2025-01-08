@@ -18,29 +18,29 @@
 
 	let offset = $state(10);
 
-async function loadMore() {
-	
-	loading = true
-    const { data: newPosts, error } = await supabase
-        .from("posts")
-        .select("*")
-        .order("createdAt", { ascending: false })
-        .range(offset, offset + 9); // Fetch the next 10 posts
+	async function loadMore() {
+		
+		loading = true
+		const { data: newPosts, error } = await supabase
+			.from("posts")
+			.select("*")
+			.order("createdAt", { ascending: false })
+			.range(offset, offset + 9); // Fetch the next 10 posts
 
-    if (error) {
+		if (error) {
+			loading = false
+			console.error("Error loading more posts:", error);
+			return;
+		}
+
+		if (newPosts?.length) {
+			posts = [...posts, ...newPosts ]; // Assuming your store has an `addPosts` method
+			// console.log(posts)
+			offset += 10; // Increment offset
+		}
 		loading = false
-        console.error("Error loading more posts:", error);
-        return;
-    }
 
-    if (newPosts?.length) {
-        posts = [...posts, ...newPosts ]; // Assuming your store has an `addPosts` method
-		// console.log(posts)
-        offset += 10; // Increment offset
-    }
-	loading = false
-
-}
+	}
 
 
 	$effect(() => {

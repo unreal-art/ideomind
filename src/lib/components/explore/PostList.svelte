@@ -9,14 +9,20 @@
 	import PostAuthor from "../PostAuthor.svelte";
 	import Likes from "@/Likes.svelte";
 
-	// let likedPosts = $derived(getUserLikedPosts($store.user?.id));
+	let readyBlocks = $state<string[]>([])
+
 	let { data }: { data: Post[] } = $props();
+	function onReadyEvent(data: string){
+		readyBlocks.push(data)
+	}
+
 </script>
 
 <div class=" grid  grid-cols-1 justify-center gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 pb-6 pt-14 lg:pt-4">
 	{#each data as item}
-		<div class="mb-6 break-inside-avoid">
-			<Image {item} />
+	<div class="mb-6 break-inside-avoid">
+		<Image {item} {onReadyEvent}/>
+		{#if readyBlocks.includes(item.id)}
 			<div class="mt-3 flex h-10 w-full items-center justify-between">
 				<a href={`/profile/${item.author}`}>
 				<div class="flex h-full space-x-2">
@@ -34,6 +40,8 @@
 					<Likes id={item.id} post={item} />
 				</div>
 			</div>
+				{/if}
 		</div>
+	
 	{/each}
 </div>
