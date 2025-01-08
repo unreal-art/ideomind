@@ -23,10 +23,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          cache: "npm"
+          # cache: "npm"
           node-version: 19.9.0 #last release of node v19
           check-latest: false
 
