@@ -32,6 +32,8 @@ jobs:
         with:
           node-version: 22
           check-latest: false
+          cache-dependency-path: "bun.lockb"
+          cache: "npm"
 
       - name: Install Dependencies
         run: |
