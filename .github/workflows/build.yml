@@ -30,10 +30,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          cache: "npm"
           node-version: 19.9.0 #last release of node v19
           check-latest: false
-          cache-dependency-path: "bun.lockb"
 
       - name: Install Dependencies
         run: |
