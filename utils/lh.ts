@@ -3,7 +3,6 @@ import axios from "axios";
 const lhApi = "https://api.lighthouse.storage";
 
 import lighthouse from "@lighthouse-web3/sdk";
-import { Wallet } from "ethers5";
 import { ethers } from "ethers6";
 
 export async function genLhApiKey(): Promise<string> {
