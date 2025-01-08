@@ -1,13 +1,12 @@
 import lighthouse from "@lighthouse-web3/sdk";
 import path from "path";
 import fs from "fs/promises";
-import { LIGHTHOUSE_KEY as LH_KEY } from "$env/static/private";
-import env from "$env/static/private";
+import { LIGHTHOUSE_KEY as LH_KEY, USE_RANDOM_LH_KEY } from "$env/static/private";
 import { genLhApiKey } from "@utils/lh";
 
 let LIGHTHOUSE_KEY = LH_KEY;
 
-if (env?.USE_RANDOM_LH_KEY == "true" || env?.USE_RANDOM_LH_KEY == "1") {
+if (USE_RANDOM_LH_KEY == "true" || USE_RANDOM_LH_KEY == "1") {
 	console.log("Using random LH key");
 
 	try {
