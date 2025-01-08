@@ -20,13 +20,21 @@
 
 	import { onMount } from 'svelte';
 	import { dev } from '$app/environment';
+
+	import { toBool } from "@utils/bool";
+	import { PUBLIC_DEV_SW } from '$env/static/public';
+
   
   onMount(() => {
     if ('serviceWorker' in navigator) {
-			console.log("mounting service worker")
-      navigator.serviceWorker.register('/service-worker.js', {
-        type: dev ? 'module' : 'classic'
-      });
+			let enableSW = dev ? toBool(PUBLIC_DEV_SW) : true
+
+			if (enableSW) {
+				console.log("mounting service worker")
+				navigator.serviceWorker.register('/service-worker.js', {
+					type: dev ? 'module' : 'classic'
+				});
+			}
     }
   })
 
