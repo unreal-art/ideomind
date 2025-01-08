@@ -103,7 +103,7 @@ async function loadMore() {
 
   // Check if the user is very near the bottom of the section
   const { scrollTop, scrollHeight, clientHeight } = sectionElement;
-  if (scrollTop + clientHeight >= scrollHeight - 0) { // Trigger closer to the bottom
+  if (scrollTop + clientHeight >= scrollHeight - 5) { // Trigger closer to the bottom
     loadMore();
   }
 };

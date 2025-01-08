@@ -102,14 +102,8 @@ export const load: LayoutLoad = async ({ url }) => {
 		// Fetch posts with likes
 		const { data: posts, error } = await supabase
 			.from("posts")
-			.select(
-				`
-        *,
-        likes (
-          *
-        )
-      `
-			)
+			.select("*")
+			.order("createdAt", { ascending: false })
 			.limit(10);
 
 		if (error) {
