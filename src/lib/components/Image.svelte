@@ -4,14 +4,9 @@
 	let { item,onReadyEvent } = $props(); // Get `item` from props
 	let imageUrl = $state(""); // State for the image URL
 	let isLoading = $state(true); // Track whether the image is loading
+	
+	import {isHighQualityImage, isValidFileName} from "$utils/fs";
 
-
-	function isHighQuality(filename: string): boolean {
-  const lowQExt = ['webp', "svg", "ico"];
-  const highQExt = ['jpeg', "jpg","png"];
-  
-  return highQExt.includes(filename.toLowerCase().split('.').pop() || '');
-}
 
 	// Function to fetch the image
 	const getImage = async (cid: string) => {
@@ -19,7 +14,7 @@
 			let imageOptions = ""
 			const fileName = item.ipfsImages[0].fileNames[0]
 			console.log(fileName)
-			if (isHighQuality(fileName)) {
+			if (isHighQualityImage(fileName)) {
 				imageOptions+="?h=300&w=300"
 			}
 			imageUrl = import.meta.env.VITE_LIGHTHOUSE_GATE_WAY + item.ipfsImages[0].hash+'/' + fileName + imageOptions
