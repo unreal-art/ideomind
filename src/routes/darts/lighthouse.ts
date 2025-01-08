@@ -3,7 +3,7 @@ import path from "path";
 import fs from "fs/promises";
 import { LIGHTHOUSE_KEY as LH_KEY, USE_RANDOM_LH_KEY } from "$env/static/private";
 import { genLhApiKey } from "@utils/lh";
-import { toBool } from "@utils/boolean";
+import { toBool } from "$utils/bool";
 
 let LIGHTHOUSE_KEY = LH_KEY;
 

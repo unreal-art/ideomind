@@ -21,7 +21,7 @@
 	import { onMount } from 'svelte';
 	import { dev } from '$app/environment';
 
-	import { toBool } from "@utils/bool.js";
+	import { toBool } from "$utils/bool.js";
 	import { PUBLIC_DEV_SW } from '$env/static/public';
 
   
