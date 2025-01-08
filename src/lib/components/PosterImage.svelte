@@ -5,6 +5,7 @@
 	let { authorId } = $props();
 	let imageUrl: string | null = $state(null); // State for the image URL
 	let isLoading = $state(true); // Track loading state
+ 	const placeholderImage = '/default.jpg';
 
 	$effect(() => {
 		async function getData() {
@@ -21,10 +22,10 @@
 	});
 </script>
 
-{#if isLoading || !imageUrl}
-	<div class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-200">
-		<div class="h-4 w-4 animate-spin rounded-full border-b-2 border-t-2 border-primary"></div>
-	</div>
-{:else}
-	<img src={imageUrl} alt="user profile" class="h-10 w-10 rounded-full" />
-{/if}
+ {#if isLoading || !imageUrl}
+    <!-- Display a spinner or placeholder image -->
+    <img src={placeholderImage} alt="placeholder" class="h-10 w-10 rounded-full" />
+  {:else}
+    <!-- Display the actual image -->
+    <img src={imageUrl} alt="user profile" class="h-10 w-10 rounded-full" />
+  {/if}

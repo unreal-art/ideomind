@@ -59,15 +59,13 @@ async function loadMore() {
 		if (!data.posts) return;
 		posts = data.posts
 	});
-
-
 	  const handleScroll = () => {
   if (!sectionElement || loading || posts.length < 10) return;
 
   // Check if the user is very near the bottom of the section
   const { scrollTop, scrollHeight, clientHeight } = sectionElement;
-  if (scrollTop + clientHeight >= scrollHeight - 0) { // Trigger closer to the bottom
-    loadMore();
+  if (scrollTop + clientHeight >= scrollHeight - 5) { // Trigger closer to the bottom
+    loadMore()
   }
 };
 

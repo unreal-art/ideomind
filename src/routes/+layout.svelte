@@ -9,16 +9,29 @@
 
 	import Button from '@/components/ui/button/button.svelte';
 	import { MoveLeft } from 'lucide-svelte';
-	import { store } from '$lib/store';
 
 	import { Toaster } from '$lib/components/ui/sonner/index.js';
-	import { goto } from '$app/navigation';
 	import { quickStore } from '@/quickStore';
 	  import { ModeWatcher } from "mode-watcher";
-	
+	import NProgress from 'nprogress';
+  import { afterNavigate, beforeNavigate } from '$app/navigation';
+  import 'nprogress/nprogress.css';
+
+
 	function goBack() {
 		window.history.back();
 	}
+
+
+	// Start NProgress when navigation begins
+  beforeNavigate(() => {
+    NProgress.start();
+  });
+
+  // Finish NProgress when navigation ends
+  afterNavigate(() => {
+    NProgress.done();
+  });
 
 
 	
