@@ -17,7 +17,7 @@
 		"installdarts": "cat install.sh | bash -s -- darts",
 		"lh": "lighthouse-web3",
 		"lh:wallet": "lighthouse-web3 create-wallet",
-		"play": "dotenv -e .env python3 play.py "
+		"play": "node --env-file=.env build python3 play.py "
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.45.3",
@@ -31,7 +31,6 @@
 		"autoprefixer": "^10.4.20",
 		"bits-ui": "^1.0.0-next.76",
 		"clsx": "^2.1.1",
-		"dotenv-cli": "^7.4.2",
 		"eslint": "^9.7.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-svelte": "^2.36.0",

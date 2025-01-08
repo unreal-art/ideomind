@@ -16,6 +16,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  envfile: ${{secrets.ENV}}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -35,9 +38,15 @@ jobs:
           cache-dependency-path: "bun.lockb"
           cache: "npm"
 
+      - name: Write environment
+        run: |
+          echo $envfile > .env
+          sed -i 's/ /\n/g' .env
+          source .env
+
       - name: Install Dependencies
         run: |
-          cp .env.example .env
+          cp .env.example .env.local
           bun i
 
       - name: Build

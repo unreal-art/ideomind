@@ -22,8 +22,10 @@ const config = {
 			'@routes/*': "./routes/*",
 			'@utils/*': "./utils/*",
 			'$utils/*': "./utils/*",
-
-		}
+		},
+	},
+	files:{
+		serviceWorker: "src/service-worker",
 	},
 	build: {
 		rollupOptions: {
