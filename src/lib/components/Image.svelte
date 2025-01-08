@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { getImageUrl } from "@/api";
 	let DEFAULT_IMAGE = "/assets/loading.png"; // Default fallback image
-	let { item } = $props(); // Get `item` from props
+	let { item,onReadyEvent } = $props(); // Get `item` from props
 	let imageUrl = $state(""); // State for the image URL
 	let isLoading = $state(true); // Track whether the image is loading
 
@@ -48,7 +48,10 @@
 			alt="user profile"
 			class={`w-full rounded-sm transition-opacity duration-300 ${isLoading ? "opacity-0" : "opacity-100"}`}
 			onerror={handleImageError}
-			onload={() => (isLoading = false)}
+			onload={() => {
+				isLoading = false
+				onReadyEvent?.(item.id)
+				}}
 		/>
 	</a>
 {/if}
