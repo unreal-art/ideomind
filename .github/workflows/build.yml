@@ -1,0 +1,41 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+
+    tags:
+      - "*"
+  pull_request:
+    branches: ["main"]
+
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          cache: "npm"
+          node-version: 19.9.0 #last release of node v19
+          check-latest: false
+
+      - name: Install Dependencies
+        run: |
+          npm i -g bun
+          cp .env.example .env
+          bun i
+
+      - name: Build
+        run: |
+          bun run build
