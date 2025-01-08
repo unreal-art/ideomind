@@ -18,6 +18,19 @@
   import 'nprogress/nprogress.css';
 
 
+	import { onMount } from 'svelte';
+	import { dev } from '$app/environment';
+  
+  onMount(() => {
+    if ('serviceWorker' in navigator) {
+			console.log("mounting service worker")
+      navigator.serviceWorker.register('/service-worker.js', {
+        type: dev ? 'module' : 'classic'
+      });
+    }
+  })
+
+
 	function goBack() {
 		window.history.back();
 	}
