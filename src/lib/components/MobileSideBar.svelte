@@ -102,26 +102,22 @@ const onclick = async () => {
 
 </script>
 
-<section class="fixed bottom-0 right-0 h-20 w-full bg-stone-50 lg:hidden dark:bg-black min-w-full">
-	<!-- <div
-		class="before:absolute before:left-0 before:top-0 before:h-2 before:w-full before:bg-transparent before:shadow-md"
-	></div> -->
-	<div class="flex h-full w-full items-center justify-between px-4 pt-2">
-		
+<section class="fixed bottom-0 flex justify-center items-center gap-2  inset-x-0 h-16 w-full bg-stone-50 lg:hidden dark:bg-black">
+	
+	
+	<div class="h-full w-[20%]   flex items-center justify-center">
 			<Button onclick={()=>goto("/explore")} class="relative w-10 bg-transparent text-primary shadow-none hover:bg-transparent">
 				<Telescope size={22} />
 			</Button>
-		
-
-		
-			<Button onclick={()=>goto("/creations")} class="relative w-10 bg-transparent text-primary shadow-none hover:bg-transparent">
+	</div>
+	<div class="h-full w-[20%]  flex items-center justify-center">
+		<Button onclick={()=>goto("/creations")} class="relative w-10 bg-transparent text-primary shadow-none hover:bg-transparent">
 				<GalleryVertical size={20} class="" />
 			</Button>
-		
-
-		<div>
-			<Drawer.Root bind:open>
-			<Drawer.Trigger>
+	</div>
+	<div class="h-full w-[20%]  flex items-center justify-center">
+		<Drawer.Root bind:open>
+			<Drawer.Trigger class="border-none outline-none focus:ring-0 hover:ring-0 focus-visible:ring-0 visited:ring-0">
 				<Button class="h-12 w-12 rounded-full  p-0 dark:bg-secondary dark:text-white">
 					<Plus size={30} />
 				</Button></Drawer.Trigger
@@ -147,19 +143,17 @@ const onclick = async () => {
 				</div>
 			</Drawer.Content>
 		</Drawer.Root>
-		</div>
-
-		<Button
-			class="relative w-10 bg-transparent text-primary shadow-none ring-transparent hover:bg-transparent"
-		>
+	</div>
+	<div class="h-full w-[20%]   flex items-center justify-center">
+		
 			<Sheet.Root>
 				<Sheet.Trigger
-					class={buttonVariants({ variant: 'ghost' }) +
-						` bg-red relative h-fit w-full text-lg ring-transparent hover:bg-transparent focus:outline-none focus:ring-0 `}
+					class={ 
+						` bg-red relative h-full w-full text-lg ring-transparent hover:bg-transparent focus:outline-none  outline-none focus:ring-0 hover:ring-0 focus-visible:ring-0 visited:ring-0 `}
 				>
-					<div class="relative flex h-16 w-full items-center justify-center">
-						<Bell size={30} />
-						<Badge variant="destructive" class="absolute -right-8 top-1  rounded-full">0</Badge>
+					<div class="relative flex h-full w-full items-center justify-center">
+						<Bell size={16} />
+						<Badge variant="destructive" class="absolute right-0 top-2  rounded-full">0</Badge>
 					</div>
 				</Sheet.Trigger>
 				<Sheet.Content side="bottom">
@@ -171,13 +165,14 @@ const onclick = async () => {
 					</Sheet.Header>
 				</Sheet.Content>
 			</Sheet.Root>
-		</Button>
-		<!-- <Menu size={20} /> -->
-
-		<Button class="relative w-10 bg-transparent text-primary shadow-none hover:bg-transparent">
+		
+	</div>
+	<!-- <Menu size={20} /> -->
+	<div class="h-full w-[20%]  flex items-center justify-center">
+		<!-- <Button class="relative w-10 bg-transparent text-primary shadow-none hover:bg-transparent outline-none focus:ring-0 hover:ring-0 focus-visible:ring-0 visited:ring-0"> -->
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger
-					class={buttonVariants({ variant: 'ghost' }) + ` bg w-full hover:bg-transparent`}
+					class={ ` hover:bg-transparent outline-none focus:ring-0 hover:ring-0 focus-visible:ring-0 visited:ring-0`}
 					><Menu size={20}></Menu></DropdownMenu.Trigger
 				>
 				<DropdownMenu.Content class=" mb-5 w-[300px]">
@@ -262,6 +257,8 @@ const onclick = async () => {
 					</DropdownMenu.Group>
 				</DropdownMenu.Content>
 			</DropdownMenu.Root>
-		</Button>
+		<!-- </Button> -->
+	
 	</div>
+
 </section>
