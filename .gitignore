@@ -36,3 +36,5 @@ rest.local.http
 devops/ssl
 
 play.ipynb
+
+*.log
