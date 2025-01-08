@@ -20,8 +20,8 @@ const config = {
 			'$src/*': "./src/*",
 			'@static/*': "./static/*",
 			'@routes/*': "./routes/*",
-			'@utils/*': "./utils/*",
-			'$utils/*': "./utils/*",
+			'@utils/*': "./src/utils/*",
+			'$utils/*': "./src/utils/*",
 		},
 	},
 	files:{
