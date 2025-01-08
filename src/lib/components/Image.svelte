@@ -6,10 +6,11 @@
 	let isLoading = $state(true); // Track whether the image is loading
 
 
-	function isLowQuality(filename: string): boolean {
-  const lowQExt = ['.webp', ".svg", ".ico"];
+	function isHighQuality(filename: string): boolean {
+  const lowQExt = ['webp', "svg", "ico"];
+  const highQExt = ['jpeg', "jpg","png"];
   
-  return !lowQExt.includes(filename.toLowerCase().split('.').pop() || '');
+  return highQExt.includes(filename.toLowerCase().split('.').pop() || '');
 }
 
 	// Function to fetch the image
@@ -17,7 +18,8 @@
 		try {
 			let imageOptions = ""
 			const fileName = item.ipfsImages[0].fileNames[0]
-			if (!isLowQuality(fileName)) {
+			console.log(fileName)
+			if (isHighQuality(fileName)) {
 				imageOptions+="?h=300&w=300"
 			}
 			imageUrl = import.meta.env.VITE_LIGHTHOUSE_GATE_WAY + item.ipfsImages[0].hash+'/' + fileName + imageOptions
