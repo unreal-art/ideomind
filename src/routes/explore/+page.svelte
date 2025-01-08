@@ -59,8 +59,6 @@ async function loadMore() {
 		if (!data.posts) return;
 		posts = data.posts
 	});
-$inspect(loading)
-
 	  const handleScroll = () => {
   if (!sectionElement || loading || posts.length < 10) return;
 

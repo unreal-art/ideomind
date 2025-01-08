@@ -19,12 +19,13 @@
 </script>
 
 {#if loading}
-	<div class="flex h-[50vh] items-center justify-center bg-gray-100">
-		<div class="flex items-center space-x-2">
-			<!-- <div class="h-4 w-4 animate-spin rounded-full border-b-2 border-t-2 border-primary"></div> -->
-			<span class="font-medium text-gray-600">Please wait...</span>
-		</div>
-	</div>
+	<div class="flex h-[100vh] items-center justify-center">
+  <div class="flex items-center space-x-2">
+    <!-- Spinner -->
+    <div class="h-6 w-6 animate-spin rounded-full border-4 border-t-transparent border-gray-400"></div>
+  </div>
+</div>
+
 {:else}
 	<div class=" grid  grid-cols-1 justify-center gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 pb-6">
 		{#each data as item}
