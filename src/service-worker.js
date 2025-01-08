@@ -63,7 +63,11 @@ self.addEventListener("fetch", (event) => {
 			}
 
 			if (response.status === 200) {
-				cache.put(event.request, response.clone());
+				try {
+					cache.put(event.request, response.clone());
+				}catch (e) {
+					console.error("Error put",e, response.clone());
+				}
 			}
 
 			return response;
