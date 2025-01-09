@@ -12,7 +12,7 @@
 		try {
 			let imageOptions = "";
 			const fileName = item.ipfsImages[0].fileNames[0];
-			console.log(fileName);
+			// console.log(fileName);
 			if (isHighQualityImage(fileName)) {
 				imageOptions += "?h=300&w=300";
 			}

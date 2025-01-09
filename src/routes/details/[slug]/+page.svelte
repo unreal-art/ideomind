@@ -4,20 +4,16 @@
 	import { Ellipsis, Files } from "lucide-svelte";
 	import Separator from "@/components/ui/separator/separator.svelte";
 	import { likePost, fetchAuthorOtherPosts, toggleFollow, doesUserFollow } from "@/api";
-	import type { Like, Post, UploadResponse } from "@/types";
+	import type {  Post, UploadResponse } from "@/types";
 	import { store } from "$lib/store";
-
-	import { getImageUrl } from "@/api";
 	import { formatDistanceToNow } from "date-fns";
 	import { copy, type CopyDetail } from "@svelte-put/copy";
 	import { toast } from "svelte-sonner";
-	import { goto } from "$app/navigation";
 	import type { PageData } from "./$types";
 	import PosterImage from "@/components/PosterImage.svelte";
 	import PostAuthor from "@/components/PostAuthor.svelte";
 	import Likes from "@/Likes.svelte";
 	import DetailList from "@/components/detail/DetailList.svelte";
-	import { supabase } from "@src/supabaseClient";
 
 	let imageUrls = $state([""]);
 	let { data }: { data: PageData } = $props();
@@ -34,9 +30,7 @@ let loadingMore = $state(false);
 	let sectionElement: HTMLElement | null = $state(null);
 	let offset = $state(10);
 
-	$effect(() => {
-		if (!$store.isAuthenticated) goto("/");
-	});
+
 
 	$effect(() => {
 		text = post.prompt;

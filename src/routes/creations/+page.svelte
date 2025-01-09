@@ -1,18 +1,15 @@
 <script lang="ts">
-	import { Button, buttonVariants } from "$lib/components/ui/button/index.js";
-	import { Input } from "$lib/components/ui/input/index.js";
+	import { buttonVariants } from "$lib/components/ui/button/index.js";
 	import * as Tabs from "$lib/components/ui/tabs";
-	import { Search, X, ListFilter } from "lucide-svelte";
+	import { ListFilter } from "lucide-svelte";
 	import * as Select from "$lib/components/ui/select/index.js";
 	import * as DropdownMenu from "$lib/components/ui/dropdown-menu/index.js";
 	import CreationList from "@/components/creations/CreationList.svelte";
 	import { store } from "$lib/store";
-	import { fetchCreationsPost, getUserPosts } from "@/api";
+	import { fetchCreationsPost } from "@/api";
 	import PromptForm from "@/components/PromptForm.svelte";
-	import { goto, invalidate } from "$app/navigation";
 	import type { PageData } from "../$types";
 	import type { Post } from "@/types";
-	import { page } from "$app/stores";
 	import SearchBox from "@/components/SearchBox.svelte";
 	import { supabase } from "@src/supabaseClient";
 
@@ -43,9 +40,7 @@
 	//@ts-ignore
 	let posts = $state<Post[]>(data.posts as Post[]);
 
-	$effect(() => {
-		if (!$store.isAuthenticated) goto("/");
-	});
+	
 
 	// Toggle input visibility
 	const toggleInput = (): void => {
