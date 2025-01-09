@@ -79,6 +79,7 @@ const createStore = () => {
 					// isAuthenticated: true
 				};
 				curState.isAuthenticated = true;
+				sessionStorage.setItem("user", curState.user.id);
 				return curState;
 			});
 		},

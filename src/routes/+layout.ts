@@ -7,6 +7,7 @@ import type { LayoutLoad } from "./$types";
 import { store } from "$lib/store";
 import bluebird from "bluebird";
 import { ethers } from "ethers";
+import { browser } from "$app/environment";
 
 // Type definition for the wallet
 interface WalletObject {
@@ -25,7 +26,18 @@ function generateEthereumWallet(): WalletObject {
 	};
 }
 
+function redirectOnLogin() {
+	console.count("redirecting");
+	goto("/explore");
+}
+
 export const load: LayoutLoad = async ({ url }) => {
+	// if (isAuthenticated()) {
+	// 	console.count("Already logged in");
+	// 	return {};
+	// 	// redirectOnLogin();
+	// }
+
 	const fullUrl = url.href;
 	console.log(`Loading ${fullUrl}`);
 
@@ -94,7 +106,7 @@ export const load: LayoutLoad = async ({ url }) => {
 			}
 		}
 		authenticate(user);
-		goto("/explore");
+		redirectOnLogin();
 	}
 
 	//fetch post data

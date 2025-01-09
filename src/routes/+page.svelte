@@ -30,6 +30,28 @@
 	// 	// });
 	// 	goto('/explore');
 	// }
+	function isLoggedIn(): boolean {
+		// if (!browser) {
+		// 	return false;
+		// }
+
+		const userId = sessionStorage.getItem("user");
+		if (userId && userId?.length > 1) {
+			return true;
+		}
+		return false;
+	}
+
+	function redirectOnLogin() {
+		console.count("to /explore");
+		goto("/explore");
+	}
+	$effect(() => {
+		if (isLoggedIn()) {
+			console.count("Already logged in");
+			redirectOnLogin();
+		}
+  })
 
 	// Array of image sources to cycle through
 
