@@ -42,17 +42,17 @@ jobs:
           cache-dependency-path: "bun.lockb"
           cache: "npm"
 
-      - name: Write environment
-        run: |
-          echo "$envfile" > .env.ci
-          # sed -i 's/ /\n/g' .env
-          source .env.ci
-
       - name: Install Dependencies
         run: |
           cp .env.example .env
           # source .env.example
           bun i
+
+      - name: Write environment
+        run: |
+          echo "\n$envfile" >> .env
+          # sed -i 's/ /\n/g' .env
+          # source .env
 
       - name: Build
         run: |
