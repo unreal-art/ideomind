@@ -167,8 +167,8 @@
 			<div class="flex h-full max-h-[400px] w-full items-center justify-center lg:w-[50%]">
 				{#if !imageUrl}
 					<div class="flex h-full w-full items-center justify-center ">
-  <div class="h-6 w-6 animate-spin rounded-full border-4 border-t-transparent border-primary"></div>
-</div>
+						<div class="h-6 w-6 animate-spin rounded-full border-4 border-t-transparent border-primary"></div>
+					</div>
 
 				{:else}
 					<img
