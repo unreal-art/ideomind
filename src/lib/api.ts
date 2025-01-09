@@ -44,6 +44,7 @@ export async function generateImage(dto: JobSpec) {
 // Function to authenticate a user
 export const authenticate = (user: User) => {
 	store.authenticateUser(user);
+	sessionStorage.setItem("user", user.id);
 };
 
 // Function to update user details
