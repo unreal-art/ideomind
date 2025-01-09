@@ -7,6 +7,8 @@
 	import { Icon } from "svelte-icons-pack";
 	import { getRedirectURL } from "../oauth";
 	import { supabase } from "@src/supabaseClient";
+	import type { PageData } from "./$types";
+	let { data }: { data: PageData } = $props();
 
 	let imageCache = $state(new Map<string, string>()); // Cache for storing image URLs
 	let imageUrl = $state(""); // State for the current image URL
@@ -15,6 +17,7 @@
 	let imageSources: Post[] = $derived($store.posts.slice(0, 10)); // Array of image sources
 	let intervalId: number | null = null; // Store interval ID to manage the loop
 
+	
 	
 	function isLoggedIn(): boolean {
 		// if (!browser) {
@@ -39,6 +42,7 @@
 		}
   })
 
+
 	// Array of image sources to cycle through
 
 	// Function to fetch the image or get it from cache
@@ -62,7 +66,7 @@
 	};
 
 	async function signInWithGoogle() {
-		let redirectToUrl = getRedirectURL()
+		let redirectToUrl = getRedirectURL()  + "/auth"
 		// redirectToUrl = new URL("explore", redirectToUrl).toString()
 		console.log("redirect to:", redirectToUrl)
 		redirectToUrl = encodeURI(redirectToUrl)
@@ -84,7 +88,7 @@
 		}
 	}
 	async function signInWithDiscord() {
-		let redirectToUrl = getRedirectURL()
+		let redirectToUrl = getRedirectURL()+"/auth"
 		// redirectToUrl = new URL("explore", redirectToUrl).toString()
 		console.log("redirect to:", redirectToUrl)
 		redirectToUrl = encodeURI(redirectToUrl)

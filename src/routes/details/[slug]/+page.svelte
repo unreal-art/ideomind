@@ -6,7 +6,6 @@
 	import { likePost, fetchAuthorOtherPosts, toggleFollow, doesUserFollow } from "@/api";
 	import type {  Post, UploadResponse } from "@/types";
 	import { store } from "$lib/store";
-	import { formatDistanceToNow } from "date-fns";
 	import { copy, type CopyDetail } from "@svelte-put/copy";
 	import { toast } from "svelte-sonner";
 	import type { PageData } from "./$types";
@@ -14,6 +13,8 @@
 	import PostAuthor from "@/components/PostAuthor.svelte";
 	import Likes from "@/Likes.svelte";
 	import DetailList from "@/components/detail/DetailList.svelte";
+	import { supabase } from "@src/supabaseClient";
+	import { abbreviateOutput } from "@src/utils/dateFormat";
 
 	let imageUrls = $state([""]);
 	let { data }: { data: PageData } = $props();
@@ -172,15 +173,12 @@ let loadingMore = $state(false);
 </script>
 
 <section bind:this={sectionElement} class="relative h-full w-full overflow-y-auto px-2">
-	<section class="min-h-[92vh] w-full lg:flex">
-		<div class="flex h-full items-center justify-center lg:w-[75%]">
+	<section class="min-h-[92vh] w-full lg:flex gap-5">
+		<div class="flex h-full items-center justify-center  lg:w-[65%] xl:w-[75%] ">
 			{#if !imageUrls[0]}
-				<div class="flex h-[90vh] w-full items-center justify-center bg-gray-100">
-					<div class="flex items-center space-x-2">
-						<div
-							class="h-4 w-4 animate-spin rounded-full border-b-2 border-t-2 border-primary"
-						></div>
-						<span class="font-medium text-gray-600">Loading...</span>
+				<div class="flex h-[90vh] w-full items-center justify-center ">
+					<div class="flex h-full w-full items-center justify-center ">
+  						<div class="h-6 w-6 animate-spin rounded-full border-4 border-t-transparent border-primary"></div>
 					</div>
 				</div>
 			{:else}
@@ -188,7 +186,7 @@ let loadingMore = $state(false);
 			{/if}
 		</div>
 		<div
-			class="flex h-full flex-col gap-5 overflow-y-scroll rounded-md border bg-white dark:bg-secondary px-2 py-4 shadow lg:w-[25%]"
+			class="flex h-full flex-col gap-5 overflow-y-scroll rounded-md border bg-white dark:bg-secondary px-2 py-4 shadow  lg:w-[35%] xl:w-[25%]"
 		>
 			<!-- user details -->
 			<div class="mt-3 flex h-10 w-full justify-between">
@@ -198,7 +196,7 @@ let loadingMore = $state(false);
 						<PostAuthor authorId={post?.author} />
 						{#if post?.createdAt}
 							<p class="text-light text-sm text-gray-400">
-								{formatDistanceToNow(post?.createdAt)} ago
+								{abbreviateOutput(post?.createdAt, { addSuffix: true })}
 							</p>
 						{/if}
 					</div>
@@ -381,6 +379,6 @@ let loadingMore = $state(false);
 
 	<DetailList data={otherPosts} />
 	{#if loadingMore}
-				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
-				{/if}
+		<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
+	{/if}
 </section>

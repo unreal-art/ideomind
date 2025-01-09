@@ -106,24 +106,4 @@ export const load: LayoutLoad = async ({ url }) => {
 		authenticate(user);
 		redirectOnLogin();
 	}
-
-	//fetch post data
-	try {
-		// Fetch posts with likes
-		const { data: posts, error } = await supabase
-			.from("posts")
-			.select("*")
-			.order("createdAt", { ascending: false })
-			.limit(10);
-
-		if (error) {
-			console.error("Error fetching posts with likes:", error);
-			return { posts: [] };
-		}
-
-		store.initPosts(posts);
-	} catch (err) {
-		console.error("Unexpected error:", err);
-		return { posts: [] };
-	}
 };
