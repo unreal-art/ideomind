@@ -1,23 +1,27 @@
 <script lang="ts">
 	import { getImageUrl } from "@/api";
 	let DEFAULT_IMAGE = "/assets/loading.png"; // Default fallback image
-	let { item,onReadyEvent } = $props(); // Get `item` from props
+	let { item, onReadyEvent } = $props(); // Get `item` from props
 	let imageUrl = $state(""); // State for the image URL
 	let isLoading = $state(true); // Track whether the image is loading
-	
-	import {isHighQualityImage, isValidFileName} from "$utils/fs";
 
+	import { isHighQualityImage, isValidFileName } from "$utils/fs";
 
 	// Function to fetch the image
 	const getImage = async (cid: string) => {
 		try {
-			let imageOptions = ""
-			const fileName = item.ipfsImages[0].fileNames[0]
-			console.log(fileName)
+			let imageOptions = "";
+			const fileName = item.ipfsImages[0].fileNames[0];
+			console.log(fileName);
 			if (isHighQualityImage(fileName)) {
-				imageOptions+="?h=300&w=300"
+				imageOptions += "?h=300&w=300";
 			}
-			imageUrl = import.meta.env.VITE_LIGHTHOUSE_GATE_WAY + item.ipfsImages[0].hash+'/' + fileName + imageOptions
+			imageUrl =
+				import.meta.env.VITE_LIGHTHOUSE_GATE_WAY +
+				item.ipfsImages[0].hash +
+				"/" +
+				fileName +
+				imageOptions;
 		} catch (error) {
 			console.error("Error fetching image:", error);
 			imageUrl = ""; // Use fallback image on fetch error
@@ -30,9 +34,6 @@
 	$effect(() => {
 		getImage(item.ipfsImages[0].hash);
 	});
-
-
-	
 
 	// Function to handle image load errors
 	function handleImageError(event: Event) {
@@ -58,9 +59,9 @@
 			class={`w-full rounded-sm transition-opacity duration-300 ${isLoading ? "opacity-0" : "opacity-100"}`}
 			onerror={handleImageError}
 			onload={() => {
-				isLoading = false
-				onReadyEvent?.(item.id)
-				}}
+				isLoading = false;
+				onReadyEvent?.(item.id);
+			}}
 		/>
 	</a>
 {/if}

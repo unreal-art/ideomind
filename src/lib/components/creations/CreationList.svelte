@@ -8,30 +8,30 @@
 	import More from "../More.svelte";
 	import Likes from "@/Likes.svelte";
 
-	
 	let { data, choice, loading }: { data: Post[]; choice: string; loading: boolean } = $props();
 	let posts = $derived(filterPostByCat(data, choice));
-	let readyBlocks = $state<string[]>([])
+	let readyBlocks = $state<string[]>([]);
 
-	function onReadyEvent(data: string){
-		readyBlocks.push(data)
+	function onReadyEvent(data: string) {
+		readyBlocks.push(data);
 	}
-
-	
 </script>
 
-{#if loading }
-	{#if loading ||  (readyBlocks.length == 0 && data.length > 0)}
+{#if loading}
+	{#if loading || (readyBlocks.length == 0 && data.length > 0)}
 		<div class="flex h-[100vh] items-center justify-center">
 			<div class="flex items-center space-x-2">
 				<!-- Spinner -->
-				<div class="h-6 w-6 animate-spin rounded-full border-4 border-t-transparent border-gray-400"></div>
+				<div
+					class="h-6 w-6 animate-spin rounded-full border-4 border-gray-400 border-t-transparent"
+				></div>
 			</div>
 		</div>
 	{/if}
-
 {:else}
-	<div class=" grid  grid-cols-1 justify-center gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 pb-6 pt-14 lg:pt-4">
+	<div
+		class=" grid grid-cols-1 justify-center gap-4 pb-6 pt-14 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 lg:pt-4 xl:grid-cols-5"
+	>
 		{#each posts as item: Post}
 			<div class="relative mb-6 break-inside-avoid">
 				{#if readyBlocks.includes(item.id)}
@@ -42,7 +42,7 @@
 					</div>
 				{/if}
 				<a href={`/details/${item.id}`}>
-					<Image {item} {onReadyEvent}/>
+					<Image {item} {onReadyEvent} />
 				</a>
 			</div>
 		{/each}
