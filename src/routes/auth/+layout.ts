@@ -1,5 +1,6 @@
-// Update the path to your Supabase client
+// Update the path to your Supabase cl
 import { authenticate, getPostsForAuthPage } from "@/api";
+
 import { goto } from "$app/navigation";
 import type { LayoutLoad } from "./$types";
 import { store } from "$lib/store";
@@ -38,6 +39,7 @@ export const load: LayoutLoad = async ({ url }) => {
 
 	// console.log("searchParams: " + url.searchParams); //its empty for the reason that its prepend by #
 
+
 	// Exchange the code for a session if the user is redirected back from Discord
 	if (fullUrl.includes("access_token") || fullUrl.includes("code")) {
 		const accessToken = url.searchParams.get("access_token") || url.searchParams.get("code");
@@ -60,6 +62,7 @@ export const load: LayoutLoad = async ({ url }) => {
 		const { data: sessionData } = await supabase.auth.getSession();
 		const userData = sessionData?.session?.user || null;
 		// console.log("session", sessionData);
+
 		const { data: profileData } = await supabase
 			.from("profiles")
 			.select("*")
@@ -102,6 +105,8 @@ export const load: LayoutLoad = async ({ url }) => {
 			}
 		}
 
+
 		return { user };
+
 	}
 };

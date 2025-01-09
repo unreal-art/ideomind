@@ -8,6 +8,7 @@
 	import { getRedirectURL } from "../oauth";
 	import { supabase } from "@src/supabaseClient";
 	import type { PageData } from "./$types";
+
 	// import { page } from '$app/stores';
 
 	let { data }: { data: PageData } = $props();
@@ -20,6 +21,7 @@
 	let intervalId: number | null = null; // Store interval ID to manage the loop
 
 	
+
 
 	//handle auth redirection just like in main route/layout.svelte
 	$effect(() => {
@@ -63,6 +65,7 @@
 // 			redirectOnLogin();
 // 		}
 //   })
+
 
 
 	// Array of image sources to cycle through

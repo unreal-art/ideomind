@@ -1,3 +1,4 @@
+
 import { authenticate, isAuthenticated } from "@/api"; // Your existing authentication logic
 import { redirect } from "@sveltejs/kit";
 import type { LayoutLoad } from "./$types";
@@ -20,9 +21,11 @@ function generateEthereumWallet(): WalletObject {
 	};
 }
 
+
 export const load: LayoutLoad = async ({ url }) => {
 	// Get the current path
 	const currentPath = url.pathname;
+
 
 	const { data: sessionData, error } = await supabase.auth.getSession();
 	const userData = sessionData?.session?.user || null;
@@ -83,6 +86,7 @@ export const load: LayoutLoad = async ({ url }) => {
 		if (currentPath !== "/auth") {
 			throw redirect(302, "/auth");
 		}
+
 	}
 
 	// Allow the request to proceed for all other routes
