@@ -42,7 +42,7 @@ jobs:
         run: |
           echo "$envfile" > .env
           sed -i 's/ /\n/g' .env
-          source .env
+          # source .env
 
       - name: Install Dependencies
         run: |
