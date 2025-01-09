@@ -43,6 +43,7 @@ export async function generateImage(dto: JobSpec) {
 
 // Function to authenticate a user
 export const authenticate = (user: User) => {
+	// console.log(user);
 	store.authenticateUser(user);
 	sessionStorage.setItem("user", user.id);
 };
@@ -667,6 +668,23 @@ export const fetchProfileData = async (userId: string) => {
 	}
 };
 
+export const getPostsForAuthPage = async () => {
+	// Fetch the first 10 posts
+	const { data: posts, error: postError } = await supabase
+		.from("posts")
+		.select("*")
+		.order("createdAt", { ascending: false })
+		.range(0, 9); // Fetch posts 0-9 (10 posts total)
+
+	if (postError) {
+		console.error("Error fetching posts :", postError);
+		return { posts: [] };
+	}
+	console.log(posts);
+	// Initialize store with the fetched posts
+	store.initPosts(posts);
+};
+
 export const logoutUser = async () => {
 	try {
 		const { error } = await supabase.auth.signOut();
@@ -675,7 +693,7 @@ export const logoutUser = async () => {
 		} else {
 			console.log("User logged out successfully.");
 			store.reset();
-			goto("/");
+			goto("/auth");
 		}
 	} catch (err) {
 		console.error("Unexpected error during logout:", err);

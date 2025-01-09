@@ -8,6 +8,9 @@
 	import { getRedirectURL } from "../oauth";
 	import { supabase } from "@src/supabaseClient";
 	import type { PageData } from "./$types";
+
+	// import { page } from '$app/stores';
+
 	let { data }: { data: PageData } = $props();
 
 	let imageCache = $state(new Map<string, string>()); // Cache for storing image URLs
@@ -18,29 +21,51 @@
 	let intervalId: number | null = null; // Store interval ID to manage the loop
 
 	
-	
-	function isLoggedIn(): boolean {
-		// if (!browser) {
-		// 	return false;
-		// }
 
-		const userId = sessionStorage.getItem("user");
-		if (userId && userId?.length > 1) {
-			return true;
-		}
-		return false;
-	}
 
-	function redirectOnLogin() {
-		console.count("to /explore");
-		goto("/explore");
-	}
+	//handle auth redirection just like in main route/layout.svelte
 	$effect(() => {
-		if (isLoggedIn()) {
-			console.count("Already logged in");
-			redirectOnLogin();
+	( async()=> {
+		const { data: sessionData, error } = await supabase.auth.getSession();
+		// console.log(sessionData && data.user)
+		//@ts-ignore
+		if(sessionData && data.user ){
+			//@ts-ignore
+			authenticate(data.user)
+	
+				goto("/explore")
+			
+		}else{
+			// goto("/auth")
 		}
+
+	})()
   })
+
+	
+// 	function isLoggedIn(): boolean {
+// 		// if (!browser) {
+// 		// 	return false;
+// 		// }
+
+// 		const userId = sessionStorage.getItem("user");
+// 		if (userId && userId?.length > 1) {
+// 			return true;
+// 		}
+// 		return false;
+// 	}
+
+// 	function redirectOnLogin() {
+// 		console.count("to /explore");
+// 		goto("/explore");
+// 	}
+// 	$effect(() => {
+// 		if (isLoggedIn()) {
+// 			console.count("Already logged in");
+// 			redirectOnLogin();
+// 		}
+//   })
+
 
 
 	// Array of image sources to cycle through
