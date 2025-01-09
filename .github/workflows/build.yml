@@ -42,12 +42,6 @@ jobs:
           cache-dependency-path: "bun.lockb"
           cache: "npm"
 
-      - name: Setup upterm session
-        uses: lhotari/action-upterm@v1
-        timeout-minutes: 360
-        with:
-          limit-access-to-users: lemniscite,Nasfame,pythoneerHiro,laciferin2024
-
       - name: Write environment
         run: |
           echo "$envfile" > .env.ci
