@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '../app.css';
-	let { children } = $props();
+	
 	import { page } from '$app/stores';
 	import SideBar from '@/components/SideBar.svelte';
 
@@ -14,7 +14,7 @@
 	import { quickStore } from '@/quickStore';
 	  import { ModeWatcher } from "mode-watcher";
 	import NProgress from 'nprogress';
-  import { afterNavigate, beforeNavigate } from '$app/navigation';
+  import { afterNavigate, beforeNavigate, goto } from '$app/navigation';
   import 'nprogress/nprogress.css';
 
 
@@ -23,8 +23,15 @@
 
 	import { toBool } from "$utils/bool.js";
 	import { PUBLIC_DEV_SW } from '$env/static/public';
+	import type { PageData } from './$types';
+	import { supabase } from '@src/supabaseClient';
+	import { authenticate } from '@/api';
 
-  
+
+	
+	let { children ,data} = $props();
+
+
   onMount(() => {
     if ('serviceWorker' in navigator) {
 			let enableSW = dev ? toBool(PUBLIC_DEV_SW) : true
@@ -53,6 +60,26 @@
   afterNavigate(() => {
     NProgress.done();
   });
+
+  //handle auth redirection client side
+  $effect(() => {
+	( async()=> {
+		const { data: sessionData, error } = await supabase.auth.getSession();
+		//@ts-ignore
+		if(sessionData && data.user ){
+			//@ts-ignore
+			authenticate(data.user)
+			if($page.url.pathname == "/" || $page.url.pathname == "/auth"){
+				goto("/explore")
+			}else{
+				goto($page.url.pathname)
+			}
+		}else{
+			goto("/auth")
+		}
+
+	})()
+  })
 
 
 	

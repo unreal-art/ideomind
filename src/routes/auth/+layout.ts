@@ -1,5 +1,5 @@
 // Update the path to your Supabase client
-import { authenticate } from "@/api";
+import { authenticate, getPostsForAuthPage } from "@/api";
 import { goto } from "$app/navigation";
 import type { LayoutLoad } from "./$types";
 import { store } from "$lib/store";
@@ -30,16 +30,13 @@ function redirectOnLogin() {
 }
 
 export const load: LayoutLoad = async ({ url }) => {
-	// if (isAuthenticated()) {
-	// 	console.count("Already logged in");
-	// 	return {};
-	// 	// redirectOnLogin();
-	// }
+	//get posts for auth page
+	getPostsForAuthPage();
 
 	const fullUrl = url.href;
-	console.log(`Loading ${fullUrl}`);
+	// console.log(`Loading ${fullUrl}`);
 
-	console.log("searchParams: " + url.searchParams); //its empty for the reason that its prepend by #
+	// console.log("searchParams: " + url.searchParams); //its empty for the reason that its prepend by #
 
 	// Exchange the code for a session if the user is redirected back from Discord
 	if (fullUrl.includes("access_token") || fullUrl.includes("code")) {
@@ -62,6 +59,7 @@ export const load: LayoutLoad = async ({ url }) => {
 		// Get the current user session after token exchange
 		const { data: sessionData } = await supabase.auth.getSession();
 		const userData = sessionData?.session?.user || null;
+		// console.log("session", sessionData);
 		const { data: profileData } = await supabase
 			.from("profiles")
 			.select("*")
@@ -103,7 +101,7 @@ export const load: LayoutLoad = async ({ url }) => {
 				return null;
 			}
 		}
-		authenticate(user);
-		redirectOnLogin();
+
+		return { user };
 	}
 };
