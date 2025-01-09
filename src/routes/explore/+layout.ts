@@ -1,6 +1,4 @@
 import { supabase } from "../../supabaseClient";
-import { authenticate } from "@/api";
-import { goto } from "$app/navigation";
 import type { LayoutLoad } from "./$types";
 import { store } from "$lib/store";
 

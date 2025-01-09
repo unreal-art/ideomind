@@ -8,6 +8,7 @@
 	import PosterImage from "../PosterImage.svelte";
 	import PostAuthor from "../PostAuthor.svelte";
 	import Likes from "@/Likes.svelte";
+	import { abbreviateOutput } from "@src/utils/dateFormat";
 
 	let readyBlocks = $state<string[]>([]);
 
@@ -31,7 +32,7 @@
 							<div class="flex flex-col">
 								<PostAuthor authorId={item.author} />
 								<p class="text-light text-sm text-gray-400">
-									{item.createdAt && formatDistanceToNow(item.createdAt)} ago
+									{abbreviateOutput(item?.createdAt, { addSuffix: true })}
 								</p>
 							</div>
 						</div>

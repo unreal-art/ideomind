@@ -62,7 +62,7 @@
 <Toaster />
 <ModeWatcher />
 
-{#if $page.url.pathname === '/'}
+{#if $page.url.pathname === '/' || $page.url.pathname === "/auth"}
 	{@render children()}
 {:else}
 	<main class="relative flex h-screen w-screen">

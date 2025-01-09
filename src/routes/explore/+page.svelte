@@ -5,7 +5,6 @@
 	import { store } from "$lib/store";
 	import PromptForm from "@/components/PromptForm.svelte";
 	import type { PageData } from "./$types";
-	import { goto } from "$app/navigation";
 	import type { Post } from "@/types";
 	import SearchBox from "@/components/SearchBox.svelte";
 	import { supabase } from "@src/supabaseClient";
@@ -43,9 +42,7 @@
 	}
 
 
-	$effect(() => {
-		if (!$store.isAuthenticated) goto("/");
-	});
+	
 
 	$effect(() => {
 		async function getPostOfFollowee() {

@@ -60,9 +60,7 @@ let loadingMore = $state(false);
 let offset = $state(10);
 let tab = $state("")
 
-	$effect(() => {
-		if (!$store.isAuthenticated) goto("/");
-	});
+	
 
 	// Toggle input visibility
 	const toggleInput = (): void => {
