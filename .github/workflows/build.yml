@@ -54,7 +54,8 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          cp .env.example .env.local
+          # cp .env.example .env.local
+          source .env.example
           bun i
 
       - name: Build
