@@ -87,3 +87,15 @@
 *::-webkit-scrollbar {
 	display: none;
 }
+
+/* Hide spinner in Webkit browsers (Chrome, Safari) */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+/* Hide spinner in Firefox */
+input[type="number"] {
+	-moz-appearance: textfield;
+}
