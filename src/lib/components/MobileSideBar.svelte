@@ -31,6 +31,8 @@
 	import random from 'random';
 	import { toggleMode } from 'mode-watcher';
 	import { quickStore } from '$lib/quickStore';
+	import { appkitStore } from "../appkitStore";
+  
 
 	let text = $state('');
 	let prompt = $derived(text.trim());
@@ -207,6 +209,7 @@ const onclick = async () => {
 									<span>Profile</span>
 								</DropdownMenu.Item>
 							</a>
+							
 							<DropdownMenu.Item>
 								<CreditCard class="mr-2 size-4"></CreditCard>
 								<span>Billing</span>
@@ -235,6 +238,10 @@ const onclick = async () => {
 							<Icon src={RiDocumentContractLine} className="mr-2 size-4" />
 							<span>Terms & Privacy</span>
 						</DropdownMenu.Item>
+						<DropdownMenu.Item>
+								
+									<appkit-button />
+							</DropdownMenu.Item>
 						<DropdownMenu.Separator></DropdownMenu.Separator>
 						<DropdownMenu.Item class="pl-1" onclick={toggleMode}>
 							
