@@ -4,6 +4,7 @@ import { mainnet, arbitrum } from "@reown/appkit/networks";
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
 import { defineChain } from "viem";
 import { http, createConfig } from "@wagmi/core";
+import { PUBLIC_APPKIT_ID } from "$env/static/public";
 
 // 1. Define TypeScript types for the store
 export interface AppKitStore {
@@ -14,7 +15,7 @@ export interface AppKitStore {
 }
 
 // 2. Get a project ID at https://cloud.reown.com
-const projectId = import.meta.env.VITE_WALLET_CONNECT_ID;
+const projectId = PUBLIC_APPKIT_ID;
 
 const torusTestnet = defineChain({
 	id: 8194, // Replace with the actual chain ID for the Torus testnet
@@ -75,7 +76,7 @@ const modal = createAppKit({
 	},
 	themeVariables: {
 		"--w3m-border-radius-master": "1px",
-		"--w3m-accent": "#2c3e50"
+		"--w3m-accent": "#0f172a"
 	}
 });
 
