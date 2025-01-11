@@ -1,20 +1,22 @@
 import { formatDistanceToNow } from "date-fns";
 
-// Define a function to abbreviate the output
 export const abbreviateOutput = (date: Date, options?: { addSuffix?: boolean }): string => {
-	// Get the full output from formatDistanceToNow
 	const fullOutput = formatDistanceToNow(date, options);
 
-	// Handle the case for "less than a minute ago"
 	if (fullOutput === "less than a minute ago") {
-		return "just now"; // Or any other user-friendly string
+		return "just now";
 	}
 
-	// Perform replacements for other time units
 	return fullOutput
-		.replace(/\bminutes?\b/, "mins") // Replace "minute" or "minutes" with "mins"
-		.replace(/\bhours?\b/, "hrs") // Replace "hour" or "hours" with "hrs"
-		.replace(/\bdays?\b/, "days") // Keep "days" unchanged
-		.replace(/\bmonths?\b/, "mnths") // Replace "month" or "months" with "mos"
-		.replace(/\byears?\b/, "yrs"); // Replace "year" or "years" with "yrs"
+		.replace(/\babout\b\s*/g, "") // Remove "about"
+		.replace(/\b1 minute\b/, "1 min") // Replace singular "1 minute"
+		.replace(/\bminutes\b/, "mins") // Replace plural "minutes"
+		.replace(/\b1 hour\b/, "1 hr") // Replace singular "1 hour"
+		.replace(/\bhours\b/, "hrs") // Replace plural "hours"
+		.replace(/\b1 day\b/, "1 day") // Singular "1 day" remains unchanged
+		.replace(/\bdays\b/, "days") // Plural "days" remains unchanged
+		.replace(/\b1 month\b/, "1 mnth") // Replace singular "1 month"
+		.replace(/\bmonths\b/, "mnths") // Replace plural "months"
+		.replace(/\b1 year\b/, "1 yr") // Replace singular "1 year"
+		.replace(/\byears\b/, "yrs"); // Replace plural "years"
 };
