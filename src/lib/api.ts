@@ -680,7 +680,7 @@ export const getPostsForAuthPage = async () => {
 		console.error("Error fetching posts :", postError);
 		return { posts: [] };
 	}
-	console.log(posts);
+
 	// Initialize store with the fetched posts
 	store.initPosts(posts);
 };

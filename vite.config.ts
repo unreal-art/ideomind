@@ -1,10 +1,27 @@
 import { sveltekit } from "@sveltejs/kit/vite";
 import path from "path";
 import { defineConfig } from "vite";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 export default defineConfig({
-	plugins: [sveltekit()],
-
+	plugins: [
+		nodePolyfills({
+			exclude: ["fs"],
+			globals: {
+				Buffer: true,
+				global: true,
+				process: true
+			},
+			protocolImports: true
+		}),
+		sveltekit()
+	],
+	optimizeDeps: {
+		include: ["dayjs/plugin/relativeTime.js", "dayjs", "@web3auth/ethereum-provider"]
+	},
+	// test: {
+	// 	include: ["src/**/*.{test,spec}.{js,ts}"]
+	// },
 	resolve: {
 		alias: {
 			// "@": path.resolve("./"),
@@ -21,12 +38,4 @@ export default defineConfig({
 			// $components: path.resolve("./src/lib/components")
 		}
 	}
-	// hot reloading rules
-
-	// server: {
-	// 	host: true,
-	// 	hmr: {
-	// 		host: "localhost"
-	// 	}
-	// }
 });
