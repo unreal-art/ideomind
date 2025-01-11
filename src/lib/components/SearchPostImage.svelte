@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { PUBLIC_LIGHTHOUSE_GATE_WAY } from "$env/static/public";
 	import { getImageUrl } from "@/api";
 	let DEFAULT_IMAGE = "/assets/loading.png"; // Default fallback image
 	let { item } = $props(); // Get `item` from props
@@ -8,7 +9,7 @@
 	// Function to fetch the image
 	const getImage = async (cid: string) => {
 		try {
-			imageUrl = import.meta.env.VITE_LIGHTHOUSE_GATE_WAY + item.ipfsImages[0].hash+'/' + item.ipfsImages[0].fileNames[0] + "?h-100&w=100"
+			imageUrl = PUBLIC_LIGHTHOUSE_GATE_WAY + item.ipfsImages[0].hash+'/' + item.ipfsImages[0].fileNames[0] + "?h-100&w=100"
 		} catch (error) {
 			console.error("Error fetching image:", error);
 			imageUrl = ""; // Use fallback image on fetch error

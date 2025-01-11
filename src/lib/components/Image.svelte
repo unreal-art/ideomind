@@ -6,6 +6,7 @@
 	let isLoading = $state(true); // Track whether the image is loading
 
 	import { isHighQualityImage, isValidFileName } from "$utils/fs";
+	import { PUBLIC_LIGHTHOUSE_GATE_WAY } from "$env/static/public";
 
 	// Function to fetch the image
 	const getImage = async (cid: string) => {
@@ -17,7 +18,7 @@
 				imageOptions += "?h=300&w=300";
 			}
 			imageUrl =
-				import.meta.env.VITE_LIGHTHOUSE_GATE_WAY +
+				PUBLIC_LIGHTHOUSE_GATE_WAY +
 				item.ipfsImages[0].hash +
 				"/" +
 				fileName +

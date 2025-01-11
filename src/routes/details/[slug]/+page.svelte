@@ -15,6 +15,7 @@
 	import DetailList from "@/components/detail/DetailList.svelte";
 	import { supabase } from "@src/supabaseClient";
 	import { abbreviateOutput } from "@src/utils/dateFormat";
+	import { PUBLIC_LIGHTHOUSE_GATE_WAY } from "$env/static/public";
 
 	let imageUrls = $state([""]);
 	let { data }: { data: PageData } = $props();
@@ -85,7 +86,7 @@ let loadingMore = $state(false);
 	};
 
 	const getImages = async (imgs: UploadResponse[]) => {
-		imageUrls = imgs.map(item => import.meta.env.VITE_LIGHTHOUSE_GATE_WAY +  item.hash +'/' + item.fileNames[0])
+		imageUrls = imgs.map(item => PUBLIC_LIGHTHOUSE_GATE_WAY +  item.hash +'/' + item.fileNames[0])
 
 	};
 

@@ -8,6 +8,7 @@
 	import { getRedirectURL } from "../oauth";
 	import { supabase } from "@src/supabaseClient";
 	import type { PageData } from "./$types";
+	import { PUBLIC_LIGHTHOUSE_GATE_WAY } from "$env/static/public";
 
 	// import { page } from '$app/stores';
 
@@ -72,7 +73,7 @@
 
 	// Function to fetch the image or get it from cache
 	const getImage = async (cid: string) => {
-		imageUrl = import.meta.env.VITE_LIGHTHOUSE_GATE_WAY + cid + "?h=300&w=300";
+		imageUrl = PUBLIC_LIGHTHOUSE_GATE_WAY + cid + "?h=300&w=300";
 	};
 
 	// Function to start the image rotation
