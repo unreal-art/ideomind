@@ -100,7 +100,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const postDarts = async (): Promise<Response> => {
 		// (code === 0 || code === null) && outputFolder; sometime goroutines panic
 		if (!outputFolder) {
-			json(
+			return json(
 				{ error: `Command execution failed with code ${exitCode}`, stdout, stderr, command },
 				{ status: 500 }
 			);
@@ -111,8 +111,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			console.log("Image upload successful:", uploadResponse);
 		} catch (uploadError) {
 			console.error("Error uploading image/post:", uploadError);
-
-			json(
+			return json(
 				{
 					error: "Image upload failed.",
 					details: uploadError instanceof Error ? uploadError.message : "Unknown error",
