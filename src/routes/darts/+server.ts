@@ -80,17 +80,6 @@ export const POST: RequestHandler = async ({ request }) => {
 	let processExited = false;
 	const childProcess = exec(`${envVarsString} ${command}`);
 
-	childProcess.stdout?.on("data", (out) => {
-		console.log(`stdout: ${out}`);
-		stdout = out.toString();
-
-		outputFolder = outputFolder || extractLocationURL(stdout);
-	});
-
-	childProcess.stderr?.on("data", (_stderr) => {
-		console.error(`stderr: ${_stderr}`);
-		stderr = _stderr.toString();
-	});
 	const postDarts = async (): Promise<Response> => {
 		// (code === 0 || code === null) && outputFolder; sometime goroutines panic
 		if (!outputFolder) {
@@ -159,6 +148,17 @@ export const POST: RequestHandler = async ({ request }) => {
 	// Execute the command
 
 	return new Promise((resolve) => {
+		childProcess.stdout?.on("data", (out) => {
+			console.log(`stdout: ${out}`);
+			stdout = out.toString();
+
+			outputFolder = outputFolder || extractLocationURL(stdout);
+		});
+
+		childProcess.stderr?.on("data", (_stderr) => {
+			console.error(`stderr: ${_stderr}`);
+			stderr = _stderr.toString();
+		});
 		childProcess.on("close", async (code) => {
 			console.log(`child process exited with code ${code}`);
 			exitCode = code;
