@@ -73,7 +73,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	console.log("command", JSON.stringify(command));
 
-	let outputFolder: string = "";
+	let outputFolder: string | null = null;
 	let stderr: string = "";
 	let stdout: string = "";
 	let exitCode: number | null = null;
@@ -91,13 +91,6 @@ export const POST: RequestHandler = async ({ request }) => {
 		console.error(`stderr: ${_stderr}`);
 		stderr = _stderr.toString();
 	});
-	childProcess.on("close", async (code) => {
-		console.log(`child process exited with code ${code}`);
-		exitCode = code;
-		console.log(outputFolder);
-		processExited = true;
-	});
-
 	const postDarts = async (): Promise<Response> => {
 		// (code === 0 || code === null) && outputFolder; sometime goroutines panic
 		if (!outputFolder) {
@@ -157,15 +150,23 @@ export const POST: RequestHandler = async ({ request }) => {
 		}
 		return json({ outputFolder, stdout, command, uploadResponse });
 	};
-	while (!processExited || outputFolder?.trim() === "") {
-		await Bluebird.delay(2000);
-		console.log("sleeping for 2s");
-	}
+	// while (!processExited || outputFolder?.trim() === "") {
+	// 	// await Bluebird.delay(2000);
+	// 	// console.log("sleeping for 2s");
+	// }
 	// const res = await postDarts();
 
 	// Execute the command
+
 	return new Promise((resolve) => {
-		resolve(postDarts());
+		childProcess.on("close", async (code) => {
+			console.log(`child process exited with code ${code}`);
+			exitCode = code;
+			console.log(outputFolder);
+			processExited = true;
+
+			resolve(postDarts());
+		});
 	});
 };
 
