@@ -192,9 +192,9 @@ let loadingMore = $state(false);
 			<!-- user details -->
 			<div class="mt-3 flex h-10 w-full justify-between">
 				<div class="relative flex h-full space-x-2">
-					<PosterImage authorId={post?.author} />
+					<a href={`/profile/${post.author}`}><PosterImage authorId={post?.author} /></a>
 					<div class=" flex flex-col">
-						<PostAuthor authorId={post?.author} />
+						<a href={`/profile/${post.author}`}><PostAuthor authorId={post?.author} /></a>
 						{#if post?.createdAt}
 							<p class="text-light text-sm text-gray-400">
 								{abbreviateOutput(post?.createdAt, { addSuffix: true })}

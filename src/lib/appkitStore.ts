@@ -76,7 +76,9 @@ const modal = createAppKit({
 	},
 	themeVariables: {
 		"--w3m-border-radius-master": "1px",
-		"--w3m-accent": "#0f172a"
+		"--w3m-accent": "#fff",
+		"--w3m-color-mix": "#0f172a",
+		"--w3m-color-mix-strength": 40
 	}
 });
 

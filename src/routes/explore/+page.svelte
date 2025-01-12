@@ -14,6 +14,7 @@
 	let { data }: { data: PageData } = $props();
 	let loading  = $state(false)
 	let sectionElement: HTMLElement | null = $state(null);
+	let pageLoading = $state(true)
 
 	let offset = $state(10);
 
@@ -41,9 +42,6 @@
 
 	}
 
-
-	
-
 	$effect(() => {
 		async function getPostOfFollowee() {
 			postFromFollowedUsers = await postsByFollowed($store.user?.id || "0", posts);
@@ -53,7 +51,10 @@
 	});
 
 	$effect(() => {
-		if (!data.posts) return;
+		if (!data.posts) {
+			return;
+		}
+		if(data.posts.length ) pageLoading = false
 		posts = data.posts
 	});
 	  const handleScroll = () => {
@@ -66,9 +67,6 @@
   }
 };
 
-
-
-  // Use effect for setting up and tearing down the event listener
   
 $effect(() => {
     if (sectionElement) {
@@ -81,9 +79,6 @@ $effect(() => {
       };
     }
   });
-
-
-
 	
 </script>
 
@@ -109,22 +104,61 @@ $effect(() => {
 				</Tabs.List>
 			</div>
 			<Tabs.Content value="explore" class=" w-full pb-14 ">
-				<PostList data={posts} />
+				{#if pageLoading}
+					<div class="flex h-[100vh] items-center justify-center">
+			<div class="flex items-center space-x-2">
+				<!-- Spinner -->
+				<div
+					class="h-6 w-6 animate-spin rounded-full border-4 border-gray-400 border-t-transparent"
+				>
+			</div>
+			</div>
+		</div>
+		{:else}
+			<PostList data={posts} />
 				{#if loading}
 				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
 				{/if}
+		{/if}
+				
 			</Tabs.Content>
 			<Tabs.Content value="following" class=" w-full  pb-14">
-				<PostList data={postFromFollowedUsers} />
+				
+
+				{#if pageLoading}
+					<div class="flex h-[100vh] items-center justify-center">
+			<div class="flex items-center space-x-2">
+				<!-- Spinner -->
+				<div
+					class="h-6 w-6 animate-spin rounded-full border-4 border-gray-400 border-t-transparent"
+				>
+			</div>
+			</div>
+		</div>
+		{:else}
+		<PostList data={postFromFollowedUsers} />
 				{#if loading}
 				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
 				{/if}
+		{/if}
 			</Tabs.Content>
 			<Tabs.Content value="top" class=" w-full pb-14">
-				<PostList data={posts} />
+					{#if pageLoading}
+					<div class="flex h-[100vh] items-center justify-center">
+			<div class="flex items-center space-x-2">
+				<!-- Spinner -->
+				<div
+					class="h-6 w-6 animate-spin rounded-full border-4 border-gray-400 border-t-transparent"
+				>
+			</div>
+			</div>
+		</div>
+		{:else}
+			<PostList data={posts} />
 				{#if loading}
 				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
 				{/if}
+		{/if}
 			</Tabs.Content>
 
 		</Tabs.Root>
