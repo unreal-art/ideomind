@@ -6,7 +6,7 @@ import { dev } from "$app/environment";
 import { genLhApiKey } from "@utils/lh";
 
 import { DARTS_PRIVATE_KEY, DARTS_CLI } from "$env/static/private";
-import { uploadFilesInOutputs } from "./lighthouse";
+import { uploadFilesInOutputs, type UploadResponse } from "./lighthouse";
 import { postDataToDb } from "./postDataToDb";
 import Bluebird from "bluebird";
 
@@ -73,96 +73,94 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	console.log("command", JSON.stringify(command));
 
+	const childProcess = exec(`${envVarsString} ${command}`);
+
+	let outputFolder: string | null = null;
+	let stderr: string = "";
+	let stdout: string = "";
+	let exitCode: Number | null = null;
+
+	childProcess.stdout?.on("data", (out) => {
+		console.log(`stdout: ${out}`);
+		stdout = out.toString();
+
+		outputFolder = outputFolder || extractLocationURL(stdout);
+	});
+
+	childProcess.stderr?.on("data", (_stderr) => {
+		console.error(`stderr: ${_stderr}`);
+		stderr = _stderr.toString();
+	});
+	childProcess.on("close", async (code) => {
+		console.log(`child process exited with code ${code}`);
+		exitCode = code;
+		console.log(outputFolder);
+	});
+
+	const postDarts = async (): Promise<Response> => {
+		// (code === 0 || code === null) && outputFolder; sometime goroutines panic
+		if (!outputFolder) {
+			json(
+				{ error: `Command execution failed with code ${exitCode}`, stdout, stderr, command },
+				{ status: 500 }
+			);
+		}
+		let uploadResponse: UploadResponse[] = [];
+		try {
+			uploadResponse = await uploadFilesInOutputs(outputFolder as string);
+			console.log("Image upload successful:", uploadResponse);
+		} catch (uploadError) {
+			console.error("Error uploading image/post:", uploadError);
+
+			json(
+				{
+					error: "Image upload failed.",
+					details: uploadError instanceof Error ? uploadError.message : "Unknown error",
+					outputFolder,
+					stdout,
+					command
+				},
+				{ status: 500 }
+			);
+		}
+		//post to db
+
+		const dto = jobDto;
+
+		try {
+			await postDataToDb({
+				device: dto.inputs?.Device,
+				cpu: dto.inputs?.cpu,
+				seed: dto.inputs?.Seed,
+				prompt: dto.inputs?.Prompt,
+				n: dto.inputs?.N,
+
+				author: dto.author ?? "e260b0ab-9867-4507-97be-976779c20c9f",
+				ipfsImages: uploadResponse,
+				isPrivate: dto.isPrivate ?? false,
+				isPinned: dto.isPinned ?? false,
+				category: "GENERATION"
+			});
+		} catch (e) {
+			console.error("Error posting to db", e);
+			return json(
+				{
+					outputFolder,
+					stdout,
+					command,
+					uploadResponse,
+					error: "Post failed.",
+					errorMessage: e
+				},
+				{ status: 500 }
+			);
+		}
+		return json({ outputFolder, stdout, command, uploadResponse });
+	};
+
 	// Execute the command
 	return new Promise((resolve) => {
-		// TODO:
-		const childProcess = exec(`${envVarsString} ${command}`);
-
-		let outputFolder: string | null = null;
-		let stderr: string = "";
-		let stdout: string = "";
-
-		childProcess.stdout?.on("data", (out) => {
-			console.log(`stdout: ${out}`);
-			stdout = out.toString();
-
-			outputFolder = outputFolder || extractLocationURL(stdout);
-		});
-
-		childProcess.stderr?.on("data", (_stderr) => {
-			console.error(`stderr: ${_stderr}`);
-			stderr = _stderr.toString();
-		});
-
-		childProcess.on("close", async (code) => {
-			console.log(`child process exited with code ${code}`);
-			console.log(outputFolder);
-			// (code === 0 || code === null) && outputFolder; sometime goroutines panic
-			if (outputFolder) {
-				//upload image + `/outputs/${formatText(jobDto.inputs?.Prompt as string)}`
-				try {
-					const uploadResponse = await uploadFilesInOutputs(outputFolder);
-					console.log("Image upload successful:", uploadResponse);
-					//post to db
-
-					const dto = jobDto;
-
-					try {
-						await postDataToDb({
-							device: dto.inputs?.Device,
-							cpu: dto.inputs?.cpu,
-							seed: dto.inputs?.Seed,
-							prompt: dto.inputs?.Prompt,
-							n: dto.inputs?.N,
-
-							author: dto.author ?? "e260b0ab-9867-4507-97be-976779c20c9f",
-							ipfsImages: uploadResponse,
-							isPrivate: dto.isPrivate ?? false,
-							isPinned: dto.isPinned ?? false,
-							category: "GENERATION"
-						});
-					} catch (e) {
-						console.error("Error posting to db", e);
-						resolve(
-							json(
-								{
-									outputFolder,
-									stdout,
-									command,
-									uploadResponse,
-									error: "Post failed.",
-									errorMessage: e
-								},
-								{ status: 500 }
-							)
-						);
-					}
-
-					resolve(json({ outputFolder, stdout, command, uploadResponse }));
-				} catch (uploadError) {
-					console.error("Error uploading image/post:", uploadError);
-					resolve(
-						json(
-							{
-								error: "Image upload failed.",
-								details: uploadError instanceof Error ? uploadError.message : "Unknown error",
-								outputFolder,
-								stdout,
-								command
-							},
-							{ status: 500 }
-						)
-					);
-				}
-			} else {
-				resolve(
-					json(
-						{ error: `Command execution failed with code ${code}`, stdout, stderr, command },
-						{ status: 500 }
-					)
-				);
-			}
-		});
+		resolve(postDarts());
 	});
 };
 
