@@ -2,12 +2,21 @@
 	import { Moon, Sun, } from 'lucide-svelte';
 	import Button from './ui/button/button.svelte';
 	import PromptForm from './PromptForm.svelte';
+	import { derived } from 'svelte/store';
 
 	import { toggleMode } from 'mode-watcher';
-	import { appkitStore } from "../appkitStore";
+	import { appkitStore,   } from "../appkitStore";
 	import TopUp from './TopUp.svelte';
-  
+	
+	let isConnected = $state(false)
 
+	
+	$effect(() => {
+	 setInterval(() => {
+      // Access the store reactively
+     isConnected =  $appkitStore.modal.getIsConnectedState()
+    }, 1000);
+	})
 
 </script>
 
@@ -25,13 +34,10 @@
   />
   <span class="sr-only">Toggle theme</span>
 </Button>
+	{#if isConnected}
 		<TopUp  />
-		<!-- <Button
-		 variant="default"
-			onclick={openConnectModal}
-			class="flex h-12 space-x-2   hover:text-white"
-			><Wallet size={20} /> <span>Connect wallet</span>
-		</Button>  -->
+	{/if}
+		
 
 		<appkit-button />
 

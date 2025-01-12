@@ -8,6 +8,9 @@
  import { Label } from "$lib/components/ui/label/index.js";
  import { toast } from 'svelte-sonner';
  import { Zap } from 'lucide-svelte';
+
+ let {isMobile}:{isMobile ?: boolean } = $props() 
+
 let open = $state(false)
  	
 	const showNotice = () => {
@@ -21,12 +24,18 @@ let open = $state(false)
  
 <Dialog.Root bind:open={open}>
  <Dialog.Trigger 
+ class={`${isMobile ? "w-full" : ""} `}
   >
-  <Button
+  {#if isMobile}
+    <Button  class="my-3 w-full"><Zap size={15} /> Upgrade plan</Button>
+  {:else}
+    <Button
 			
-			class="flex h-10 space-x-2 bg-red-200 text-red-600 hover:bg-red-700 hover:text-white"
+			class="flex h-10 w-full space-x-2 bg-red-200 text-red-600 hover:bg-red-700 hover:text-white"
 			><Zap size={20} /> <span>Upgrade</span>
 		</Button>
+  {/if}
+  
   </Dialog.Trigger
  >
  <Dialog.Content class="sm:max-w-[425px]">

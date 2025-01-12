@@ -1,4 +1,5 @@
 <script lang="ts">
+	import TopUp from './TopUp.svelte';
 	import { Bell, House, Menu, Plus, GalleryVertical, Telescope, Sun, Moon } from 'lucide-svelte';
 	import Button from '@/components/ui/button/button.svelte';
 	import { Badge } from '$lib/components/ui/badge/index.js';
@@ -38,6 +39,7 @@
 	let prompt = $derived(text.trim());
 
 	let open = $state(false);
+	let isConnected = $state(false)
 
 const onclick = async () => {
 		open=false
@@ -102,6 +104,16 @@ const onclick = async () => {
 		logoutUser()
 	}
 
+
+
+
+	
+	$effect(() => {
+	 setInterval(() => {
+      // Access the store reactively
+     isConnected =  $appkitStore.modal.getIsConnectedState()
+    }, 1000);
+	})
 </script>
 
 <section class="fixed bottom-0 flex justify-center items-center gap-2  inset-x-0 h-16 w-full bg-stone-50 lg:hidden dark:bg-black">
@@ -201,7 +213,12 @@ const onclick = async () => {
 							</div>
 						</div>
 
-						<Button class="my-3 w-full"><Zap size={15} /> Upgrade plan</Button>
+						
+						{#if isConnected}
+							<TopUp isMobile={true} />
+							
+						{/if}
+
 						<DropdownMenu.Group>
 							<a href={`/profile/${$store.user?.id}`}>
 								<DropdownMenu.Item>
