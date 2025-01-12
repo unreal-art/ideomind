@@ -73,12 +73,12 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	console.log("command", JSON.stringify(command));
 
-	const childProcess = exec(`${envVarsString} ${command}`);
-
-	let outputFolder: string | null = null;
+	let outputFolder: string = "";
 	let stderr: string = "";
 	let stdout: string = "";
-	let exitCode: Number | null = null;
+	let exitCode: number | null = null;
+	let processExited = false;
+	const childProcess = exec(`${envVarsString} ${command}`);
 
 	childProcess.stdout?.on("data", (out) => {
 		console.log(`stdout: ${out}`);
@@ -95,6 +95,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		console.log(`child process exited with code ${code}`);
 		exitCode = code;
 		console.log(outputFolder);
+		processExited = true;
 	});
 
 	const postDarts = async (): Promise<Response> => {
@@ -156,6 +157,11 @@ export const POST: RequestHandler = async ({ request }) => {
 		}
 		return json({ outputFolder, stdout, command, uploadResponse });
 	};
+	while (!processExited || outputFolder?.trim() === "") {
+		await Bluebird.delay(2000);
+		console.log("sleeping for 2s");
+	}
+	// const res = await postDarts();
 
 	// Execute the command
 	return new Promise((resolve) => {
