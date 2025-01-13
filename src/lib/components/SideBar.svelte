@@ -13,7 +13,7 @@
 	import { BsBell } from 'svelte-icons-pack/bs';
 	import { Icon } from 'svelte-icons-pack';
 	import { RiLogosTwitterXFill } from 'svelte-icons-pack/ri';
-	import { AiOutlineDiscord } from 'svelte-icons-pack/ai';
+	import { TrOutlineBrandTelegram } from "svelte-icons-pack/tr";
 	import { RiDocumentContractLine } from 'svelte-icons-pack/ri';
 	import Badge from './ui/badge/badge.svelte';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
@@ -23,6 +23,7 @@
 	import { toggleMode } from 'mode-watcher';
 	import { appkitStore } from "../appkitStore";
 	import TopUp from './TopUp.svelte';
+	import { CiLinkedin } from 'svelte-icons-pack/ci';
 
 	let isConnected = $state(false)
 
@@ -104,7 +105,7 @@
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content class="ml-28 w-72">
 				<DropdownMenu.Group>
-					<DropdownMenu.GroupHeading class="mb-3 h-14 ">
+					<a href={`/profile/${$store.user?.id}`} class="flex items-center h-14"><DropdownMenu.GroupHeading class="mb-3 h-full ">
 						<div class="mt-3 flex h-full w-full items-center justify-between">
 							<div class="flex h-full space-x-2">
 								<img src={$store.user?.image}  alt="user profile" class="h-full rounded-full" />
@@ -115,6 +116,7 @@
 							</div>
 						</div>
 					</DropdownMenu.GroupHeading>
+					</a>
 					<DropdownMenu.Separator></DropdownMenu.Separator>
 					<div class="flex items-center justify-between px-3 py-3 text-sm">
 						<p class=" font-semibold">Free</p>
@@ -149,23 +151,26 @@
 					</DropdownMenu.Group>
 
 					<DropdownMenu.Separator></DropdownMenu.Separator>
-					<DropdownMenu.Item>
-						<Icon src={RiLogosTwitterXFill} className="mr-2 size-4" />
-						<span>Xapp</span>
-					</DropdownMenu.Item>
+					<a href="https://twitter.com/decenteraicom?s=21&t=th7q1ztmiuaE2PoODm3k0A" target="_blank"><DropdownMenu.Item>
+							<Icon src={RiLogosTwitterXFill} className="mr-2 size-4" />
+							<span>Xapp</span>
+						</DropdownMenu.Item></a>
 
-					<DropdownMenu.Item>
-						<Icon src={AiOutlineDiscord} className="mr-2 size-4" />
-						<span>Discord</span>
-					</DropdownMenu.Item>
-					<DropdownMenu.Item>
-						<LifeBuoy class="mr-2 size-4"></LifeBuoy>
-						<span>Support</span>
-					</DropdownMenu.Item>
-					<DropdownMenu.Item>
+					<a href="https://t.me/decenteraicomchat" target="_blank"><DropdownMenu.Item>
+						<Icon src={TrOutlineBrandTelegram} className="mr-2 size-4" />
+						<span>Telegram</span>
+					</DropdownMenu.Item></a>
+
+				
+						<a href="https://www.linkedin.com/company/decenter-ai/" target="_blank"><DropdownMenu.Item>
+						<Icon src={CiLinkedin} className="mr-2 size-4" />
+						<span>Linkedin</span>
+					</DropdownMenu.Item></a>
+					
+					<!-- <DropdownMenu.Item>
 						<Icon src={RiDocumentContractLine} className="mr-2 size-4" />
 						<span>Terms & Privacy</span>
-					</DropdownMenu.Item>
+					</DropdownMenu.Item> -->
 					
 								<DropdownMenu.Separator></DropdownMenu.Separator>
 					<DropdownMenu.Item class="pl-1" onclick={toggleMode}>
