@@ -21,7 +21,10 @@
 	import { page } from '$app/stores';
 	import { logoutUser } from '@/api';
 	import { toggleMode } from 'mode-watcher';
+	import { appkitStore } from "../appkitStore";
+	import TopUp from './TopUp.svelte';
 
+	let isConnected = $state(false)
 
 	// $effect(() => {
 	// 	async function getData() {
@@ -33,6 +36,13 @@
 	const handleLogOut = () => {
 		logoutUser()
 	}
+
+	$effect(() => {
+	 setInterval(() => {
+      // Access the store reactively
+     isConnected =  $appkitStore.modal.getIsConnectedState()
+    }, 1000);
+	})
 </script>
 
 <aside class="z-50 hidden h-full w-[5%] min-w-[100px] border-r px-2 py-2 lg:block">
@@ -116,7 +126,10 @@
 						</div>
 					</div>
 
-					<Button class="my-3 w-full"><Zap size={15} /> Upgrade plan</Button>
+					{#if isConnected}
+							<TopUp isMobile={true} />
+							
+						{/if}
 					<DropdownMenu.Group>
 						<a href={`/profile/${$store.user?.id}`}>
 							<DropdownMenu.Item>
@@ -153,6 +166,8 @@
 						<Icon src={RiDocumentContractLine} className="mr-2 size-4" />
 						<span>Terms & Privacy</span>
 					</DropdownMenu.Item>
+					
+								<DropdownMenu.Separator></DropdownMenu.Separator>
 					<DropdownMenu.Item class="pl-1" onclick={toggleMode}>
 							
 							<Button  variant="outline" size="icon" class=" ">
