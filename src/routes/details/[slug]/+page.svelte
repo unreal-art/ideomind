@@ -216,7 +216,7 @@ let loadingMore = $state(false);
 				{/if}
 
 				<div class="flex items-center">
-					<More/>
+					<!-- <More/> -->
 					<Likes id={post.id} {post} />
 				</div>
 			</div>
