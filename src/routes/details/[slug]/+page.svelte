@@ -16,6 +16,7 @@
 	import { supabase } from "@src/supabaseClient";
 	import { abbreviateOutput } from "@src/utils/dateFormat";
 	import { PUBLIC_LIGHTHOUSE_GATE_WAY } from "$env/static/public";
+	import More from "@/components/More.svelte";
 
 	let imageUrls = $state([""]);
 	let { data }: { data: PageData } = $props();
@@ -215,7 +216,7 @@ let loadingMore = $state(false);
 				{/if}
 
 				<div class="flex items-center">
-					<Button variant="ghost"><Ellipsis size={20} /></Button>
+					<More/>
 					<Likes id={post.id} {post} />
 				</div>
 			</div>
