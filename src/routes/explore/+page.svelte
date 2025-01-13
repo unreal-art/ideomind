@@ -11,36 +11,62 @@
 
 	let postFromFollowedUsers = $state<Post[]>([]);
 	let posts = $state<Post[]>([])
+	let topPosts = $state<Post[]>([])
 	let { data }: { data: PageData } = $props();
 	let loading  = $state(false)
 	let sectionElement: HTMLElement | null = $state(null);
 	let pageLoading = $state(true)
+	let tab = $state("explore")
 
 	let offset = $state(10);
+	let topPostsOffSet = $state(10);
 
 	async function loadMore() {
 		
 		loading = true
-		const { data: newPosts, error } = await supabase
-			.from("posts")
-			.select("*")
-			.order("createdAt", { ascending: false })
-			.range(offset, offset + 9); // Fetch the next 10 posts
+		 if(tab == "top"){
+				const { data: newTopPosts, error: topPostError } = await supabase
+				.from("posts")
+				.select("*")
+				.order("like_count", { ascending: false })
+				.range(topPostsOffSet, topPostsOffSet + 9);
 
-		if (error) {
-			loading = false
-			console.error("Error loading more posts:", error);
-			return;
-		}
+				if (topPostError) {
+					loading = false
+					console.error("Error loading more posts:", topPostError);
+					return;
+				}
+				if (newTopPosts?.length) {
+				topPosts = [...topPosts, ...newTopPosts ];
+				// console.log(posts)
+				topPostsOffSet += 10; // Increment offset
+			}
+		}else{
+				const { data: newPosts, error } = await supabase
+				.from("posts")
+				.select("*")
+				.order("createdAt", { ascending: false })
+				.range(offset, offset + 9); // Fetch the next 10 posts
 
-		if (newPosts?.length) {
-			posts = [...posts, ...newPosts ]; // Assuming your store has an `addPosts` method
-			// console.log(posts)
-			offset += 10; // Increment offset
+			if (error) {
+				loading = false
+				console.error("Error loading more posts:", error);
+				return;
+			}
+
+			if (newPosts?.length) {
+				posts = [...posts, ...newPosts ]; 
+				// console.log(posts)
+				offset += 10; // Increment offset
+			}
 		}
 		loading = false
 
 	}
+
+	const reloadData = async (value: string) => {
+		tab = value
+	};
 
 	$effect(() => {
 		async function getPostOfFollowee() {
@@ -51,11 +77,13 @@
 	});
 
 	$effect(() => {
-		if (!data.posts) {
+		if (!data.posts || !data.topPosts) {
 			return;
 		}
 		if(data.posts.length ) pageLoading = false
 		posts = data.posts
+		topPosts = data.topPosts
+		
 	});
 	  const handleScroll = () => {
   if (!sectionElement || loading || posts.length < 10) return;
@@ -92,7 +120,7 @@ $effect(() => {
 		
 
 		<div class="h-full   ">
-			<Tabs.Root value="explore" class="w-full h-full">
+			<Tabs.Root value="explore" onValueChange={(value) => reloadData(value)} class="w-full h-full">
 			<div class="fixed flex top-0 left-0 h-[8%] lg:h-[5%] w-full bg-stone-50 dark:bg-secondary lg:relative">
 				<div class="flex h-full items-center" >
 						<SearchBox />
@@ -154,7 +182,7 @@ $effect(() => {
 			</div>
 		</div>
 		{:else}
-			<PostList data={posts} />
+			<PostList data={topPosts} />
 				{#if loading}
 				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
 				{/if}

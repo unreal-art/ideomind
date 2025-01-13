@@ -58,6 +58,7 @@
 	let posts = $state<Post[]>(data.posts as Post[]);
 let loadingMore = $state(false);
 let offset = $state(10);
+let likedOffSet = $state(10);
 let tab = $state("")
 
 	
@@ -80,7 +81,7 @@ async function loadMore() {
       .select(`*`)
       .eq("author", $page.params.slug)
       .order("createdAt", { ascending: false })
-      .range(offset, offset + 9); // Fetch the next 10 posts
+      .range(likedOffSet, likedOffSet + 9); // Fetch the next 10 posts
 
     if (error) {
       loadingMore = false;
@@ -91,7 +92,7 @@ async function loadMore() {
     if (newPosts?.length) {
       posts = [...posts, ...newPosts]; // Assuming your store has an `addPosts` method
       // console.log(posts);
-      offset += 10; // Increment offset
+      likedOffSet += 10; // Increment offset
     }
   } else {
 
