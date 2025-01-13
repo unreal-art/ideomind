@@ -132,7 +132,7 @@ async function loadMore() {
 					</div>
 					<Tabs.List class="h-[5%] bg-transparent gap-2">
 						<Tabs.Trigger value="all" class="dark:bg-black/55">All</Tabs.Trigger>
-						<Tabs.Trigger value="pinned" class="dark:bg-black/55">Pinned</Tabs.Trigger>
+						<!-- <Tabs.Trigger value="pinned" class="dark:bg-black/55">Pinned</Tabs.Trigger> -->
 						<Tabs.Trigger value="public" class="dark:bg-black/55">Public</Tabs.Trigger>
 						<Tabs.Trigger value="private" class="dark:bg-black/55">Private</Tabs.Trigger>
 					</Tabs.List>
@@ -158,9 +158,9 @@ async function loadMore() {
 						</DropdownMenu.Root>
 					</div>
 				</div>
-				<div class="hidden h-full lg:block">
+				<div class="hidden h-full lg:flex items-center ">
 					<Select.Root type="single" name="choice"  bind:value={selectedChoice}>
-						<Select.Trigger class="w-[180px]">
+						<Select.Trigger class="w-[180px] focus-visible:ring-0 outline-none focus:ring-0">
 							{triggerContent}
 						</Select.Trigger>
 						<Select.Content>
@@ -181,12 +181,12 @@ async function loadMore() {
 				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
 				{/if}
 			</Tabs.Content>
-			<Tabs.Content value="pinned" class=" w-full pb-14">
+			<!-- <Tabs.Content value="pinned" class=" w-full pb-14">
 				<CreationList data={pinnedPosts} choice={selectedChoice} {loading} />
 				{#if loadingMore}
 				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
 				{/if}
-			</Tabs.Content>
+			</Tabs.Content> -->
 			<Tabs.Content value="public" class=" w-full pb-14">
 				<CreationList data={publicPosts} choice={selectedChoice} {loading} />
 				{#if loadingMore}
