@@ -110,33 +110,10 @@
 		});
 
 		if (error) {
-			console.error("Error signing in with Discord:", error.message);
+			console.error("Error signing in with google:", error.message);
 		}
 	}
-	async function signInWithDiscord() {
-		let redirectToUrl = getRedirectURL()+"/auth"
-		// redirectToUrl = new URL("explore", redirectToUrl).toString()
-		console.log("redirect to:", redirectToUrl)
-		redirectToUrl = encodeURI(redirectToUrl)
 
-		const { data, error } = await supabase.auth.signInWithOAuth({
-			provider: "discord",
-			options: {
-				//redirect url
-				redirectTo: redirectToUrl ,
-				// skipBrowserRedirect: true, 
-				queryParams: {
-					// redirect_uri: redirectToUrl,
-					// redirect_uri: encodeURIComponent("/explore"),
-					// redirect_uri: encodeURI(redirectToUrl),
-				},
-			}
-		});
-
-		if (error) {
-			console.error("Error signing in with Discord:", error.message);
-		}
-	}
 
 	function handleImageError(event: Event) {
 		const target = event.target as HTMLImageElement;
@@ -213,18 +190,7 @@
 						title="Custom icon params"
 					></Icon>Google</button
 				>
-				<button
-					onclick={signInWithDiscord}
-					class="  h- font-semibold flex h-12 w-full items-center justify-center gap-3 rounded-full border text-center hover:bg-secondary"
-				>
-					<Icon
-						src={AiOutlineDiscord}
-						size="28"
-						viewBox="0 0 1024 1024"
-						className="custom-icon"
-						title="Custom icon params"
-					></Icon>Discord</button
-				>
+				
 			</div>
 		</div>
 	</div>
