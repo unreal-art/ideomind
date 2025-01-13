@@ -1,6 +1,6 @@
 <script lang="ts">
 	import * as Tabs from "$lib/components/ui/tabs";
-	import { postsByFollowed } from "@/api";
+	import { getPostsForFollowing } from "@/api";
 	import PostList from "@/components/explore/PostList.svelte";
 	import { store } from "$lib/store";
 	import PromptForm from "@/components/PromptForm.svelte";
@@ -9,9 +9,10 @@
 	import SearchBox from "@/components/SearchBox.svelte";
 	import { supabase } from "@src/supabaseClient";
 
-	let postFromFollowedUsers = $state<Post[]>([]);
+	
 	let posts = $state<Post[]>([])
 	let topPosts = $state<Post[]>([])
+	let followeePosts = $state<Post[]>([])
 	let { data }: { data: PageData } = $props();
 	let loading  = $state(false)
 	let sectionElement: HTMLElement | null = $state(null);
@@ -20,6 +21,8 @@
 
 	let offset = $state(10);
 	let topPostsOffSet = $state(10);
+	let followeePostsOffSet = $state(10);
+
 
 	async function loadMore() {
 		
@@ -41,7 +44,7 @@
 				// console.log(posts)
 				topPostsOffSet += 10; // Increment offset
 			}
-		}else{
+		}else if (tab == "explore"){
 				const { data: newPosts, error } = await supabase
 				.from("posts")
 				.select("*")
@@ -59,7 +62,14 @@
 				// console.log(posts)
 				offset += 10; // Increment offset
 			}
+		}else {
+			const newFolloweePosts = await getPostsForFollowing($store.user?.id, followeePostsOffSet)
+			if(newFolloweePosts.length > 0){
+				followeePosts = [...followeePosts, ...newFolloweePosts]
+				followeePostsOffSet += 10
+			}
 		}
+
 		loading = false
 
 	}
@@ -70,7 +80,7 @@
 
 	$effect(() => {
 		async function getPostOfFollowee() {
-			postFromFollowedUsers = await postsByFollowed($store.user?.id || "0", posts);
+			followeePosts = await getPostsForFollowing($store.user?.id);
 		}
 
 		getPostOfFollowee();
@@ -164,7 +174,7 @@ $effect(() => {
 			</div>
 		</div>
 		{:else}
-		<PostList data={postFromFollowedUsers} />
+		<PostList data={followeePosts} />
 				{#if loading}
 				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
 				{/if}
