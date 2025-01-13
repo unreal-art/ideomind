@@ -395,7 +395,7 @@ loadMore()
 					</div>
 					<Tabs.List class="h-[5%] bg-transparent gap-2">
 						<!-- <Tabs.Trigger value="pinned" class="dark:bg-black/55">Pinned</Tabs.Trigger> -->
-						<Tabs.Trigger value="public" class="dark:bg-black/55">Public</Tabs.Trigger>
+						<Tabs.Trigger value="public" class="dark:bg-black/55">Posts</Tabs.Trigger>
 						<!-- <Tabs.Trigger value="private" class="dark:bg-black/55">Private</Tabs.Trigger> -->
 						<Tabs.Trigger value="liked" class="dark:bg-black/55">Liked</Tabs.Trigger>
 					</Tabs.List>
