@@ -203,13 +203,13 @@ let loadingMore = $state(false);
 						{/if}
 					</div>
 				</div>
-				{#if activeFollow != null && !activeFollow}
+				{#if activeFollow != null && !activeFollow && $store.user?.id !== post.author}
 					<Button
 						onclick={handleFollow}
 						class="h-fit w-fit rounded-full bg-red-500 p-1 text-white   px-2 text-xs">follow</Button
 					>
 				{/if}
-				{#if activeFollow != null && activeFollow}
+				{#if activeFollow != null && activeFollow && $store.user?.id !== post.author}
 					<Button onclick={handleFollow} class="h-fit w-fit rounded-full  p-1   px-2 text-xs"
 						>unfollow</Button
 					>
