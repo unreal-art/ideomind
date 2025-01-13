@@ -16,6 +16,7 @@
 	import { supabase } from "@src/supabaseClient";
 	import { abbreviateOutput } from "@src/utils/dateFormat";
 	import { PUBLIC_LIGHTHOUSE_GATE_WAY } from "$env/static/public";
+	import More from "@/components/More.svelte";
 
 	let imageUrls = $state([""]);
 	let { data }: { data: PageData } = $props();
@@ -202,20 +203,20 @@ let loadingMore = $state(false);
 						{/if}
 					</div>
 				</div>
-				{#if activeFollow != null && !activeFollow}
+				{#if activeFollow != null && !activeFollow && $store.user?.id !== post.author}
 					<Button
 						onclick={handleFollow}
 						class="h-fit w-fit rounded-full bg-red-500 p-1 text-white   px-2 text-xs">follow</Button
 					>
 				{/if}
-				{#if activeFollow != null && activeFollow}
+				{#if activeFollow != null && activeFollow && $store.user?.id !== post.author}
 					<Button onclick={handleFollow} class="h-fit w-fit rounded-full  p-1   px-2 text-xs"
 						>unfollow</Button
 					>
 				{/if}
 
 				<div class="flex items-center">
-					<Button variant="ghost"><Ellipsis size={20} /></Button>
+					<!-- <More/> -->
 					<Likes id={post.id} {post} />
 				</div>
 			</div>

@@ -15,17 +15,24 @@ export const load: LayoutLoad = async ({ url }) => {
 			.order("createdAt", { ascending: false })
 			.range(0, 9); // Fetch posts 0-9 (10 posts total)
 
-		if (error) {
-			console.error("Error fetching posts :", error);
-			return { posts: [] };
+		// Fetch the post with the highest like_count
+		const { data: topPosts, error: topPostError } = await supabase
+			.from("posts")
+			.select("*")
+			.order("like_count", { ascending: false })
+			.range(0, 9);
+
+		if (error || topPostError) {
+			console.error("Error fetching posts or top post:", error || topPostError);
+			return { posts: [], topPosts: null };
 		}
 
 		// Initialize store with the fetched posts
 		store.initPosts(posts);
-
-		return { posts: posts || null };
+		// Return the posts and the top post with the highest likes
+		return { posts: posts || null, topPosts: topPosts || null };
 	} catch (err) {
 		console.error("Unexpected error:", err);
-		return { posts: [] };
+		return { posts: [], topPosts: null };
 	}
 };

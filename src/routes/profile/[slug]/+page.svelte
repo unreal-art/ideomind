@@ -58,6 +58,7 @@
 	let posts = $state<Post[]>(data.posts as Post[]);
 let loadingMore = $state(false);
 let offset = $state(10);
+let likedOffSet = $state(10);
 let tab = $state("")
 
 	
@@ -80,7 +81,7 @@ async function loadMore() {
       .select(`*`)
       .eq("author", $page.params.slug)
       .order("createdAt", { ascending: false })
-      .range(offset, offset + 9); // Fetch the next 10 posts
+      .range(likedOffSet, likedOffSet + 9); // Fetch the next 10 posts
 
     if (error) {
       loadingMore = false;
@@ -91,7 +92,7 @@ async function loadMore() {
     if (newPosts?.length) {
       posts = [...posts, ...newPosts]; // Assuming your store has an `addPosts` method
       // console.log(posts);
-      offset += 10; // Increment offset
+      likedOffSet += 10; // Increment offset
     }
   } else {
 
@@ -393,32 +394,32 @@ loadMore()
 					</div>
 					</div>
 					<Tabs.List class="h-[5%] bg-transparent gap-2">
-						<Tabs.Trigger value="pinned" class="dark:bg-black/55">Pinned</Tabs.Trigger>
-						<Tabs.Trigger value="public" class="dark:bg-black/55">Public</Tabs.Trigger>
-						<Tabs.Trigger value="private" class="dark:bg-black/55">Private</Tabs.Trigger>
+						<!-- <Tabs.Trigger value="pinned" class="dark:bg-black/55">Pinned</Tabs.Trigger> -->
+						<Tabs.Trigger value="public" class="dark:bg-black/55">Posts</Tabs.Trigger>
+						<!-- <Tabs.Trigger value="private" class="dark:bg-black/55">Private</Tabs.Trigger> -->
 						<Tabs.Trigger value="liked" class="dark:bg-black/55">Liked</Tabs.Trigger>
 					</Tabs.List>
 				</div>
 			</div>
 
-			<Tabs.Content value="pinned" class="w-full  pb-14 ">
+			<!-- <Tabs.Content value="pinned" class="w-full  pb-14 ">
 				<UserPostList data={pinnedPosts} {loading} />
 				{#if loadingMore}
 				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
 				{/if}
-			</Tabs.Content>
+			</Tabs.Content> -->
 			<Tabs.Content value="public" class="w-full  pb-14 ">
 				<UserPostList data={publicPosts} {loading} />
 				{#if loadingMore}
 				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
 				{/if}
 			</Tabs.Content>
-			<Tabs.Content value="private" class="w-full  pb-14 ">
+			<!-- <Tabs.Content value="private" class="w-full  pb-14 ">
 				<UserPostList data={privatePosts} {loading} />
 				{#if loadingMore}
 				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
 				{/if}
-			</Tabs.Content>
+			</Tabs.Content> -->
 
 			<Tabs.Content value="liked" class="pb-14 w-full  ">
 				<UserPostList data={likedPosts} isLikes={true} {loading} />

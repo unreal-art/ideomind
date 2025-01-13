@@ -36,7 +36,7 @@
 			<div class="relative mb-6 break-inside-avoid">
 				{#if readyBlocks.includes(item.id)}
 					<div class="absolute bottom-1 right-0 flex items-center text-white">
-						<More />
+						<!-- <More /> -->
 
 						<Likes id={item.id} post={item} />
 					</div>

@@ -38,7 +38,7 @@
 						</div>
 					</a>
 					<div class="flex items-center">
-						<More />
+						<!-- <More /> -->
 						<Likes id={item.id} post={item} />
 					</div>
 				</div>
