@@ -391,13 +391,45 @@ async function getFollowsByFollowerId(followerId: string) {
 	return data;
 }
 
-export const postsByFollowed = async (userId: string, posts: Post[]) => {
-	const userFollows = await getFollowsByFollowerId(userId);
-	// const followedUsers = store.getState().users.filter((user) => user.id === userId);
-	// // Combine all posts from followed users
+export async function getPostsForFollowing(
+	userId: string | undefined,
+	offset = 0
+): Promise<Post[]> {
+	try {
+		// Fetch followee IDs for the given user
+		const { data: followings, error: followingsError } = await supabase
+			.from("follows")
+			.select("followee_id")
+			.eq("follower_id", userId);
 
-	return userFollows.flatMap((follow) => getUserPosts(follow.followee_id, posts));
-};
+		if (followingsError) {
+			throw followingsError;
+		}
+
+		const followeeIds = followings.map((following) => following.followee_id);
+
+		if (followeeIds.length === 0) {
+			return []; // If the user is not following anyone, return an empty array
+		}
+
+		// Fetch posts for the followee IDs
+		const { data: posts, error: postsError } = await supabase
+			.from("posts")
+			.select("*") // Replace '*' with specific fields if needed
+			.in("author", followeeIds)
+			.order("createdAt", { ascending: false })
+			.range(offset, offset + 9); // Fetch posts 0-9 (10 posts total)
+
+		if (postsError) {
+			throw postsError;
+		}
+
+		return posts;
+	} catch (error) {
+		console.error("Error fetching posts:", error);
+		return [];
+	}
+}
 
 // Function to like a post
 // Like a post for the given user by postId.

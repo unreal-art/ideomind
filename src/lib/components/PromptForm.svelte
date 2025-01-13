@@ -1,8 +1,7 @@
 <script lang="ts">
 	
 	import { Button } from '$lib/components/ui/button/index.js';
-	import { Input } from '$lib/components/ui/input/index.js';
-	import { createNewPost, fetchProfilePosts, generateImage, postsByFollowed } from '@/api';
+	import {  generateImage} from '@/api';
 	import { store } from '$lib/store';
 	import { quickStore } from '$lib/quickStore';
 	import type { DartsJobData, JobSpec, Output, Post } from '@/types';

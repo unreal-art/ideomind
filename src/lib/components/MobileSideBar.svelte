@@ -22,7 +22,7 @@
 	import { BsBell } from 'svelte-icons-pack/bs';
 
 	import Textarea from './ui/textarea/textarea.svelte';
-	import { createNewPost, fetchProfilePosts, generateImage, logoutUser, postsByFollowed } from '@/api';
+	import { createNewPost, fetchProfilePosts, generateImage, logoutUser } from '@/api';
 	import { store } from '$lib/store';
 	import type { DartsJobData, JobSpec, Output, Post } from '@/types';
 	import { v4 as uuidv4 } from 'uuid';
