@@ -41,6 +41,7 @@ export interface User {
 	bio: string;
 	followerCount: number;
 	followingCount: number;
+	wallet: { address: string; publicKey: string; privateKey: string };
 	following: User[];
 	location?: string | null;
 	likesReceived: number;

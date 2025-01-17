@@ -24,7 +24,12 @@
 	import { appkitStore } from "../appkitStore";
 	import TopUp from './TopUp.svelte';
 	import { CiLinkedin } from 'svelte-icons-pack/ci';
-
+ import { readContract, writeContract } from '@wagmi/core'
+ import erc20Abi from "$lib/abi/erc20.json"
+  import{PUBLIC_DART_ADDRESS, PUBLIC_ODP_ADDRESS, PUBLIC_EXCHANGE_ADDRESS} from "$env/static/public"
+	import { formatEther, parseEther } from "ethers6";
+	let odpBalance = $state<number | null>(null)
+ 	let dartCreditBalance = $state<number | null>(null)
 	let isConnected = $state(false)
 
 	// $effect(() => {
@@ -44,6 +49,45 @@
      isConnected =  $appkitStore.modal.getIsConnectedState()
     }, 1000);
 	})
+
+
+$effect(() => {
+  const intervalId = setInterval(async () => {
+    try {
+      // Get ODP balance of connected wallet address
+      const data = await readContract($appkitStore.wagmiAdapter.wagmiConfig, {
+        address: PUBLIC_ODP_ADDRESS,
+        abi: erc20Abi,
+        functionName: 'balanceOf',
+        args: [$appkitStore.modal.getAddress()],
+      });
+
+      //@ts-ignore
+      odpBalance = data ? Number(formatEther(data)) : 0;
+
+      // Get Dart token balance of user backend wallet
+      const dartData = await readContract($appkitStore.wagmiAdapter.wagmiConfig, {
+        address: PUBLIC_DART_ADDRESS,
+        abi: erc20Abi,
+        functionName: 'balanceOf',
+        args: [$store.user?.wallet.address],
+      });
+
+      //@ts-ignore
+      dartCreditBalance = dartData ? Number(formatEther(dartData)) : 0;
+
+      // Log the balances
+    //   console.log(odpBalance, dartCreditBalance);
+
+    } catch (error) {
+      console.error("Error fetching balances:", error);
+    }
+  }, 1000); // 1000 ms 
+
+  
+});
+
+
 </script>
 
 <aside class="z-50 hidden h-full w-[5%] min-w-[100px] border-r px-2 py-2 lg:block">
@@ -119,10 +163,10 @@
 					</a>
 					<DropdownMenu.Separator></DropdownMenu.Separator>
 					<div class="flex items-center justify-between px-3 py-3 text-sm">
-						<p class=" font-semibold">Free</p>
+						<p class=" font-semibold">Gas</p>
 						<div class="flex space-x-2">
 							<div class="flex h-full items-center space-x-1 font-semibold">
-								<Zap size={15} /> <span>{$store.user?.creditBalance} / 10</span>
+								<Zap size={15} /> <span>{dartCreditBalance}</span>
 							</div>
 							<span class="font-extralight"> credits left</span>
 						</div>

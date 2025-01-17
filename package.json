@@ -114,8 +114,8 @@
     "svelte-preprocess": "^6.0.3",
     "thirdweb": "^5.83.1",
     "uuid": "^11.0.3",
-    "viem": "^2.22.7",
-    "wagmi": "^2.14.7"
+    "viem": "^2.22.9",
+    "wagmi": "^2.14.8"
   },
   "trustedDependencies": [
     "@parcel/watcher",
