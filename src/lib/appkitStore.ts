@@ -1,15 +1,13 @@
 import { writable } from "svelte/store";
 import { createAppKit } from "@reown/appkit";
-import { mainnet, arbitrum } from "@reown/appkit/networks";
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
 import { defineChain } from "viem";
-import { http, createConfig } from "@wagmi/core";
 import { PUBLIC_APPKIT_ID } from "$env/static/public";
 
 // 1. Define TypeScript types for the store
 export interface AppKitStore {
 	modal: ReturnType<typeof createAppKit>;
-	wagmiConfig: ReturnType<typeof createConfig>;
+	wagmiAdapter: WagmiAdapter;
 	openConnectModal: () => void;
 	openNetworkModal: () => void;
 }
@@ -18,8 +16,10 @@ export interface AppKitStore {
 const projectId = PUBLIC_APPKIT_ID;
 
 const torusTestnet = defineChain({
-	id: 8194, // Replace with the actual chain ID for the Torus testnet
+	id: 8194,
 	name: "Torus Testnet",
+	caipNetworkId: "eip155:8194",
+	chainNamespace: "eip155",
 	network: "torus-testnet",
 	nativeCurrency: {
 		decimals: 18,
@@ -28,18 +28,18 @@ const torusTestnet = defineChain({
 	},
 	rpcUrls: {
 		default: {
-			http: ["https://rpc.testnet.toruschain.com"], // Replace with actual HTTP RPC URL
-			webSocket: ["wss://rpc.testnet.toruschain.com/ws"] // Replace with actual WebSocket RPC URL
+			http: ["https://rpc.testnet.toruschain.com"],
+			webSocket: ["wss://rpc.testnet.toruschain.com/ws"]
 		},
 		public: {
-			http: ["https://rpc.testnet.toruschain.com"], // Public HTTP RPC URL
-			webSocket: ["wss://rpc.testnet.toruschain.com/ws"] // Public WebSocket URL
+			http: ["https://rpc.testnet.toruschain.com"],
+			webSocket: ["wss://rpc.testnet.toruschain.com/ws"]
 		}
 	},
 	blockExplorers: {
 		default: {
 			name: "Torus Explorer",
-			url: "https://testnet.toruscan.com" // Replace with actual block explorer URL
+			url: "https://testnet.toruscan.com"
 		}
 	}
 });
@@ -47,14 +47,8 @@ const torusTestnet = defineChain({
 // 3. Set up Wagmi adapter
 const wagmiAdapter = new WagmiAdapter({
 	projectId,
+	//@ts-ignore
 	networks: [torusTestnet]
-});
-
-const wagmiConfig = createConfig({
-	chains: [torusTestnet],
-	transports: {
-		[torusTestnet.id]: http()
-	}
 });
 
 // 4. Configure the metadata
@@ -68,6 +62,7 @@ const metadata = {
 // 5. Create the modal instance
 const modal = createAppKit({
 	adapters: [wagmiAdapter],
+	//@ts-ignore
 	networks: [torusTestnet],
 	metadata,
 	projectId,
@@ -85,7 +80,7 @@ const modal = createAppKit({
 // 6. Create the writable store
 export const appkitStore = writable<AppKitStore>({
 	modal,
-	wagmiConfig,
+	wagmiAdapter,
 	openConnectModal: () => modal.open(),
 	openNetworkModal: () => modal.open({ view: "Networks" })
 });

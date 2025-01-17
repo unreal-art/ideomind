@@ -1,4 +1,3 @@
-
 import { authenticate, isAuthenticated } from "@/api"; // Your existing authentication logic
 import { redirect } from "@sveltejs/kit";
 import type { LayoutLoad } from "./$types";
@@ -7,25 +6,26 @@ import { supabase } from "@src/supabaseClient";
 import { ethers } from "ethers6";
 
 interface WalletObject {
+	address: string;
 	privateKey: string;
 	publicKey: string;
 }
 
+// Function to generate Ethereum wallet
 function generateEthereumWallet(): WalletObject {
 	// Generate Ethereum Wallet using ethers.js
 	const wallet = ethers.Wallet.createRandom();
 
 	return {
+		address: wallet.address,
 		privateKey: wallet.privateKey,
 		publicKey: wallet.publicKey
 	};
 }
 
-
 export const load: LayoutLoad = async ({ url }) => {
 	// Get the current path
 	const currentPath = url.pathname;
-
 
 	const { data: sessionData, error } = await supabase.auth.getSession();
 	const userData = sessionData?.session?.user || null;
@@ -49,7 +49,7 @@ export const load: LayoutLoad = async ({ url }) => {
 			username: userData?.user_metadata.name,
 			email: userData?.email,
 			image: userData?.user_metadata.picture,
-
+			wallet: profileData[0].wallet,
 			bio: profileData[0].bio,
 			followerCount: profileData[0].follower_count,
 			followingCount: profileData[0].following_count,
@@ -86,7 +86,6 @@ export const load: LayoutLoad = async ({ url }) => {
 		if (currentPath !== "/auth") {
 			throw redirect(302, "/auth");
 		}
-
 	}
 
 	// Allow the request to proceed for all other routes

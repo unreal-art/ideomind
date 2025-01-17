@@ -10,6 +10,7 @@ import { supabase } from "@src/supabaseClient";
 
 // Type definition for the wallet
 interface WalletObject {
+	address: string;
 	privateKey: string;
 	publicKey: string;
 }
@@ -20,6 +21,7 @@ function generateEthereumWallet(): WalletObject {
 	const wallet = ethers.Wallet.createRandom();
 
 	return {
+		address: wallet.address,
 		privateKey: wallet.privateKey,
 		publicKey: wallet.publicKey
 	};
@@ -38,7 +40,6 @@ export const load: LayoutLoad = async ({ url }) => {
 	// console.log(`Loading ${fullUrl}`);
 
 	// console.log("searchParams: " + url.searchParams); //its empty for the reason that its prepend by #
-
 
 	// Exchange the code for a session if the user is redirected back from Discord
 	if (fullUrl.includes("access_token") || fullUrl.includes("code")) {
@@ -75,7 +76,7 @@ export const load: LayoutLoad = async ({ url }) => {
 			username: userData?.user_metadata.name,
 			email: userData?.email,
 			image: userData?.user_metadata.picture,
-
+			wallet: profileData[0].wallet,
 			bio: profileData[0].bio,
 			followerCount: profileData[0].follower_count,
 			followingCount: profileData[0].following_count,
@@ -105,8 +106,6 @@ export const load: LayoutLoad = async ({ url }) => {
 			}
 		}
 
-
 		return { user };
-
 	}
 };
