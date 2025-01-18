@@ -35,10 +35,10 @@
 	import { appkitStore } from "../appkitStore";
 	import { TrOutlineBrandTelegram } from 'svelte-icons-pack/tr';
   
-	 import { readContract, writeContract } from '@wagmi/core'
+	 import { readContract } from '@wagmi/core'
  import erc20Abi from "$lib/abi/erc20.json"
-  import{PUBLIC_DART_ADDRESS, PUBLIC_ODP_ADDRESS, PUBLIC_EXCHANGE_ADDRESS} from "$env/static/public"
-	import { formatEther, parseEther } from "ethers6";
+  import{PUBLIC_DART_ADDRESS, PUBLIC_ODP_ADDRESS} from "$env/static/public"
+	import { formatEther } from "ethers6";
 	let odpBalance = $state<number | null>(null)
  	let dartCreditBalance = $state<number | null>(null)
 
@@ -191,13 +191,17 @@ $effect(() => {
 					<Textarea
 						placeholder="Describe what you want to see"
 						rows={10}
-
 						class="ring-0"
 						bind:value={text}
+						disabled={!dartCreditBalance || dartCreditBalance < 10}
 					/>
 
 					<Drawer.Footer>
+						{#if dartCreditBalance && dartCreditBalance > 10}
 						<Button disabled={$quickStore.isGeneratingFiles} {onclick}>Generate</Button>
+						{:else}
+						<TopUp />
+						{/if}
 						<Drawer.Close class={buttonVariants({ variant: 'outline' })}>Cancel</Drawer.Close>
 					</Drawer.Footer>
 				</div>
@@ -251,13 +255,15 @@ $effect(() => {
 					</a>
 						<DropdownMenu.Separator></DropdownMenu.Separator>
 						<div class="flex items-center justify-between px-3 py-3 text-sm">
-							<p class=" font-semibold">Gas</p>
+							
 							<div class="flex space-x-2">
 								<div class="flex h-full items-center space-x-1 font-semibold">
 									<Zap size={15} /> <span>{dartCreditBalance} </span>
 								</div>
 								<span class="font-extralight"> credits left</span>
 							</div>
+
+							<p class=" font-semibold">Minimum: 10</p>
 						</div>
 
 						

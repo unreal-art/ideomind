@@ -4,14 +4,22 @@
 	import {  generateImage} from '@/api';
 	import { store } from '$lib/store';
 	import { quickStore } from '$lib/quickStore';
-	import type { DartsJobData, JobSpec, Output, Post } from '@/types';
-	import { v4 as uuidv4 } from 'uuid';
-	import type { UploadResponse } from 'pinata';
+	import type {  JobSpec, Output } from '@/types';
 	import { toast } from 'svelte-sonner';
 	import { page } from '$app/stores';
 	import Textarea from './ui/textarea/textarea.svelte';
-	import { goto } from '$app/navigation';
 	import random from "random"
+
+	import { appkitStore } from "../appkitStore";
+	import { readContract } from '@wagmi/core'
+	import erc20Abi from "$lib/abi/erc20.json"
+  	import{PUBLIC_DART_ADDRESS, PUBLIC_ODP_ADDRESS} from "$env/static/public"
+	import { formatEther } from "ethers6";
+	import TopUp from './TopUp.svelte';
+	let odpBalance = $state<number | null>(null)
+ 	let dartCreditBalance = $state<number | null>(null)
+
+
 
 	let { section } = $props();
 	let text = $state('');
@@ -107,6 +115,43 @@
 		document.addEventListener('click', handleClickOutside);
 		return () => document.removeEventListener('click', handleClickOutside);
 	});
+
+
+$effect(() => {
+  const intervalId = setInterval(async () => {
+    try {
+      // Get ODP balance of connected wallet address
+      const data = await readContract($appkitStore.wagmiAdapter.wagmiConfig, {
+        address: PUBLIC_ODP_ADDRESS,
+        abi: erc20Abi,
+        functionName: 'balanceOf',
+        args: [$appkitStore.modal.getAddress()],
+      });
+
+      //@ts-ignore
+      odpBalance = data ? Number(formatEther(data)) : 0;
+
+      // Get Dart token balance of user backend wallet
+      const dartData = await readContract($appkitStore.wagmiAdapter.wagmiConfig, {
+        address: PUBLIC_DART_ADDRESS,
+        abi: erc20Abi,
+        functionName: 'balanceOf',
+        args: [$store.user?.wallet.address],
+      });
+
+      //@ts-ignore
+      dartCreditBalance = dartData ? Number(formatEther(dartData)) : 0;
+
+      // Log the balances
+    //   console.log(odpBalance, dartCreditBalance);
+
+    } catch (error) {
+      console.error("Error fetching balances:", error);
+    }
+  }, 1000); // 1000 ms 
+
+  
+});
 </script>
 
 {#if section == 'body'}
@@ -115,17 +160,24 @@
 			class={` ${showInput ? 'block' : 'hidden'} absolute top-0  w-full bg-white dark:bg-black  z-20 py-4 px-3`}
 			bind:this={inputRef}
 		>
-			<Textarea bind:value={text} placeholder="Provide a detailed description of what you want to see. The more specific and comprehensive your input, the better the resulting image will be." class="resize-none border-none shadow-none dark:bg-secondary" rows={15}/>
+			<Textarea 	disabled={!dartCreditBalance || dartCreditBalance < 10} bind:value={text} placeholder="Provide a detailed description of what you want to see. The more specific and comprehensive your input, the better the resulting image will be." class="resize-none border-none shadow-none dark:bg-secondary" rows={15}/>
 
-
-			<div class="flex  justify-end mt-10 h-12">
+		<div class="flex justify-end mt-10 h-12">
+			{#if dartCreditBalance && dartCreditBalance > 10}
 				<Button
-			type="button"
-			disabled={$quickStore.isGeneratingFiles}
-			{onclick}
-			class="h-full text-white  w-full dark:bg-secondary">Generate</Button
-		>
-			</div>
+					type="button"
+					disabled={$quickStore.isGeneratingFiles}
+					{onclick}
+					class="h-full text-white w-full dark:bg-secondary"
+				>
+					Generate
+				</Button>
+			{:else}
+				<TopUp isMobile={true} />
+				<p class="pt-14"></p>
+			{/if}
+		</div>
+
 
 		</div>
 		<input
@@ -152,16 +204,24 @@
 			class={` ${showInput ? 'block' : 'hidden'} absolute top-0  w-full bg-white dark:bg-black z-50 py-4 px-3`}
 			bind:this={inputRef}
 		>
-			<Textarea bind:value={text} placeholder="Provide a detailed description of what you want to see. The more specific and comprehensive your input, the better the resulting image will be." class="resize-none border-none shadow-none dark:bg-secondary" rows={15}/>
+			<Textarea 	disabled={!dartCreditBalance || dartCreditBalance < 10}  bind:value={text} placeholder="Provide a detailed description of what you want to see. The more specific and comprehensive your input, the better the resulting image will be." class="resize-none border-none shadow-none dark:bg-secondary" rows={15}/>
 
-			<div class="flex justify-end mt-10 h-12">
+		<div class="flex justify-end mt-10 h-12 ">
+			{#if dartCreditBalance && dartCreditBalance > 10}
 				<Button
-			type="button"
-				disabled={$quickStore.isGeneratingFiles}
-			{onclick}
-			class="h-full   text-white  w-full dark:bg-secondary">Generate</Button
-		>
-			</div>
+					type="button"
+					disabled={$quickStore.isGeneratingFiles}
+					{onclick}
+					class="h-full text-white w-full dark:bg-secondary"
+				>
+					Generate
+				</Button>
+			{:else}
+				<TopUp isMobile={true} />
+				<p class="pt-14"></p>
+			{/if}
+		</div>
+
 
 		</div>
 		<input
