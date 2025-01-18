@@ -163,13 +163,15 @@ $effect(() => {
 					</a>
 					<DropdownMenu.Separator></DropdownMenu.Separator>
 					<div class="flex items-center justify-between px-3 py-3 text-sm">
-						<p class=" font-semibold">Gas</p>
+						
 						<div class="flex space-x-2">
 							<div class="flex h-full items-center space-x-1 font-semibold">
 								<Zap size={15} /> <span>{dartCreditBalance}</span>
 							</div>
 							<span class="font-extralight"> credits left</span>
 						</div>
+
+						<p class=" font-semibold">Minimum: 10</p>
 					</div>
 
 					{#if isConnected}

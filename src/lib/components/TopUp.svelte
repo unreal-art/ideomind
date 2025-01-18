@@ -20,6 +20,8 @@
  let {isMobile}:{isMobile ?: boolean } = $props() 
  let odpBalance = $state<number | null>(null)
  let dartCreditBalance = $state<number | null>(null)
+ let odpPerDart = $state<number | null>(null)
+ let matchingOdpAmount = $state<number | null>(null)
   let amt = $state("")
 
 let open = $state(false)
@@ -27,7 +29,7 @@ let open = $state(false)
 	
 
  const onclick = async () => {
-  if (!amt) return;  // Validate the amount
+  if (!matchingOdpAmount) return;  // Validate the amount
 
   try {
     // Approve the transfer
@@ -37,7 +39,7 @@ let open = $state(false)
       functionName: 'approve',
       args: [
         PUBLIC_EXCHANGE_ADDRESS,
-        parseEther(amt.toString()),
+        parseEther(matchingOdpAmount?.toString() ),
       ],
     });
 
@@ -47,7 +49,7 @@ let open = $state(false)
       address: PUBLIC_EXCHANGE_ADDRESS,
       functionName: 'exchange',
       args: [
-        parseEther(amt.toString()),
+        parseEther(matchingOdpAmount.toString()),
         $store.user?.wallet.address,
       ],
     });
@@ -69,10 +71,6 @@ let open = $state(false)
     amt = "";  // Reset the amount
   }
 };
-
-
-
-
 
 
 
@@ -101,10 +99,36 @@ $effect(() => {
     //@ts-ignore
     dartCreditBalance = dartData ? Number(formatEther(dartData)) : 0
 
+    //get exchange rate
+    const dartExchngeRate  = await readContract($appkitStore.wagmiAdapter.wagmiConfig,{
+      address: PUBLIC_EXCHANGE_ADDRESS,
+      abi: DartExchange.abi,
+      functionName: 'rate',
+     
+    })
 
-    console.log(odpBalance, dartCreditBalance)
+    //@ts-ignore
+    odpPerDart = dartExchngeRate ? Number(formatEther(dartExchngeRate)) : 0
+
+    // console.log(odpBalance, dartCreditBalance, odpPerDart)
   })()
 })
+
+const getExchange = async () => {
+
+    //get exchange rate
+    const dartExchngeRate  = await readContract($appkitStore.wagmiAdapter.wagmiConfig,{
+      address: PUBLIC_EXCHANGE_ADDRESS,
+      abi: DartExchange.abi,
+      functionName: 'dartExchangeRate',
+      args:[
+        parseEther(amt.toString())
+      ]
+    })
+    //@ts-ignore
+    matchingOdpAmount = dartExchngeRate ? Number(formatEther(dartExchngeRate)) : 0
+
+}
 
 
 </script>
@@ -114,7 +138,7 @@ $effect(() => {
  class={`${isMobile ? "w-full" : ""} `}
   >
   {#if isMobile}
-    <Button  class="my-3 w-full"><Zap size={15} /> Top up</Button>
+    <Button  class="my-3 w-full  bg-red-200 text-red-600 hover:bg-red-700 hover:text-white"><Zap size={15} /> Top up</Button>
   {:else}
     <Button
 			
@@ -131,13 +155,18 @@ $effect(() => {
     Top up
    </Dialog.Title>
    <Dialog.Description>
-    Add to your current credit count.
+    A minimum of 10 credits is required to run your job.
    </Dialog.Description>
   </Dialog.Header>
 
    <div class=" items-center gap-4">
-    <Label for="name" class="text-right">Amount</Label>
-    <Input id="name" type="number" bind:value={amt} min={0.0000001} placeholder="0.0"  />
+    <Label for="name" class="text-right">Credit amount</Label>
+    <Input id="name" type="number" bind:value={amt} min={0.0000001} placeholder="0.0" oninput={getExchange}  />
+    <p class="flex gap-2  justify-end pt-2 text-sm">
+      
+      <span>{matchingOdpAmount ? matchingOdpAmount : 0}</span>
+      <span class="text-gray-500">ODP</span>
+    </p>
    </div>
   
 
