@@ -23,6 +23,7 @@
  let odpPerDart = $state<number | null>(null)
  let matchingOdpAmount = $state<number | null>(null)
   let amt = $state("")
+  let topping = $state(false)
 
 let open = $state(false)
  	
@@ -32,6 +33,7 @@ let open = $state(false)
   if (!matchingOdpAmount) return;  // Validate the amount
 
   try {
+    topping=true
     // Approve the transfer
     const result = await writeContract($appkitStore.wagmiAdapter.wagmiConfig, {
       abi: erc20Abi,
@@ -61,7 +63,7 @@ let open = $state(false)
 
   } catch (error) {
     console.error(error);  // Log the error for debugging
-
+    topping = false
     // Error toast
     toast('Error', {
       description: "An error occurred during top up.",
@@ -69,6 +71,8 @@ let open = $state(false)
 
   } finally {
     amt = "";  // Reset the amount
+    topping = false
+    open = false
   }
 };
 
@@ -135,7 +139,7 @@ const getExchange = async () => {
  
 <Dialog.Root bind:open={open}>
  <Dialog.Trigger 
- class={`${isMobile ? "w-full" : ""} `}
+ class={`${isMobile ? "w-full" : ""} focus-visible:ring-0 outline-none border-none focus:ring-0 `}
   >
   {#if isMobile}
     <Button  class="my-3 w-full  bg-red-200 text-red-600 hover:bg-red-700 hover:text-white"><Zap size={15} /> Top up</Button>
@@ -171,7 +175,7 @@ const getExchange = async () => {
   
 
   <Dialog.Footer>
-   <Button {onclick}  type="submit">Add</Button>
+   <Button {onclick} disabled={topping}  type="submit">Add</Button>
   </Dialog.Footer>
  </Dialog.Content>
 </Dialog.Root>
