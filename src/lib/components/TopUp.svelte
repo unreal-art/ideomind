@@ -25,7 +25,7 @@
   let amt = $state("")
   let topping = $state(false)
 
-let open = $state(false)
+let topUpOpen = $state(false)
  	
 	
 
@@ -72,7 +72,7 @@ let open = $state(false)
   } finally {
     amt = "";  // Reset the amount
     topping = false
-    open = false
+    topUpOpen = false
   }
 };
 
@@ -137,7 +137,7 @@ const getExchange = async () => {
 
 </script>
  
-<Dialog.Root bind:open={open}>
+<Dialog.Root bind:open={topUpOpen}>
  <Dialog.Trigger 
  class={`${isMobile ? "w-full" : ""} focus-visible:ring-0 outline-none border-none focus:ring-0 `}
   >
