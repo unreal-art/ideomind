@@ -176,7 +176,7 @@ $effect(() => {
 			</Button>
 	</div>
 	<div class="h-full w-[20%]  flex items-center justify-center">
-	{#if dartCreditBalance && dartCreditBalance > 10}
+	{#if dartCreditBalance && dartCreditBalance >= 10}
 		<Drawer.Root bind:open>
 			<Drawer.Trigger class="border-none outline-none focus:ring-0 hover:ring-0 focus-visible:ring-0 visited:ring-0">
 				<Button class="h-12 w-12 rounded-full  p-0 dark:bg-secondary dark:text-white">
