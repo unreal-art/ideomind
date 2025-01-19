@@ -405,26 +405,26 @@ loadMore()
 			<!-- <Tabs.Content value="pinned" class="w-full  pb-14 ">
 				<UserPostList data={pinnedPosts} {loading} />
 				{#if loadingMore}
-				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
+				<div class="text-center   rounded-md mb-14   text-sm text-white right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
 				{/if}
 			</Tabs.Content> -->
 			<Tabs.Content value="public" class="w-full  pb-14 ">
 				<UserPostList data={publicPosts} {loading} />
 				{#if loadingMore}
-				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
+				<div class="text-center   rounded-md mb-14   text-sm text-white right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
 				{/if}
 			</Tabs.Content>
 			<!-- <Tabs.Content value="private" class="w-full  pb-14 ">
 				<UserPostList data={privatePosts} {loading} />
 				{#if loadingMore}
-				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
+				<div class="text-center   rounded-md mb-14   text-sm text-white right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
 				{/if}
 			</Tabs.Content> -->
 
 			<Tabs.Content value="liked" class="pb-14 w-full  ">
 				<UserPostList data={likedPosts} isLikes={true} {loading} />
 				{#if loadingMore}
-				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
+				<div class="text-center   rounded-md mb-14   text-sm text-white right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
 				{/if}
 			</Tabs.Content>
 		</Tabs.Root>

@@ -155,7 +155,7 @@ $effect(() => {
 		{:else}
 			<PostList data={posts} />
 				{#if loading}
-				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
+				<div class="text-center   rounded-md mb-14   text-sm text-white right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
 				{/if}
 		{/if}
 				
@@ -176,7 +176,7 @@ $effect(() => {
 		{:else}
 		<PostList data={followeePosts} />
 				{#if loading}
-				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
+				<div class="text-center   rounded-md mb-14   text-sm text-white right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
 				{/if}
 		{/if}
 			</Tabs.Content>
@@ -194,7 +194,7 @@ $effect(() => {
 		{:else}
 			<PostList data={topPosts} />
 				{#if loading}
-				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
+				<div class="text-center   rounded-md mb-14   text-sm text-white right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
 				{/if}
 		{/if}
 			</Tabs.Content>

@@ -381,6 +381,6 @@ let loadingMore = $state(false);
 
 	<DetailList data={otherPosts} />
 	{#if loadingMore}
-		<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
+		<div class="text-center   rounded-md mb-14   text-sm text-white right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
 	{/if}
 </section>
