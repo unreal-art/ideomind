@@ -176,6 +176,7 @@ $effect(() => {
 			</Button>
 	</div>
 	<div class="h-full w-[20%]  flex items-center justify-center">
+	{#if dartCreditBalance && dartCreditBalance > 10}
 		<Drawer.Root bind:open>
 			<Drawer.Trigger class="border-none outline-none focus:ring-0 hover:ring-0 focus-visible:ring-0 visited:ring-0">
 				<Button class="h-12 w-12 rounded-full  p-0 dark:bg-secondary dark:text-white">
@@ -197,16 +198,17 @@ $effect(() => {
 					/> -->
 
 					<Drawer.Footer>
-						{#if dartCreditBalance && dartCreditBalance > 10}
+					
 						<Button disabled={$quickStore.isGeneratingFiles} {onclick}>Generate</Button>
-						{:else}
-						<TopUp />
-						{/if}
+						
 						<Drawer.Close class={buttonVariants({ variant: 'outline' })}>Cancel</Drawer.Close>
 					</Drawer.Footer>
 				</div>
 			</Drawer.Content>
 		</Drawer.Root>
+	{:else}
+				<TopUp isFooter={true}/>
+	{/if}
 	</div>
 	<div class="h-full w-[20%]   flex items-center justify-center">
 		
