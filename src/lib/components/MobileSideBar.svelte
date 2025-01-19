@@ -188,13 +188,13 @@ $effect(() => {
 						<Drawer.Title>Generate Media</Drawer.Title>
 						<Drawer.Description>Unleash your creative juice.</Drawer.Description>
 					</Drawer.Header>
-					<Textarea
+					<!-- <Textarea
 						placeholder="Describe what you want to see"
 						rows={10}
 						class="ring-0"
 						bind:value={text}
 						disabled={!dartCreditBalance || dartCreditBalance < 10}
-					/>
+					/> -->
 
 					<Drawer.Footer>
 						{#if dartCreditBalance && dartCreditBalance > 10}
