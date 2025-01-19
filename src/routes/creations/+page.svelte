@@ -178,7 +178,7 @@ async function loadMore() {
 			<Tabs.Content value="all" class="w-full  pb-14 ">
 				<CreationList data={posts} choice={selectedChoice} {loading} />
 				{#if loadingMore}
-				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
+				<div class="text-center   rounded-md mb-14   text-sm text-white right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
 				{/if}
 			</Tabs.Content>
 			<!-- <Tabs.Content value="pinned" class=" w-full pb-14">
@@ -190,13 +190,13 @@ async function loadMore() {
 			<Tabs.Content value="public" class=" w-full pb-14">
 				<CreationList data={publicPosts} choice={selectedChoice} {loading} />
 				{#if loadingMore}
-				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
+				<div class="text-center   rounded-md mb-14   text-sm text-white right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
 				{/if}
 			</Tabs.Content>
 			<Tabs.Content value="private" class=" w-full pb-14">
 				<CreationList data={privatePosts} choice={selectedChoice} {loading} />
 				{#if loadingMore}
-				<div class="text-center   rounded-md mb-14   text-sm text-black right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
+				<div class="text-center   rounded-md mb-14   text-sm text-white right-0 p-2 w-fit m-auto bg-primary dark:bg-secondary dark:text-white">Loading more data..</div>
 				{/if}
 			</Tabs.Content>
 		</Tabs.Root>
