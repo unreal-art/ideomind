@@ -7,7 +7,7 @@
  import { Input } from "$lib/components/ui/input/index.js";
  import { Label } from "$lib/components/ui/label/index.js";
  import { toast } from 'svelte-sonner';
- import { Zap } from 'lucide-svelte';
+ import { Plus, Zap } from 'lucide-svelte';
  import {store} from "$lib/store"
  import { readContract, writeContract } from '@wagmi/core'
  import erc20Abi from "$lib/abi/erc20.json"
@@ -17,7 +17,7 @@
   import DartExchange from "$lib/abi/DartExchange.json"
 	
 
- let {isMobile}:{isMobile ?: boolean } = $props() 
+ let {isMobile, isFooter}:{isMobile ?: boolean , isFooter?:boolean} = $props() 
  let odpBalance = $state<number | null>(null)
  let dartCreditBalance = $state<number | null>(null)
  let odpPerDart = $state<number | null>(null)
@@ -143,9 +143,14 @@ const getExchange = async () => {
   >
   {#if isMobile}
     <Button  class="my-3 w-full  bg-red-200 text-red-600 hover:bg-red-700 hover:text-white"><Zap size={15} /> Top up</Button>
-  {:else}
+  {:else if isFooter}
+   <Button class="h-12 w-12 rounded-full  p-0 dark:bg-secondary dark:text-white">
+					<Plus size={30} />
+				</Button>
+
+    {:else}
     <Button
-			
+		
 			class="flex h-10 w-full space-x-2 bg-red-200 text-red-600 hover:bg-red-700 hover:text-white"
 			><Zap size={20} /> <span>Top up</span>
 		</Button>
