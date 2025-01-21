@@ -184,7 +184,7 @@ $effect(() => {
 				
 				</Drawer.Trigger
 			>
-			<Drawer.Content tabindex="-1">
+			<Drawer.Content tabindex={-1}>
 				<div class="mx-auto w-full max-w-sm">
 					<Drawer.Header>
 						<Drawer.Title>Generate Media</Drawer.Title>
