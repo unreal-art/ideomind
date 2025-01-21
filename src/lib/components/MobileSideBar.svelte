@@ -210,7 +210,7 @@ $effect(() => {
 </Dialog.Root>
 
 
-	
+
 	{:else}
 				<TopUp isFooter={true}/>
 	{/if}
