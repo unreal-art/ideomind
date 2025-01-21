@@ -176,12 +176,13 @@ $effect(() => {
 			</Button>
 	</div>
 	<div class="h-full w-[20%]  flex items-center justify-center">
-	{#if dartCreditBalance && dartCreditBalance > 10}
-		<Drawer.Root bind:open>
-			<Drawer.Trigger class="border-none outline-none focus:ring-0 hover:ring-0 focus-visible:ring-0 visited:ring-0">
-				<Button class="h-12 w-12 rounded-full  p-0 dark:bg-secondary dark:text-white">
+	{#if dartCreditBalance && dartCreditBalance < 10}
+		<Drawer.Root >
+			<Drawer.Trigger class="border-none flex justify-center bg-primary text-white items-center outline-none focus:ring-0 hover:ring-0 focus-visible:ring-0 visited:ring-0 h-12 w-12 rounded-full  p-0 dark:bg-secondary dark:text-white">
+				
 					<Plus size={30} />
-				</Button></Drawer.Trigger
+				
+				</Drawer.Trigger
 			>
 			<Drawer.Content>
 				<div class="mx-auto w-full max-w-sm">
@@ -189,13 +190,20 @@ $effect(() => {
 						<Drawer.Title>Generate Media</Drawer.Title>
 						<Drawer.Description>Unleash your creative juice.</Drawer.Description>
 					</Drawer.Header>
-					<!-- <Textarea
+					<Textarea
 						placeholder="Describe what you want to see"
 						rows={10}
 						class="ring-0"
 						bind:value={text}
-						disabled={!dartCreditBalance || dartCreditBalance < 10}
-					/> -->
+						
+					/>
+<!-- 
+					<textarea placeholder="Describe what you want to see"
+						rows={10}
+						class="ring-0 w-full p-2 outline-none"
+						bind:value={text}
+						>
+					</textarea> -->
 
 					<Drawer.Footer>
 					
