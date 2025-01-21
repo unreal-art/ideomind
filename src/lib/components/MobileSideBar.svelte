@@ -3,7 +3,7 @@
 	import { Bell, House, Menu, Plus, GalleryVertical, Telescope, Sun, Moon } from 'lucide-svelte';
 	import Button from '@/components/ui/button/button.svelte';
 	import { Badge } from '$lib/components/ui/badge/index.js';
-
+ import * as Dialog from "$lib/components/ui/dialog/index.js";
 	import profileImage from '$lib/assets/ima1.jpg';
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import { buttonVariants } from '$lib/components/ui/button/index.js';
@@ -177,45 +177,40 @@ $effect(() => {
 	</div>
 	<div class="h-full w-[20%]  flex items-center justify-center">
 	{#if dartCreditBalance && dartCreditBalance < 10}
-		<Drawer.Root bind:open>
+<Dialog.Root bind:open={open}>
+  <Dialog.Trigger class="border-none flex justify-center bg-primary text-white items-center outline-none focus:ring-0 hover:ring-0 focus-visible:ring-0 visited:ring-0 h-12 w-12 rounded-full p-0 dark:bg-secondary dark:text-white">
+    <Plus size={30} />
+  </Dialog.Trigger>
 
-			<Drawer.Trigger class="border-none flex justify-center bg-primary text-white items-center outline-none focus:ring-0 hover:ring-0 focus-visible:ring-0 visited:ring-0 h-12 w-12 rounded-full  p-0 dark:bg-secondary dark:text-white">
-				
-					<Plus size={30} />
-				
-				</Drawer.Trigger
-			>
-			<Drawer.Content class="fixed inset-0 overflow-y-auto">
+  <!-- Use h-screen for full height -->
+  <Dialog.Content class="h-screen flex flex-col">
+    
+    <!-- Header: Fixed height -->
+    <Dialog.Header class="h-1/5  flex flex-col justify-center">
+      <Dialog.Title>Generate Media</Dialog.Title>
+      <Dialog.Description>Unleash your creative juice.</Dialog.Description>
+    </Dialog.Header>
 
-				<div class="mx-auto w-full max-w-sm">
-					<Drawer.Header>
-						<Drawer.Title>Generate Media</Drawer.Title>
-						<Drawer.Description>Unleash your creative juice.</Drawer.Description>
-					</Drawer.Header>
-					<Textarea
-						placeholder="Describe what you want to see"
-						rows={10}
-						class="ring-0"
-						bind:value={text}
-						
-					/>
-<!-- 
-					<textarea placeholder="Describe what you want to see"
-						rows={10}
-						class="ring-0 w-full p-2 outline-none"
-						bind:value={text}
-						>
-					</textarea> -->
+    <!-- Content (Textarea): Takes remaining space -->
+    <div class="flex-1 mx-auto w-full overflow-auto ">
+      <Textarea
+        placeholder="Describe what you want to see"
+        
+        class="ring-0 w-full h-full"
+        bind:value={text}
+      />
+    </div>
 
-					<Drawer.Footer>
-					
-						<Button disabled={$quickStore.isGeneratingFiles} {onclick}>Generate</Button>
-						
-						<Drawer.Close class={buttonVariants({ variant: 'outline' })}>Cancel</Drawer.Close>
-					</Drawer.Footer>
-				</div>
-			</Drawer.Content>
-		</Drawer.Root>
+    <!-- Footer: Fixed height -->
+    <Dialog.Footer class="h-1/5  flex gap-10 justify-center items-center">
+		<Button class="w-full" disabled={$quickStore.isGeneratingFiles} {onclick}>Generate</Button>
+    </Dialog.Footer>
+
+  </Dialog.Content>
+</Dialog.Root>
+
+
+	
 	{:else}
 				<TopUp isFooter={true}/>
 	{/if}
