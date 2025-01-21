@@ -177,14 +177,15 @@ $effect(() => {
 	</div>
 	<div class="h-full w-[20%]  flex items-center justify-center">
 	{#if dartCreditBalance && dartCreditBalance < 10}
-		<Drawer.Root >
+		<Drawer.Root bind:open>
+
 			<Drawer.Trigger class="border-none flex justify-center bg-primary text-white items-center outline-none focus:ring-0 hover:ring-0 focus-visible:ring-0 visited:ring-0 h-12 w-12 rounded-full  p-0 dark:bg-secondary dark:text-white">
 				
 					<Plus size={30} />
 				
 				</Drawer.Trigger
 			>
-			<Drawer.Content>
+			<Drawer.Content tabindex="-1">
 				<div class="mx-auto w-full max-w-sm">
 					<Drawer.Header>
 						<Drawer.Title>Generate Media</Drawer.Title>
