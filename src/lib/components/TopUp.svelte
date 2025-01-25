@@ -190,7 +190,7 @@ $effect(() => {
   <Dialog.Footer>
     {#if isConnected}
 
-      <Button {onclick} disabled={topping}  type="submit">Add</Button>
+      <Button {onclick} disabled={topping}  type="submit" class="w-full">Top up</Button>
     {:else}
     		<appkit-button />
 	{/if}
