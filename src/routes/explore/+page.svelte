@@ -8,6 +8,7 @@
 	import type { Post } from "@/types";
 	import SearchBox from "@/components/SearchBox.svelte";
 	import { supabase } from "@src/supabaseClient";
+	import { trusted } from "svelte/legacy";
 
 	
 	let posts = $state<Post[]>([])
@@ -17,6 +18,9 @@
 	let loading  = $state(false)
 	let sectionElement: HTMLElement | null = $state(null);
 	let pageLoading = $state(true)
+	let topFinished = $state(false)
+	let exploreFinished = $state(false)
+	let followingFinished = $state(false)
 	let tab = $state("explore")
 
 	let offset = $state(10);
@@ -25,54 +29,68 @@
 
 
 	async function loadMore() {
-		
-		loading = true
-		 if(tab == "top"){
-				const { data: newTopPosts, error: topPostError } = await supabase
-				.from("posts")
-				.select("*")
-				.order("like_count", { ascending: false })
-				.range(topPostsOffSet, topPostsOffSet + 9);
+    if (loading) return; // Prevent multiple simultaneous requests
+    loading = true;
 
-				if (topPostError) {
-					loading = false
-					console.error("Error loading more posts:", topPostError);
-					return;
-				}
-				if (newTopPosts?.length) {
-				topPosts = [...topPosts, ...newTopPosts ];
-				// console.log(posts)
-				topPostsOffSet += 10; // Increment offset
-			}
-		}else if (tab == "explore"){
-				const { data: newPosts, error } = await supabase
-				.from("posts")
-				.select("*")
-				.order("createdAt", { ascending: false })
-				.range(offset, offset + 9); // Fetch the next 10 posts
+    try {
+        if (tab === "top") {
+            if (topFinished) return;
 
-			if (error) {
-				loading = false
-				console.error("Error loading more posts:", error);
-				return;
-			}
+            const { data: newTopPosts, error } = await supabase
+                .from("posts")
+                .select("*")
+                .gt("like_count", 0)
+                .order("like_count", { ascending: false })
+                .range(topPostsOffSet, topPostsOffSet + 9);
 
-			if (newPosts?.length) {
-				posts = [...posts, ...newPosts ]; 
-				// console.log(posts)
-				offset += 10; // Increment offset
-			}
-		}else {
-			const newFolloweePosts = await getPostsForFollowing($store.user?.id, followeePostsOffSet)
-			if(newFolloweePosts.length > 0){
-				followeePosts = [...followeePosts, ...newFolloweePosts]
-				followeePostsOffSet += 10
-			}
-		}
+            if (error) throw error;
 
-		loading = false
+            if (newTopPosts?.length) {
+                topPosts = [...topPosts, ...newTopPosts];
+                topPostsOffSet += 10;
+            } else {
+                topFinished = true;
+            }
+        } 
+        
+        else if (tab === "explore") {
+            if (exploreFinished) return;
 
-	}
+            const { data: newPosts, error } = await supabase
+                .from("posts")
+                .select("*")
+                .order("createdAt", { ascending: false })
+                .range(offset, offset + 9);
+
+            if (error) throw error;
+
+            if (newPosts?.length) {
+                posts = [...posts, ...newPosts];
+                offset += 10;
+            } else {
+                exploreFinished = true;
+            }
+        } 
+        
+        else {
+            if (followingFinished) return;
+
+            const newFolloweePosts = await getPostsForFollowing($store.user?.id, followeePostsOffSet);
+
+            if (newFolloweePosts.length) {
+                followeePosts = [...followeePosts, ...newFolloweePosts];
+                followeePostsOffSet += 10;
+            } else {
+                followingFinished = true;
+            }
+        }
+    } catch (error) {
+        console.error("Error loading more posts:", error);
+    } finally {
+        loading = false;
+    }
+}
+
 
 	const reloadData = async (value: string) => {
 		tab = value
