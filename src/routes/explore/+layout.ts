@@ -19,6 +19,7 @@ export const load: LayoutLoad = async ({ url }) => {
 		const { data: topPosts, error: topPostError } = await supabase
 			.from("posts")
 			.select("*")
+			.gt("like_count", 0)
 			.order("like_count", { ascending: false })
 			.range(0, 9);
 

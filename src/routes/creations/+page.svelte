@@ -33,6 +33,7 @@
 	let privatePosts = $state<Post[]>([]);
 	let publicPosts = $state<Post[]>([]);
 	let loading = $state(true);
+	let postsFinished = $state(false);
 	let loadingMore = $state(false);
 	let sectionElement: HTMLElement | null = $state(null);
 	let offset = $state(10);
@@ -56,32 +57,34 @@
 		loading = false;
 	};
 
-
 async function loadMore() {
-	
-	loadingMore = true
-    const { data: newPosts, error } = await supabase
-        .from("posts")
-        .select("*")
-		// @ts-ignore
-		.eq("author", $store.user.id) // Filter posts by the author_id
-		.order("createdAt", { ascending: false })
-        .range(offset, offset + 9); // Fetch the next 10 posts
+    if (postsFinished || loadingMore) return; // Prevent duplicate requests
 
-    if (error) {
-		loadingMore = false
+    loadingMore = true;
+
+    try {
+        const { data: newPosts, error } = await supabase
+            .from("posts")
+            .select("*")
+            .eq("author", $store.user?.id) // Ensure correct column name
+            .order("createdAt", { ascending: false })
+            .range(offset, offset + 9); // Fetch the next 10 posts
+
+        if (error) throw error;
+
+        if (newPosts?.length) {
+            posts = [...posts, ...newPosts]; // Append new posts
+            offset += 10; // Increment offset
+        } else {
+            postsFinished = true; // No more posts to load
+        }
+    } catch (error) {
         console.error("Error loading more posts:", error);
-        return;
+    } finally {
+        loadingMore = false;
     }
-
-    if (newPosts?.length) {
-        posts = [...posts, ...newPosts ]; // Assuming your store has an `addPosts` method
-		// console.log(posts)
-        offset += 10; // Increment offset
-    }
-	
-	loadingMore = false
 }
+
 
 	//fill posts
 	$effect(() => {
