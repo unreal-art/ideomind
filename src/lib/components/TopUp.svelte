@@ -25,8 +25,9 @@
   let amt = $state("")
   let topping = $state(false)
 
-let topUpOpen = $state(false)
- 	
+ let topUpOpen = $state(false)
+ 	let isConnected = $state(false)
+
 	
 
  const onclick = async () => {
@@ -134,6 +135,13 @@ const getExchange = async () => {
 
 }
 
+$effect(() => {
+	 setInterval(() => {
+      // Access the store reactively
+     isConnected =  $appkitStore.modal.getIsConnectedState()
+    }, 1000);
+	})
+
 
 </script>
  
@@ -180,7 +188,12 @@ const getExchange = async () => {
   
 
   <Dialog.Footer>
-   <Button {onclick} disabled={topping}  type="submit">Add</Button>
+    {#if isConnected}
+
+      <Button {onclick} disabled={topping}  type="submit">Add</Button>
+    {:else}
+    		<appkit-button />
+	{/if}
   </Dialog.Footer>
  </Dialog.Content>
 </Dialog.Root>
