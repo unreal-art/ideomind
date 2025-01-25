@@ -29,7 +29,7 @@
 
 
 	async function loadMore() {
-    if (loading) return; // Prevent multiple simultaneous requests
+    if (loading) return; 
     loading = true;
 
     try {

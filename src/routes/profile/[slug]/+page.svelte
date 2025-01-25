@@ -57,6 +57,8 @@
 	let loading = $state(true);
 	let posts = $state<Post[]>(data.posts as Post[]);
 let loadingMore = $state(false);
+let likedPostsFinished = $state(false);
+let postsFinished = $state(false);
 let offset = $state(10);
 let likedOffSet = $state(10);
 let tab = $state("")
@@ -69,65 +71,56 @@ let tab = $state("")
 	};
 
 async function loadMore() {
- 
+    if (loadingMore) return; // Prevent duplicate requests
+    loadingMore = true;
 
-  if (tab !== 'liked') {
-	 if (loadingMore || posts.length < 10) return;
-  
-  loadingMore = true;
-    // Fetch posts from "posts" table where author matches the slug
-    const { data: newPosts, error } = await supabase
-      .from("posts")
-      .select(`*`)
-      .eq("author", $page.params.slug)
-      .order("createdAt", { ascending: false })
-      .range(likedOffSet, likedOffSet + 9); // Fetch the next 10 posts
+    try {
+        if (tab !== 'liked') {
+            if (postsFinished || posts.length < 10) return; // Ensure there are enough posts to fetch more
 
-    if (error) {
-      loadingMore = false;
-      console.error("Error loading more posts:", error);
-      return;
+            const { data: newPosts, error } = await supabase
+                .from("posts")
+                .select("*")
+                .eq("author", $page.params.slug)
+                .order("createdAt", { ascending: false })
+                .range(likedOffSet, likedOffSet + 9);
+
+            if (error) throw error;
+
+            if (newPosts?.length) {
+                posts = [...posts, ...newPosts];
+                likedOffSet += 10; // Increment offset
+            } else {
+                postsFinished = true; // No more posts to load
+            }
+        } else {
+            if (likedPostsFinished || likedPosts.length < 10) return;
+
+            const { data, error } = await supabase
+                .from("likes")
+                .select("posts(*), created_at")
+                .eq("author", $page.params.slug)
+                .order("created_at", { ascending: false })
+                .range(offset, offset + 9);
+
+            if (error) throw error;
+
+            const newPosts = data?.flatMap((like) => like.posts) || [];
+
+            if (newPosts?.length) {
+                likedPosts = [...likedPosts, ...newPosts];
+                offset += 10;
+            } else {
+                likedPostsFinished = true;
+            }
+        }
+    } catch (error) {
+        console.error("Error loading more posts:", error);
+    } finally {
+        loadingMore = false; // Ensure loading state is reset
     }
-
-    if (newPosts?.length) {
-      posts = [...posts, ...newPosts]; // Assuming your store has an `addPosts` method
-      // console.log(posts);
-      likedOffSet += 10; // Increment offset
-    }
-  } else {
-
-	 if (loadingMore || likedPosts.length < 10) return;
-  
-  loadingMore = true;
-    // Query the "likes" table and join it with the "posts" table
-    const { data, error } = await supabase
-      .from("likes") // Query the "likes" table
-      .select(`
-        posts(*), 
-        created_at
-      `) // Fetch all columns from "posts" and include "likes.created_at"
-      .eq("author", $page.params.slug) // Filter by the user ID
-      .order("created_at", { ascending: false }) // Order by "likes.created_at"
-      .range(offset, offset + 9); // Pagination: fetch 10 records
-
-    // Map through the data to extract the posts array
-    const newPosts = data?.flatMap((like: { posts: Post[] }) => like.posts) || [];
-
-    if (error) {
-      loadingMore = false;
-      console.error("Error loading more posts:", error);
-      return;
-    }
-
-    if (newPosts?.length) {
-      likedPosts = [...likedPosts, ...newPosts]; // Assuming your store has an `addPosts` method
-      // console.log(posts);
-      offset += 10; // Increment offset
-    }
-  }
-
-  loadingMore = false;
 }
+
 
 	// Handle clicks outside the input
 	// const handleClickOutside = (event: MouseEvent): void => {

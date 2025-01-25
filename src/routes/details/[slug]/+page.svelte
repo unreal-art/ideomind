@@ -29,7 +29,8 @@
 	let post = $state<Post>(data.data as Post);
 	let text = $state("");
 	let activeFollow = $state<boolean | null>(null);
-let loadingMore = $state(false);
+	let loadingMore = $state(false);
+	let otherPostsFinished = $state(false);
 	let sectionElement: HTMLElement | null = $state(null);
 	let offset = $state(10);
 
@@ -121,19 +122,27 @@ let loadingMore = $state(false);
 		// Stop loading indicator
 	}
 
-	async function loadMore() {
-	
-	loadingMore = true
-    const newPosts = await fetchAuthorOtherPosts(post?.author, post?.id as string,offset);
+async function loadMore() {
+    if (otherPostsFinished || loadingMore) return; // Prevent duplicate requests
 
-    if (newPosts?.length) {
-        otherPosts = [...otherPosts, ...newPosts ]; 
-		// console.log(posts)
-        offset += 10; // Increment offset
+    loadingMore = true;
+
+    try {
+        const newPosts = await fetchAuthorOtherPosts(post?.author, post?.id as string, offset);
+
+        if (newPosts?.length) {
+            otherPosts = [...otherPosts, ...newPosts]; // Append new posts
+            offset += 10; // Increment offset only when new posts are fetched
+        } else {
+            otherPostsFinished = true; // Mark as finished if no new posts
+        }
+    } catch (error) {
+        console.error("Error loading more posts:", error);
+    } finally {
+        loadingMore = false; // Ensure loading flag resets
     }
-	
-	loadingMore = false
 }
+
 
 	$effect(() => {
 		const fetchResolution = async () => {
