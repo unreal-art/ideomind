@@ -20,7 +20,6 @@
  	let dartCreditBalance = $state<number | null>(null)
 
 
-
 	let { section } = $props();
 	let text = $state('');
 	let prompt = $derived(text.trim());
@@ -119,6 +118,7 @@
 
 $effect(() => {
   const intervalId = setInterval(async () => {
+	if(!$appkitStore.modal.getIsConnectedState()) return
     try {
       // Get ODP balance of connected wallet address
       const data = await readContract($appkitStore.wagmiAdapter.wagmiConfig, {
@@ -150,7 +150,7 @@ $effect(() => {
     }
   }, 1000); // 1000 ms 
 
-  
+
 });
 </script>
 
