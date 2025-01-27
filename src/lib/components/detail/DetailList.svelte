@@ -22,7 +22,7 @@
 			<Image item={post} {onReadyEvent} />
 			{#if readyBlocks.includes(post.id)}
 				<div class="mt-3 flex h-10 w-full items-center justify-end">
-					<More />
+					<!-- <More /> -->
 					<Likes id={post.id} {post} />
 				</div>
 			{/if}

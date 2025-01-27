@@ -143,6 +143,45 @@ $effect(() => {
 	})
 
 
+
+$effect(() => {
+  const intervalId = setInterval(async () => {
+	if(!$appkitStore.modal.getIsConnectedState()) return
+    try {
+      // Get ODP balance of connected wallet address
+      const data = await readContract($appkitStore.wagmiAdapter.wagmiConfig, {
+        address: PUBLIC_ODP_ADDRESS,
+        abi: erc20Abi,
+        functionName: 'balanceOf',
+        args: [$appkitStore.modal.getAddress()],
+      });
+
+      //@ts-ignore
+      odpBalance = data ? Number(formatEther(data)) : 0;
+
+      // Get Dart token balance of user backend wallet
+      const dartData = await readContract($appkitStore.wagmiAdapter.wagmiConfig, {
+        address: PUBLIC_DART_ADDRESS,
+        abi: erc20Abi,
+        functionName: 'balanceOf',
+        args: [$store.user?.wallet.address],
+      });
+
+      //@ts-ignore
+      dartCreditBalance = dartData ? Number(formatEther(dartData)) : 0;
+
+      // Log the balances
+    //   console.log(odpBalance, dartCreditBalance);
+
+    } catch (error) {
+      console.error("Error fetching balances:", error);
+    }
+  }, 1000); // 1000 ms 
+
+  
+});
+
+
 </script>
  
 <Dialog.Root bind:open={topUpOpen}>
@@ -179,11 +218,20 @@ $effect(() => {
    <div class=" items-center gap-4">
     <Label for="name" class="text-right">Credit amount</Label>
     <Input id="name" type="number" bind:value={amt} min={0.0000001} placeholder="0.0" oninput={getExchange}  />
-    <p class="flex gap-2  justify-end pt-2 text-sm">
-      
+    <div class="flex justify-between">
+    <div class="flex space-x-2 items-center text-sm">
+      <div class="flex h-full items-center space-x-1 font-semibold">
+        <Zap size={15} />
+        <span>{dartCreditBalance}</span>
+      </div>
+      <span class="font-extralight">credits left</span>
+    </div>
+    <p class="flex gap-2 justify-end pt-2 text-sm">
       <span>{matchingOdpAmount ? matchingOdpAmount : 0}</span>
       <span class="text-gray-500">ODP</span>
     </p>
+  </div>
+
    </div>
   
 
