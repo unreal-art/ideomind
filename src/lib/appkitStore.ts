@@ -55,8 +55,8 @@ const wagmiAdapter = new WagmiAdapter({
 const metadata = {
 	name: "AppKit",
 	description: "AppKit Example",
-	url: "https://example.com", // origin must match your domain & subdomain
-	icons: ["https://avatars.githubusercontent.com/u/179229932"]
+	url: "https://unreal.art", // origin must match your domain & subdomain
+	icons: ["https://unreal.art/Icon-Black.png"]
 };
 
 // 5. Create the modal instance

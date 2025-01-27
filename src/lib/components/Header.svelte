@@ -11,50 +11,50 @@
 	let isConnected = $state(false)
 
 
-	async function changeChain() {
-		const account = getAccount($appkitStore.wagmiAdapter.wagmiConfig);
+	// async function changeChain() {
+	// 	const account = getAccount($appkitStore.wagmiAdapter.wagmiConfig);
 
-		// Handle WalletConnect or unsupported wallets
-		if (account.connector?.id === "walletConnect") {
-			alert("Please switch to the Torus Testnet manually in your WalletConnect-compatible wallet.");
-			return;
-		}
+	// 	// Handle WalletConnect or unsupported wallets
+	// 	if (account.connector?.id === "walletConnect") {
+	// 		alert("Please switch to the Torus Testnet manually in your WalletConnect-compatible wallet.");
+	// 		return;
+	// 	}
 
-		if (!window.ethereum) {
-			alert("No Ethereum provider detected. Please add the network manually.");
-			return;
-		}
+	// 	if (!window.ethereum) {
+	// 		alert("No Ethereum provider detected. Please add the network manually.");
+	// 		return;
+	// 	}
 
-		try {
-			// Try switching the chain
-			await switchChain($appkitStore.wagmiAdapter.wagmiConfig, { chainId: 8194 });
-		} catch (error) {
-			console.warn("Switch failed, trying to add chain...", error);
+	// 	try {
+	// 		// Try switching the chain
+	// 		await switchChain($appkitStore.wagmiAdapter.wagmiConfig, { chainId: 8194 });
+	// 	} catch (error) {
+	// 		console.warn("Switch failed, trying to add chain...", error);
 
-			try {
-				// Cast window.ethereum to any to avoid TypeScript error
-				await (window.ethereum as any).request({
-					method: "wallet_addEthereumChain",
-					params: [
-						{
-							chainId: "0x2002", // Hex equivalent of 8194
-							chainName: "Torus Testnet",
-							nativeCurrency: {
-								name: "Torus Ether",
-								symbol: "TTQF",
-								decimals: 18,
-							},
-							rpcUrls: ["https://rpc.testnet.toruschain.com"],
-							blockExplorerUrls: ["https://testnet.toruscan.com"],
-						},
-					],
-				});
-			} catch (addError) {
-				console.error("Failed to add network:", addError);
-				alert("Please manually add Torus Testnet in your wallet.");
-			}
-		}
-	}
+	// 		try {
+	// 			// Cast window.ethereum to any to avoid TypeScript error
+	// 			await (window.ethereum as any).request({
+	// 				method: "wallet_addEthereumChain",
+	// 				params: [
+	// 					{
+	// 						chainId: "0x2002", // Hex equivalent of 8194
+	// 						chainName: "Torus Testnet",
+	// 						nativeCurrency: {
+	// 							name: "Torus Ether",
+	// 							symbol: "TTQF",
+	// 							decimals: 18,
+	// 						},
+	// 						rpcUrls: ["https://rpc.testnet.toruschain.com"],
+	// 						blockExplorerUrls: ["https://testnet.toruscan.com"],
+	// 					},
+	// 				],
+	// 			});
+	// 		} catch (addError) {
+	// 			console.error("Failed to add network:", addError);
+	// 			alert("Please manually add Torus Testnet in your wallet.");
+	// 		}
+	// 	}
+	// }
 
 
 
@@ -64,10 +64,10 @@
       // Access the store reactively
      isConnected =  $appkitStore.modal.getIsConnectedState()
 
-	const chainId = getChainId($appkitStore.wagmiAdapter.wagmiConfig)
-	if(chainId  !== 8194){
-		changeChain()
-	}
+	// const chainId = getChainId($appkitStore.wagmiAdapter.wagmiConfig)
+	// if(chainId  !== 8194){
+	// 	changeChain()
+	// }
 
     }, 1000);
 	})
