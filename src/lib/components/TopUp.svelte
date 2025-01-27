@@ -120,7 +120,7 @@ $effect(() => {
 })
 
 const getExchange = async () => {
-
+if(!isConnected) return
     //get exchange rate
     const dartExchngeRate  = await readContract($appkitStore.wagmiAdapter.wagmiConfig,{
       address: PUBLIC_EXCHANGE_ADDRESS,

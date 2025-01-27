@@ -53,6 +53,7 @@
 
 $effect(() => {
   const intervalId = setInterval(async () => {
+	if(!$appkitStore.modal.getIsConnectedState()) return
     try {
       // Get ODP balance of connected wallet address
       const data = await readContract($appkitStore.wagmiAdapter.wagmiConfig, {
