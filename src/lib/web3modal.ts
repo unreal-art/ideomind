@@ -18,10 +18,10 @@ if (typeof window !== "undefined") {
 const customWallets = storedCustomWallet ? [JSON.parse(storedCustomWallet)] : undefined;
 
 const metadata = {
-	name: "skelekit-wagmiconnect",
-	description: "skelekit-wagmiconnect example",
-	url: "https://skelekit-wagmiconnect.vercel.app/",
-	icons: ["https://avatars.githubusercontent.com/u/37784886"]
+	name: "unreal",
+	description: "AI engine for media generation",
+	url: "https://unreal.art/",
+	icons: ["https://unreal.art/Icon-Black.png"]
 };
 
 export const chains = [gnosis, torusTestnet] as const;

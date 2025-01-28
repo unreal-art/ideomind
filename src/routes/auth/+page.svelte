@@ -3,7 +3,7 @@
 	import { goto } from "$app/navigation";
 	import { store } from "$lib/store";
 	import type { Post } from "@/types";
-	import { AiOutlineDiscord, AiOutlineGooglePlus, AiOutlineNodeExpand } from "svelte-icons-pack/ai";
+	import { AiOutlineApple, AiOutlineDiscord, AiOutlineGooglePlus, AiOutlineNodeExpand } from "svelte-icons-pack/ai";
 	import { Icon } from "svelte-icons-pack";
 	import { getRedirectURL } from "../oauth";
 	import { supabase } from "@src/supabaseClient";
@@ -113,6 +113,28 @@
 			console.error("Error signing in with google:", error.message);
 		}
 	}
+	async function signInWithApple() {
+		let redirectToUrl = getRedirectURL()  + "/auth"
+		// redirectToUrl = new URL("explore", redirectToUrl).toString()
+		console.log("redirect to:", redirectToUrl)
+		redirectToUrl = encodeURI(redirectToUrl)
+		
+		const { data, error } = await supabase.auth.signInWithOAuth({
+			provider: "apple",
+			options: {
+				//redirect url
+				redirectTo: redirectToUrl,
+				// skipBrowserRedirect: true,
+				queryParams: {
+					// redirect_uri: redirectToUrl,
+				},
+			}
+		});
+
+		if (error) {
+			console.error("Error signing in with google:", error.message);
+		}
+	}
 
 
 	function handleImageError(event: Event) {
@@ -180,7 +202,7 @@
 				
 				<button
 					onclick={signInWithGoogle}
-					class=" h- font-semibold flex h-12 w-full items-center justify-center gap-3 rounded-full border text-center hover:bg-secondary "
+					class="  font-semibold flex h-12 w-full items-center justify-center gap-2 rounded-full border text-center hover:bg-secondary "
 				>
 					<Icon
 						src={AiOutlineGooglePlus}
@@ -189,6 +211,18 @@
 						className="custom-icon"
 						title="Custom icon params"
 					></Icon>Google</button
+				>
+				<button
+					onclick={signInWithApple}
+					class="  font-semibold flex h-12 w-full items-center justify-center gap-3 rounded-full border text-center hover:bg-secondary "
+				>
+					<Icon
+						src={AiOutlineApple}
+						size="28"
+						viewBox="0 0 1024 1024"
+						className="custom-icon"
+						title="Custom icon params"
+					></Icon>Apple</button
 				>
 				
 			</div>
