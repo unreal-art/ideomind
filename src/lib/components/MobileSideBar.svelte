@@ -32,8 +32,9 @@
 	import random from 'random';
 	import { toggleMode } from 'mode-watcher';
 	import { quickStore } from '$lib/quickStore';
-	import { appkitStore } from "../appkitStore";
+	// import { appkitStore } from "../appkitStore";
 	import { TrOutlineBrandTelegram } from 'svelte-icons-pack/tr';
+	import { account, wagmiConfig } from '$lib/web3modal';
   
 	 import { readContract } from '@wagmi/core'
  import erc20Abi from "$lib/abi/erc20.json"
@@ -119,7 +120,7 @@ const onclick = async () => {
 	$effect(() => {
 	 setInterval(() => {
       // Access the store reactively
-     isConnected =  $appkitStore.modal.getIsConnectedState()
+    //  isConnected =  $appkitStore.modal.getIsConnectedState()
     }, 1000);
 	})
 
@@ -127,25 +128,25 @@ const onclick = async () => {
 
 $effect(() => {
   const intervalId = setInterval(async () => {
-	if(!$appkitStore.modal.getIsConnectedState()) {
+	if(!$account.isConnected) {
 		dartCreditBalance = 0
 		odpBalance = 0
 		return
 	}
     try {
       // Get ODP balance of connected wallet address
-      const data = await readContract($appkitStore.wagmiAdapter.wagmiConfig, {
+      const data = await readContract(wagmiConfig, {
         address: PUBLIC_ODP_ADDRESS,
         abi: erc20Abi,
         functionName: 'balanceOf',
-        args: [$appkitStore.modal.getAddress()],
+        args: [$account.address],
       });
 
       //@ts-ignore
       odpBalance = data ? Number(formatEther(data)) : 0;
 
       // Get Dart token balance of user backend wallet
-      const dartData = await readContract($appkitStore.wagmiAdapter.wagmiConfig, {
+      const dartData = await readContract(wagmiConfig, {
         address: PUBLIC_DART_ADDRESS,
         abi: erc20Abi,
         functionName: 'balanceOf',

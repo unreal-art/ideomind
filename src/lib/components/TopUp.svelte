@@ -13,9 +13,9 @@
  import erc20Abi from "$lib/abi/erc20.json"
   import{PUBLIC_DART_ADDRESS, PUBLIC_ODP_ADDRESS, PUBLIC_EXCHANGE_ADDRESS} from "$env/static/public"
 	import { formatEther, parseEther } from "ethers6";
-	import { appkitStore,  } from "@/appkitStore";
+	// import { appkitStore,  } from "@/appkitStore";
   import DartExchange from "$lib/abi/DartExchange.json"
-	
+	import { account, wagmiConfig } from '$lib/web3modal';
 
  let {isMobile, isFooter}:{isMobile ?: boolean , isFooter?:boolean} = $props() 
  let odpBalance = $state<number | null>(null)
@@ -36,7 +36,7 @@
   try {
     topping=true
     // Approve the transfer
-    const result = await writeContract($appkitStore.wagmiAdapter.wagmiConfig, {
+    const result = await writeContract(wagmiConfig, {
       abi: erc20Abi,
       address: PUBLIC_ODP_ADDRESS,
       functionName: 'approve',
@@ -47,7 +47,7 @@
     });
 
     // Call the swap function
-    const swapResult = await writeContract($appkitStore.wagmiAdapter.wagmiConfig, {
+    const swapResult = await writeContract(wagmiConfig, {
       abi: DartExchange.abi,
       address: PUBLIC_EXCHANGE_ADDRESS,
       functionName: 'exchange',
@@ -81,20 +81,20 @@
 
 $effect(() => {
   ( async()=> {
-
+  if(!$account.address)return
     //get odp balance of connected wallet address
-    const data  = await readContract($appkitStore.wagmiAdapter.wagmiConfig,{
+    const data  = await readContract(wagmiConfig,{
       address: PUBLIC_ODP_ADDRESS,
       abi: erc20Abi,
       functionName: 'balanceOf',
-      args:[$appkitStore.modal.getAddress()]
+      args:[$account.address]
     })
 
     //@ts-ignore
     odpBalance = data ? Number(formatEther(data)) : 0
 
     //get dart token balance of user backend wallet
-    const dartData  = await readContract($appkitStore.wagmiAdapter.wagmiConfig,{
+    const dartData  = await readContract(wagmiConfig,{
       address: PUBLIC_DART_ADDRESS,
       abi: erc20Abi,
       functionName: 'balanceOf',
@@ -105,7 +105,7 @@ $effect(() => {
     dartCreditBalance = dartData ? Number(formatEther(dartData)) : 0
 
     //get exchange rate
-    const dartExchngeRate  = await readContract($appkitStore.wagmiAdapter.wagmiConfig,{
+    const dartExchngeRate  = await readContract(wagmiConfig,{
       address: PUBLIC_EXCHANGE_ADDRESS,
       abi: DartExchange.abi,
       functionName: 'rate',
@@ -120,9 +120,9 @@ $effect(() => {
 })
 
 const getExchange = async () => {
-if(!isConnected) return
+if(!$account.isConnected) return
     //get exchange rate
-    const dartExchngeRate  = await readContract($appkitStore.wagmiAdapter.wagmiConfig,{
+    const dartExchngeRate  = await readContract(wagmiConfig,{
       address: PUBLIC_EXCHANGE_ADDRESS,
       abi: DartExchange.abi,
       functionName: 'dartExchangeRate',
@@ -135,36 +135,36 @@ if(!isConnected) return
 
 }
 
-$effect(() => {
-	 setInterval(() => {
-      // Access the store reactively
-     isConnected =  $appkitStore.modal.getIsConnectedState()
-    }, 1000);
-	})
+// $effect(() => {
+// 	 setInterval(() => {
+//       // Access the store reactively
+//      isConnected =  $appkitStore.modal.getIsConnectedState()
+//     }, 1000);
+// 	})
 
 
 
 $effect(() => {
   const intervalId = setInterval(async () => {
-	if(!$appkitStore.modal.getIsConnectedState()) {
+	if(!$account.isConnected) {
 		dartCreditBalance = 0
 		odpBalance = 0
 		return
 	}
     try {
       // Get ODP balance of connected wallet address
-      const data = await readContract($appkitStore.wagmiAdapter.wagmiConfig, {
+      const data = await readContract(wagmiConfig, {
         address: PUBLIC_ODP_ADDRESS,
         abi: erc20Abi,
         functionName: 'balanceOf',
-        args: [$appkitStore.modal.getAddress()],
+        args: [$account.address],
       });
 
       //@ts-ignore
       odpBalance = data ? Number(formatEther(data)) : 0;
 
       // Get Dart token balance of user backend wallet
-      const dartData = await readContract($appkitStore.wagmiAdapter.wagmiConfig, {
+      const dartData = await readContract(wagmiConfig, {
         address: PUBLIC_DART_ADDRESS,
         abi: erc20Abi,
         functionName: 'balanceOf',
@@ -240,11 +240,11 @@ $effect(() => {
   
 
   <Dialog.Footer>
-    {#if isConnected}
+    {#if $account.isConnected}
 
       <Button {onclick} disabled={topping}  type="submit" class="w-full">Top up</Button>
     {:else}
-    		<appkit-button />
+    		 <w3m-button class="" />
 	{/if}
   </Dialog.Footer>
  </Dialog.Content>
