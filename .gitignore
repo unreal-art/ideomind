@@ -38,3 +38,7 @@ devops/ssl
 play.ipynb
 
 *.log
+
+*.p8
+
+utils/apple.ts
