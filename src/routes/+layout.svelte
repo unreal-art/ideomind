@@ -26,6 +26,12 @@
 	import type { PageData } from './$types';
 	import { supabase } from '@src/supabaseClient';
 	import { authenticate } from '@/api';
+	import SvelteSeo from 'svelte-seo';
+
+	// Floating UI for Popups
+	import { computePosition, autoUpdate, flip, shift, offset, arrow } from '@floating-ui/dom';
+	import { storePopup } from '@skeletonlabs/skeleton';
+	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 
 	
@@ -123,3 +129,34 @@
 		<MobileSideBar />
 	</main>
 {/if}
+
+
+<!-- <SvelteSeo
+	title="skelekit-wagmiconnect | the template"
+	description="skelekit-wagmiconnect is a really cool template, star it on github!"
+	canonical="https://skelekit-wagmiconnect.vercel.app/"
+	keywords="skelekit-wagmiconnect, sveltekit, skeleton.dev, taiwindcss, wagmi, walletconnect, vercel"
+	openGraph={{
+		title: 'skelekit-wagmiconnect | the template',
+		description: 'skelekit-wagmiconnect is a really cool template, star it on github!',
+		// image: 'https://skelekit-wagmiconnect.vercel.app/skelekit-wagmiconnect.png',
+		url: 'https://skelekit-wagmiconnect.vercel.app/',
+		type: 'website',
+		images: [
+			{
+				url: 'https://skelekit-wagmiconnect.vercel.app/skelekit-wagmiconnect.png',
+				width: 800,
+				height: 600,
+				alt: 'skelekit-wagmiconnect desktop image'
+			},
+			{
+				url: 'https://skelekit-wagmiconnect.vercel.app/skelekit-wagmiconnect.png',
+				width: 900,
+				height: 800,
+				alt: 'skelekit-wagmiconnect desktop image'
+			}
+		],
+		site_name: 'skelekit-wagmiconnect'
+	}}
+	
+/> -->

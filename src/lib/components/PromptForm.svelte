@@ -10,12 +10,13 @@
 	import Textarea from './ui/textarea/textarea.svelte';
 	import random from "random"
 
-	import { appkitStore } from "../appkitStore";
+	// import { appkitStore } from "../appkitStore";
 	import { readContract } from '@wagmi/core'
 	import erc20Abi from "$lib/abi/erc20.json"
   	import{PUBLIC_DART_ADDRESS, PUBLIC_ODP_ADDRESS} from "$env/static/public"
 	import { formatEther } from "ethers6";
 	import TopUp from './TopUp.svelte';
+	import { account, wagmiConfig } from '$lib/web3modal';
 	let odpBalance = $state<number | null>(null)
  	let dartCreditBalance = $state<number | null>(null)
 
@@ -118,25 +119,25 @@
 
 $effect(() => {
   const intervalId = setInterval(async () => {
-	if(!$appkitStore.modal.getIsConnectedState()) {
+	if(!$account.isConnected) {
 		dartCreditBalance = 0
 		odpBalance = 0
 		return
 	}
     try {
       // Get ODP balance of connected wallet address
-      const data = await readContract($appkitStore.wagmiAdapter.wagmiConfig, {
+      const data = await readContract(wagmiConfig, {
         address: PUBLIC_ODP_ADDRESS,
         abi: erc20Abi,
         functionName: 'balanceOf',
-        args: [$appkitStore.modal.getAddress()],
+        args: [$account.address],
       });
 
       //@ts-ignore
       odpBalance = data ? Number(formatEther(data)) : 0;
 
       // Get Dart token balance of user backend wallet
-      const dartData = await readContract($appkitStore.wagmiAdapter.wagmiConfig, {
+      const dartData = await readContract(wagmiConfig, {
         address: PUBLIC_DART_ADDRESS,
         abi: erc20Abi,
         functionName: 'balanceOf',
