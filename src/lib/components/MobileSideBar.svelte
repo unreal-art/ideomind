@@ -326,7 +326,7 @@ $effect(() => {
 						</DropdownMenu.Item> -->
 						<DropdownMenu.Item>
 								
-									<appkit-button />
+ 							<w3m-button class="" />
 							</DropdownMenu.Item>
 						<DropdownMenu.Separator></DropdownMenu.Separator>
 						<DropdownMenu.Item class="pl-1" onclick={toggleMode}>
