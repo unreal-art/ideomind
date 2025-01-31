@@ -33,13 +33,15 @@ export async function generateImage(dto: JobSpec) {
 	try {
 		const response: DartsJobData = await axios.post(
 			`/creations`,
-			{ ...dto },
-			{
-				headers: {
-					Authorization: `Bearer ${store.getState().user?.wallet.privateKey}`,
-					"Content-Type": "application/json"
-				}
-			}
+			{ ...dto }
+			// {
+			// 	headers: {
+			// 		Authorization: `Bearer ${store.getState().user?.wallet.privateKey}`,
+			// 		"Content-Type": "application/json"
+			// 	}
+			// }
+
+			//TODO: reinstate headers
 		);
 		return response.data;
 	} catch (error) {
