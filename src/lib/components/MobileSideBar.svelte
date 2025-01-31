@@ -182,7 +182,8 @@ $effect(() => {
 			</Button>
 	</div>
 	<div class="h-full w-[20%]  flex items-center justify-center">
-	{#if dartCreditBalance && dartCreditBalance >= 10}
+				<!-- TODO: revert to paid service -->
+	<!-- {#if dartCreditBalance && dartCreditBalance >= 10} -->
 <Dialog.Root bind:open={open}>
   <Dialog.Trigger class="border-none flex justify-center bg-primary text-white items-center outline-none focus:ring-0 hover:ring-0 focus-visible:ring-0 visited:ring-0 h-12 w-12 rounded-full p-0 dark:bg-secondary dark:text-white">
     <Plus size={30} />
@@ -197,14 +198,23 @@ $effect(() => {
       <Dialog.Description>Unleash your creative juice.</Dialog.Description>
     </Dialog.Header>
 
-    <!-- Content (Textarea): Takes remaining space -->
-    <div class="flex-1 mx-auto w-full overflow-auto ">
+    <!-- Content (Textarea): Takes remaining space --> 		<!-- TODO: revert to paid service -->
+    <!-- <div class="flex-1 mx-auto w-full overflow-auto ">
       <Textarea
         placeholder="Describe what you want to see"
         
         class="ring-0 w-full h-full resize-none"
         bind:value={text}
 		disabled={!dartCreditBalance || dartCreditBalance < 10}
+      />
+    </div> -->
+    <div class="flex-1 mx-auto w-full overflow-auto ">
+      <Textarea
+        placeholder="Describe what you want to see"
+        
+        class="ring-0 w-full h-full resize-none"
+        bind:value={text}
+		
       />
     </div>
 
@@ -218,9 +228,9 @@ $effect(() => {
 
 
 
-	{:else}
+	<!-- {:else}
 				<TopUp isFooter={true}/>
-	{/if}
+	{/if} -->
 	</div>
 	<div class="h-full w-[20%]   flex items-center justify-center">
 		
