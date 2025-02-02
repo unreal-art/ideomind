@@ -109,7 +109,7 @@
     "ethereumjs-wallet": "^1.0.2",
     "ethers5": "npm:ethers@^5.5.1",
     "ethers6": "npm:ethers@^6.8.0",
-    "lucide-svelte": "^0.469.0",
+    "lucide-svelte": "^0.471.0",
     "mime-types": "^2.1.35",
     "mode-watcher": "^0.5.0",
     "nprogress": "^0.2.0",
