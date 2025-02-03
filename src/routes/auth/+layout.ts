@@ -32,23 +32,31 @@ function redirectOnLogin() {
 	goto("/explore");
 }
 
+function getSearchParam(requestUrl: URL, keys: string[]): string | null {
+	for (const key of keys) {
+		const value = requestUrl.searchParams.get(key);
+		if (value) return value;
+	}
+	return null;
+}
+
 export const load: LayoutLoad = async ({ url }) => {
 	//get posts for auth page
 	getPostsForAuthPage();
 
 	const fullUrl = url.href;
+	const code = getSearchParam(url, ["code", "token", "access_token"]); //TODO: its many values
+
 	// console.log(`Loading ${fullUrl}`);
 
 	// console.log("searchParams: " + url.searchParams); //its empty for the reason that its prepend by #
 
 	// Exchange the code for a session if the user is redirected back from Discord
-	if (fullUrl.includes("access_token") || fullUrl.includes("code")) {
-		const accessToken = url.searchParams.get("access_token") || url.searchParams.get("code");
-
-		console.log("access token: " + accessToken);
+	if (code) {
+		console.log("access token: " + code);
 
 		// const { data, error } = await supabase.auth.exchangeCodeForSession(accessToken as string);
-		const { data, error } = await supabase.auth.exchangeCodeForSession(fullUrl);
+		const { data, error } = await supabase.auth.exchangeCodeForSession(code);
 
 		if (error) {
 			console.error("Error during token exchange:", error.message);
