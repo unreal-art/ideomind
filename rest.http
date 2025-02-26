@@ -42,13 +42,6 @@ Content-Type: application/json
     "Message": "Hi from vite dev "
   }
 }
-
-HTTP/1.1 500  - Internal Server Error
-access-control-allow-origin: *
-content-length: 144
-content-type: application/json
-date: Sun, 12 Jan 2025 20:41:15 GMT
-connection: close
 ###
 POST {{u}}/darts
 Authorization: Bearer 0xa618896c28db371a21f9d805c25e622425319d85684a1f9478568509a3f3f4a9
@@ -67,6 +60,13 @@ Content-Type: application/json
   },
   "author": "e260b0ab-9867-4507-97be-976779c20c9f"
 }
+
+HTTP/1.1 200  - OK
+access-control-allow-origin: *
+content-length: 1475
+content-type: application/json
+date: Wed, 26 Feb 2025 16:38:50 GMT
+connection: close
 ###
 
 POST {{u}}/darts
