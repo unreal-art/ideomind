@@ -33,5 +33,5 @@ export interface JobSpec extends Post {
 	module?: string;
 	version?: string; //version
 	inputs?: Record<string, string | number>;
-	author?: string;
+	author: string;
 }

@@ -110,12 +110,12 @@ export const POST: RequestHandler = async ({ request }) => {
 		const dto = jobDto;
 
 		try {
-			await postDataToDb({
-				device: dto.inputs?.Device,
-				cpu: dto.inputs?.cpu,
-				seed: dto.inputs?.Seed,
-				prompt: dto.inputs?.Prompt,
-				n: dto.inputs?.N,
+			const data = await postDataToDb({
+				device: dto.inputs?.Device as string,
+				cpu: dto.inputs?.cpu as number,
+				seed: dto.inputs?.Seed as number,
+				prompt: dto.inputs?.Prompt as string,
+				n: Number(dto.inputs?.N),
 
 				author: dto.author ?? "e260b0ab-9867-4507-97be-976779c20c9f",
 				ipfsImages: uploadResponse,
@@ -123,6 +123,8 @@ export const POST: RequestHandler = async ({ request }) => {
 				isPinned: dto.isPinned ?? false,
 				category: "GENERATION"
 			});
+			console.log(data);
+			return json({ outputFolder, stdout, command, uploadResponse, data });
 		} catch (e) {
 			console.error("Error posting to db", e);
 			return json(
@@ -137,7 +139,6 @@ export const POST: RequestHandler = async ({ request }) => {
 				{ status: 500 }
 			);
 		}
-		return json({ outputFolder, stdout, command, uploadResponse });
 	};
 	// while (!processExited || outputFolder?.trim() === "") {
 	// 	// await Bluebird.delay(2000);

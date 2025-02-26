@@ -24,6 +24,7 @@ export interface Post {
 	cpu: number;
 	device: string;
 	createdAt: Date;
+	n: number;
 }
 
 export interface Like {
