@@ -119,8 +119,6 @@ export const POST: RequestHandler = async ({ request }) => {
 
 				author: dto.author ?? "e260b0ab-9867-4507-97be-976779c20c9f",
 				ipfsImages: uploadResponse,
-				isPrivate: dto.isPrivate ?? false,
-				isPinned: dto.isPinned ?? false,
 				category: "GENERATION"
 			});
 			console.log(data);
