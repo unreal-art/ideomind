@@ -21,7 +21,16 @@ export const secretSupabaseClient: SupabaseClient = createClient(supabaseUrl, pr
 //post to db
 export const postDataToDb = async (post: Partial<Post>) => {
 	try {
-		const { data, error } = await secretSupabaseClient.from("posts").insert([post]).select("*");
+		// Ensure `author` is present in the post object
+		if (!post.author) {
+			throw new Error("Author is required to insert a post.");
+		}
+
+		// Call the Supabase RPC function
+		const { data, error } = await secretSupabaseClient.rpc("decrement_credit_and_insert_post", {
+			author_id: post.author, // Use `author` instead of `user_id`
+			post_data: post
+		});
 
 		if (error) {
 			throw new Error(`Error inserting data: ${error.message}`);
@@ -31,6 +40,6 @@ export const postDataToDb = async (post: Partial<Post>) => {
 		return data; // Return data if needed
 	} catch (err) {
 		console.error("Failed to insert data into posts table:", err);
-		throw err; // Optionally re-throw the error if the caller needs to handle it
+		throw err;
 	}
 };

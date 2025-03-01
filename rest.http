@@ -51,7 +51,7 @@ Content-Type: application/json
   "module": "github.com/darts2024/dart-isdxl",
   "version": "v1.6.0",
   "inputs": {
-    "Prompt": "Beautiful girl",
+    "Prompt": "Beautiful child",
     "Device": "xpu",
     "cpu": "20",
     "ram": "22gb",
@@ -60,13 +60,6 @@ Content-Type: application/json
   },
   "author": "e260b0ab-9867-4507-97be-976779c20c9f"
 }
-
-HTTP/1.1 200  - OK
-access-control-allow-origin: *
-content-length: 1475
-content-type: application/json
-date: Wed, 26 Feb 2025 16:38:50 GMT
-connection: close
 ###
 
 POST {{u}}/darts
