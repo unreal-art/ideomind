@@ -2,11 +2,15 @@ tunnel: ideomind
 credentials-file: /home/ec2-user/.cloudflared/323284fb-935e-4176-ae96-8f7702ce4443.json
 
 originRequest: # Top-level configuration
-  connectTimeout: 1m
+  connectTimeout: 20m
+  noHappyEyeballs: true
+  keepAliveTimeout: 20m
+  keepAliveConnections: 1000
+  tcpKeepAlive: 10m
 
 ingress:
   - hostname: ideomind.decenterai.com
     service: http://localhost:8081
     originRequest:
-      connectTimeout: 5m
+      connectTimeout: 10m
   - service: http_status:404
