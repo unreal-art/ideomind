@@ -6,7 +6,7 @@ import { dev } from "$app/environment";
 import { genLhApiKey } from "@utils/lh";
 
 import { DARTS_PRIVATE_KEY, DARTS_CLI } from "$env/static/private";
-import { uploadFilesInOutputs, type UploadResponse } from "./lighthouse";
+import { uploadFilesInOutputs, type UploadResponse } from "./cloudflare";
 import { postDataToDb } from "./postDataToDb";
 import Bluebird from "bluebird";
 
@@ -90,7 +90,7 @@ export const POST: RequestHandler = async ({ request }) => {
 		}
 		let uploadResponse: UploadResponse[] = [];
 		try {
-			uploadResponse = await uploadFilesInOutputs(outputFolder as string);
+			uploadResponse = await uploadFilesInOutputs(jobDto.author, outputFolder as string);
 			console.log("Image upload successful:", uploadResponse);
 		} catch (uploadError) {
 			console.error("Error uploading image/post:", uploadError);
