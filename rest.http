@@ -60,6 +60,13 @@ Content-Type: application/json
   },
   "author": "e260b0ab-9867-4507-97be-976779c20c9f"
 }
+
+HTTP/1.1 200  - OK
+access-control-allow-origin: *
+content-length: 1705
+content-type: application/json
+date: Sun, 23 Mar 2025 09:19:25 GMT
+connection: close
 ###
 
 POST {{u}}/darts
@@ -75,11 +82,11 @@ Content-Type: application/json
   }
 }
 
-HTTP/1.1 500  - Internal Server Error
+HTTP/1.1 200  - OK
 access-control-allow-origin: *
-content-length: 204
+content-length: 1551
 content-type: application/json
-date: Sun, 12 Jan 2025 20:42:37 GMT
+date: Sun, 23 Mar 2025 08:50:36 GMT
 connection: close
 ###
 
