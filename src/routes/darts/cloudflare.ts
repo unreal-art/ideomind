@@ -9,7 +9,8 @@ import {
 	CLOUDFLARE_ACCOUNT_ID,
 	CLOUDFLARE_R2_ENDPOINT,
 	CLOUDFLARE_R2_ACCESS_KEY_ID,
-	CLOUDFLARE_R2_SECRET_ACCESS_KEY
+	CLOUDFLARE_R2_SECRET_ACCESS_KEY,
+	CLOUDFLARE_R2_URL
 } from "$env/static/private";
 
 const s3Client = new S3Client({
@@ -82,7 +83,7 @@ export async function uploadFilesInOutputs(
 
 				return {
 					name: newFileName,
-					hash: `https://${CLOUDFLARE_R2_BUCKET_NAME}.${CLOUDFLARE_ACCOUNT_ID}.r2.cloudflarestorage.com/${objectKey}`,
+					hash: `${CLOUDFLARE_R2_URL}/${objectKey}`,
 					size: size.toString(),
 					fileNames: [newFileName]
 				} as UploadResponse;
