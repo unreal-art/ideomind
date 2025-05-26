@@ -51,6 +51,13 @@ Content-Type: application/json
     "N": 4
   }
 }
+
+HTTP/1.1 200  - OK
+access-control-allow-origin: *
+content-length: 3224
+content-type: application/json
+date: Mon, 26 May 2025 17:58:17 GMT
+connection: close
 ###
 
 POST {{u}}/creations
