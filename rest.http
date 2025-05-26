@@ -2,15 +2,13 @@
 OPTIONS {{u}}/darts
 
 HTTP/1.1 200  - OK
-server: nginx
-date: Tue, 31 Dec 2024 03:09:32 GMT
-transfer-encoding: chunked
-connection: close
 access-control-allow-origin: *
 access-control-allow-methods: GET, POST, PUT, DELETE, PATCH, OPTIONS
 vary: Access-Control-Request-Headers
 access-control-allow-headers: *
-strict-transport-security: max-age=31536000; includeSubDomains; preload
+date: Mon, 26 May 2025 16:32:22 GMT
+connection: close
+transfer-encoding: chunked
 ###
 
 POST {{u}}/darts
@@ -26,9 +24,9 @@ Content-Type: application/json
 
 HTTP/1.1 500  - Internal Server Error
 access-control-allow-origin: *
-content-length: 144
+content-length: 458
 content-type: application/json
-date: Sun, 12 Jan 2025 20:41:08 GMT
+date: Mon, 26 May 2025 16:33:38 GMT
 connection: close
 ###
 POST {{u}}/darts
@@ -60,13 +58,6 @@ Content-Type: application/json
   },
   "author": "e260b0ab-9867-4507-97be-976779c20c9f"
 }
-
-HTTP/1.1 200  - OK
-access-control-allow-origin: *
-content-length: 1599
-content-type: application/json
-date: Wed, 26 Mar 2025 19:07:04 GMT
-connection: close
 ###
 
 POST {{u}}/darts
@@ -81,13 +72,33 @@ Content-Type: application/json
     "Seed": "{{$randomInt 1 10000000}}"
   }
 }
+###
 
-HTTP/1.1 200  - OK
-access-control-allow-origin: *
-content-length: 1551
-content-type: application/json
-date: Sun, 23 Mar 2025 08:50:36 GMT
-connection: close
+POST {{u}}/darts
+Content-Type: application/json
+
+{
+  "module": "nearai",
+  "version": "v0.3.0",
+  "inputs": {
+    "Prompt": "Beautiful girl \n amongst european graduates",
+    "Seed": "{{$randomInt 1 10000000}}"
+  }
+}
+###
+
+POST {{u}}/darts
+Content-Type: application/json
+
+{
+  "module": "nearai",
+  "version": "v0.3.0",
+  "inputs": {
+    "Prompt": "Beautiful girl amongst european graduates",
+    "Seed": "{{$randomInt 1 10000000}}",
+    "N": 4
+  }
+}
 ###
 
 POST {{u}}/creations
@@ -103,13 +114,6 @@ Content-Type: application/json
     "Seed": "{{$randomInt 1 10000000}}"
   }
 }
-
-HTTP/1.1 500  - Internal Server Error
-access-control-allow-origin: *
-content-length: 4016
-content-type: application/json
-date: Thu, 02 Jan 2025 01:24:55 GMT
-connection: close
 ###
 
 POST {{u}}/darts
@@ -122,10 +126,3 @@ Content-Type: application/json
     "Message": "Hi from vite dev "
   }
 }
-
-HTTP/1.1 500  - Internal Server Error
-access-control-allow-origin: *
-content-length: 604
-content-type: application/json
-date: Thu, 02 Jan 2025 00:42:16 GMT
-connection: close

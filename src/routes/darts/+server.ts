@@ -1,4 +1,4 @@
-import { exec } from "child_process";
+import { spawn } from "child_process";
 import { json, type RequestHandler } from "@sveltejs/kit";
 import { extractLocationURL, type JobSpec } from "./darts";
 import { DARTS_DEBUG } from "$env/static/private";
@@ -41,13 +41,6 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	jobDto.version ??= "HEAD";
 
-	// Construct CLI input flags
-	const inputFlags = Object.entries(jobDto.inputs || {})
-		.map(([key, value]) => `-i ${key.trim()}="${value.toString().trim()}"`)
-		.join(" ");
-
-	console.log("inputFlags", inputFlags);
-
 	// Set environment variables
 	const debug = DARTS_DEBUG == "1" || DARTS_DEBUG == "true";
 
@@ -68,6 +61,16 @@ export const POST: RequestHandler = async ({ request }) => {
 		.map(([key, value]) => `${key.trim()}="${value.toString().trim()}"`)
 		.join(" ");
 
+	const inputFlagsStr = Object.entries(jobDto.inputs || {})
+		.map(([key, value]) => `-i ${key.trim()}="${value.toString().trim()}"`)
+		.join(" ");
+
+	console.log("inputFlags", inputFlagsStr);
+
+	const inputFlags = Object.entries(jobDto.inputs || {}).flatMap(([key, value]) => [
+		"-i",
+		`${key.trim()}='${value.toString().trim().replace(/\n/g, " ")}'`
+	]);
 	const command = `${dartsCli} run ${jobDto.module}:${jobDto.version} ${inputFlags} `;
 	// TODO: module
 
@@ -78,7 +81,19 @@ export const POST: RequestHandler = async ({ request }) => {
 	let stdout: string = "";
 	let exitCode: number | null = null;
 	let processExited = false;
-	const childProcess = exec(`${envVarsString} ${command}`);
+
+	const childProcess = spawn(
+		dartsCli,
+		["run", `${jobDto.module}:${jobDto.version}`, ...inputFlags],
+		{
+			env: {
+				...process.env,
+				DARTS_PRIVATE_KEY: pKey,
+				DEBUG: debug.toString(),
+				Ephemeral: Ephemeral.toString()
+			}
+		}
+	);
 
 	const postDarts = async (): Promise<Response> => {
 		// (code === 0 || code === null) && outputFolder; sometime goroutines panic
