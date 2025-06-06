@@ -37,6 +37,13 @@ Content-Type: application/json
     "Seed": "{{$randomInt 1 10000000}}"
   }
 }
+
+HTTP/1.1 500  - Internal Server Error
+access-control-allow-origin: *
+content-length: 1588
+content-type: application/json
+date: Fri, 06 Jun 2025 21:52:56 GMT
+connection: close
 ###
 
 POST {{u}}/darts
@@ -44,19 +51,19 @@ Content-Type: application/json
 
 {
   "module": "nearai",
-  "version": "v0.3.0",
+  "version": "v0.4.1",
   "inputs": {
-    "Prompt": "Beautiful girl amongst european graduates",
+    "Prompt": "An image depicting the serenity of inner peace in a busy world. At the top: \"How to Be Good at Inner Peace\" is in bold font, with \"How to Be Good At\" on all one line, and \"Inner Peace\" on its own line as a huge modern sans serif font prominently placed in the upper half of the design. At the bottom: \"Michelle Volz, LMFT\" as the author's name.",
     "Seed": "{{$randomInt 1 10000000}}",
     "N": 4
   }
 }
 
-HTTP/1.1 200  - OK
+HTTP/1.1 500  - Internal Server Error
 access-control-allow-origin: *
-content-length: 3224
+content-length: 1243
 content-type: application/json
-date: Mon, 26 May 2025 17:58:17 GMT
+date: Fri, 06 Jun 2025 22:00:59 GMT
 connection: close
 ###
 

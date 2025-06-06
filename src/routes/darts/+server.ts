@@ -67,14 +67,19 @@ export const POST: RequestHandler = async ({ request }) => {
 
 	// console.log("inputFlagsStr", inputFlagsStr);
 
-	const inputFlags = Object.entries(jobDto.inputs || {}).flatMap(([key, value]) => [
-		"-i",
-		`${key.trim()}=${value.toString().trim().replace(/\n/g, " ")}`
-	]);
+	const inputFlags = Object.entries(jobDto.inputs || {}).flatMap(([key, value]) => {
+		const trimmedValue = value.toString().trim().replace(/\n/g, " ");
+		let pair = `${key.trim()}='${trimmedValue}'`;
+
+		pair = JSON.stringify(pair);
+
+		return ["-i", pair];
+	});
+
 	const command = `${dartsCli} run ${jobDto.module}:${jobDto.version} ${inputFlags} `;
 	// TODO: module
 
-	console.log("command", JSON.stringify(command));
+	console.log("command", command);
 
 	let outputFolder: string | null = null;
 	let stderr: string = "";
