@@ -27,9 +27,15 @@ export const postDataToDb = async (post: Partial<Post>) => {
 		}
 
 		// Call the Supabase RPC function
-		const { data, error } = await secretSupabaseClient.rpc("decrement_credit_and_insert_post", {
-			author_id: post.author, // Use `author` instead of `user_id`
-			post_data: post
+		const { data, error } = await secretSupabaseClient.from("posts").insert({
+			author: post.author,
+			isPrivate: false,
+			prompt: post.prompt,
+			isPinned: post.isPinned,
+			category: post.category,
+			ipfsImages: post.ipfsImages,
+			cpu: post.cpu,
+			device: post.device
 		});
 
 		if (error) {

@@ -38,11 +38,11 @@ Content-Type: application/json
   }
 }
 
-HTTP/1.1 500  - Internal Server Error
+HTTP/1.1 200  - OK
 access-control-allow-origin: *
-content-length: 1588
+content-length: 1171
 content-type: application/json
-date: Fri, 06 Jun 2025 21:52:56 GMT
+date: Fri, 06 Jun 2025 23:06:11 GMT
 connection: close
 ###
 
