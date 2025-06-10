@@ -120,6 +120,14 @@ export const POST: RequestHandler = async ({ request }) => {
 				{ status: 500 }
 			);
 		}
+
+		if (!jobDto.author) {
+			return json(
+				{ msg: "Darts successful", error: "Author requested not found", stderr, stdout, command },
+				{ status: 204 }
+			);
+		}
+
 		let uploadResponse: UploadResponse[] = [];
 		try {
 			uploadResponse = await uploadFilesInOutputs(jobDto.author, outputFolder as string);
