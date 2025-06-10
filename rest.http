@@ -61,10 +61,24 @@ Content-Type: application/json
 
 HTTP/1.1 500  - Internal Server Error
 access-control-allow-origin: *
-content-length: 1243
+content-length: 1731
 content-type: application/json
-date: Fri, 06 Jun 2025 22:00:59 GMT
+date: Tue, 10 Jun 2025 18:19:09 GMT
 connection: close
+###
+
+POST {{u}}/darts
+Content-Type: application/json
+
+{
+  "module": "nearai",
+  "version": "v0.4.1",
+  "inputs": {
+    "Prompt": "note-taking app interface\"",
+    "Seed": "{{$randomInt 1 10000000}}",
+    "N": 4
+  }
+}
 ###
 
 POST {{u}}/creations

@@ -68,7 +68,19 @@ export const POST: RequestHandler = async ({ request }) => {
 	// console.log("inputFlagsStr", inputFlagsStr);
 
 	const inputFlags = Object.entries(jobDto.inputs || {}).flatMap(([key, value]) => {
-		const trimmedValue = value.toString().trim().replace(/\n/g, " ");
+		const trimmedValue = value
+			.toString()
+			.trim()
+			.replace(/\n/g, "\t")
+			.replace(/"([^"]*?)"/g, "<quote>$1<quote>")
+			.replace(/'([^']*?)"/g, "<quote1>$1<quote1>")
+			.replace(/"/g, "")
+			.replace(/'/g, "")
+			.replace(/<quote>(.*?)<\/quote>/g, '"$1"') //reverse
+			.replace(/<quote1>(.*?)<\/quote1>/g, "'$1'") //reverse
+
+			.replace(/(["\\`$])/g, "\\$1");
+
 		let pair = `${key.trim()}=${trimmedValue}`;
 
 		pair = JSON.stringify(pair);
