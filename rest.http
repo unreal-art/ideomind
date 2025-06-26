@@ -37,13 +37,6 @@ Content-Type: application/json
     "Seed": "{{$randomInt 1 10000000}}"
   }
 }
-
-HTTP/1.1 200  - OK
-access-control-allow-origin: *
-content-length: 1171
-content-type: application/json
-date: Fri, 06 Jun 2025 23:06:11 GMT
-connection: close
 ###
 
 POST {{u}}/darts
@@ -58,13 +51,6 @@ Content-Type: application/json
     "N": 4
   }
 }
-
-HTTP/1.1 500  - Internal Server Error
-access-control-allow-origin: *
-content-length: 1731
-content-type: application/json
-date: Tue, 10 Jun 2025 18:19:09 GMT
-connection: close
 ###
 
 POST {{u}}/darts
