@@ -1,38 +1,62 @@
-# sv
+# Ideomind
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A decentralized AI content-generation studio and dePIN gateway.
 
-## Creating a project
+Ideomind is the open-source predecessor of **Unreal AI**, built to democratize generative AI by combining SvelteKit ergonomics with decentralized GPU compute ("darts"), tokenised access, and a web-first creator experience.
 
-If you're seeing this, you've probably already done this step. Congrats!
+## ✨ Highlights
 
-```bash
-# create a new project in the current directory
-npx sv create
+- Unified text-to-anything workspace (text, image, code)
+- Plug-and-play AI inference API — still powering Unreal AI’s network
+- On-chain wallet auth and micro-payments (ERC-20 $UNREAL token)
+- **darts dePIN**: route intensive jobs to community GPUs with provable accounting
+- 70+ headless UI components (shadcn-svelte)
+- Supabase-backed user profiles, likes & social graph
+- End-to-end tests with Playwright and automated Vercel previews
 
-# create a new project in my-app
-npx sv create my-app
+## 🏗️ Architecture
+
+```text
+ideomind/
+ ├─ src
+ │  ├─ lib/          # shared logic, state, blockchain, api clients
+ │  ├─ routes/       # SvelteKit pages + server/API endpoints
+ │  ├─ app.html      # root html shell
+ │  └─ service-worker.js
+ ├─ darts/           # model checkpoints & wasm blobs (git-lfs)
+ ├─ utils/           # helper scripts
+ └─ devops/          # CI/CD, Docker, Vercel, Lighthouse
 ```
 
-## Developing
+Key services:
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+1. **Supabase** – auth & database
+2. **Lighthouse / Filecoin** – decentralized asset storage
+3. **Ethereum / Torus mainnet** – payments & staking
+4. **darts nodes** – distributed GPU runners
 
-```bash
-npm run dev
+## 🔌 Public APIs (excerpt)
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+Ideomind exposes REST-flavoured endpoints under `/api/*`. Unreal AI currently reverse-proxies these for compute operations.
 
-## Building
+| Route               | Method | Purpose                     |
+| ------------------- | ------ | --------------------------- |
+| `/api/inference`    | POST   | Submit a generation job     |
+| `/api/job/{id}`     | GET    | Stream job status & outputs |
+| `/api/wallet/nonce` | POST   | EIP-191 login nonce         |
 
-To create a production version of your app:
+## 🗺️ Project Status
 
-```bash
-npm run build
-```
+Ideomind is feature-frozen; active development continues in the [Unreal AI](https://github.com/unreal-art/v0) repo. Bug-fix PRs are welcome.
 
-You can preview the production build with `npm run preview`.
+## 🤝 Contributing
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+1. Fork and create a feature branch.
+2. Follow the style guide: `pnpm lint` & `prettier`.
+3. Open a PR describing the change and its impact.
+
+Security issues? Email **hiro@unreal.art**.
+
+## ⚖️ License
+
+MIT © Hiro & Unreal AI contributors
