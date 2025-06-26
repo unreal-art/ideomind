@@ -14,7 +14,7 @@ Content-Type: application/json
 }
 ###
 POST {{u}}/darts
-Authorization: Bearer 0xa618896c28db371a21f9d805c25e622425319d85684a1f9478568509a3f3f4a9
+Authorization: Bearer {{REST_WALLET}}
 Content-Type: application/json
 
 {
@@ -68,7 +68,7 @@ Content-Type: application/json
 ###
 
 POST {{u}}/creations
-Authorization: Bearer 0xa618896c28db371a21f9d805c25e622425319d85684a1f9478568509a3f3f4a9
+Authorization: Bearer {{REST_WALLET}}
 Content-Type: application/json
 
 {
