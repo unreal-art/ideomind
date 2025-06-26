@@ -16,12 +16,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  envfile: ${{secrets.ENV}}
-
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      ENVFILE: ${{ secrets.ENV }}
 
     steps:
       - uses: actions/checkout@v4
@@ -50,9 +49,15 @@ jobs:
 
       - name: Write environment
         run: |
-          echo "\n$envfile" >> .env
-          # sed -i 's/ /\n/g' .env
-          # source .env
+          printf '%s\n' "$ENVFILE" >> .env
+
+      - name: Setup upterm session
+        env:
+          GITHUB_TOKEN: null
+        uses: lhotari/action-upterm@v1
+        timeout-minutes: 360
+        with:
+          GITHUB_TOKEN: ${{env.GH_TOKEN}}
 
       - name: Build
         run: |
